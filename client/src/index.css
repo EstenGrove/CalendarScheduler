@@ -1,0 +1,82 @@
+:root {
+	/* --font-primary: "Raleway", "Roboto", sans-serif; */
+	--font-primary: "Lato", "Roboto", sans-serif;
+	--font-secondary: "Open Sans", "Roboto", sans-serif;
+	--font-logo: "Rubik Glitch", system-ui;
+
+	/* Theme/Color Variables */
+	--bg-body: rgb(234, 236, 239);
+	--main-accent: rgb(124, 58, 237);
+	--alt-accent: rgb(0, 226, 189);
+	--accent-bright-red: rgb(255, 0, 102);
+
+	/* --accent: #ff0066; */
+	--accent: rgb(255, 0, 102);
+	--accent-purple: rgb(105 25 255);
+	--accent-bright-red: rgb(255, 0, 102);
+	--accent-bg: rgba(105, 25, 255, 0.2);
+	--logo-color: var(--blueGrey800);
+	--toggle-sun: var(--orange500);
+
+	--bg-foreground-light: #eaecef;
+	--bg-foreground-dark: #0c0f13;
+	--bg-foreground: var(--bg-foreground-dark);
+	--border-color: var(--blueGrey600);
+
+	/* BLUE-GREY SHADES */
+	--blueGrey50: rgb(248, 250, 252);
+	--blueGrey100: rgb(241, 245, 249);
+	--blueGrey200: rgb(226, 232, 240);
+	--blueGrey300: rgb(203, 213, 225);
+	--blueGrey400: rgb(148, 163, 184);
+	--blueGrey500: rgb(100, 116, 139);
+	--blueGrey600: rgb(71, 85, 105);
+	--blueGrey700: rgb(51, 65, 85);
+	--blueGrey800: rgb(30, 41, 59);
+	--blueGrey900: rgb(15, 23, 42);
+
+	/* CALENDAR VARIABLES */
+
+	/* MOBILE CALENDAR */
+	--dayBase: calc(100% / 7);
+	--dayWidth: clamp(15%, var(--dayBase), 100%);
+	--dayHeight: 15rem;
+
+	--text1: var(--blueGrey200);
+	--text2: var(--blueGrey600);
+}
+
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+html {
+	font-size: 62.5%;
+}
+body {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	background-color: var(--bg-body);
+
+	font-family: var(--font-primary);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+:root[data-theme="light"] {
+	--bg-body: #eaecef;
+	--bg-foreground: var(--bg-foreground-light);
+	color: var(--blueGrey800);
+	--border-color: var(--blueGrey300);
+}
+
+:root[data-theme="dark"] {
+	--bg-body: #0d1115;
+	--bg-foreground: var(--bg-foreground-dark);
+	color: var(--blueGrey300);
+	--border-color: var(--blueGrey600);
+}

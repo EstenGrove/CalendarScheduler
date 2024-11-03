@@ -1,0 +1,101 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+@mixin monthBtn() {
+	padding: 0.3rem 0.5rem;
+	border-radius: 5rem;
+	font-size: 1.3rem;
+}
+
+.MobileCalendarHeader {
+	width: 100%;
+	padding: 1rem 0.5rem;
+	@include flex_row(flex-start, flex-start);
+
+	&_controls {
+		width: 100%;
+		height: 3rem;
+		@include flex_row(space-between, center);
+	}
+}
+
+.MonthControls {
+	width: 15rem;
+	border-radius: 5rem;
+	@include flex_row(center, center);
+	gap: 0 0.5rem;
+
+	&_label {
+		width: auto;
+		@include flex_row(center, center);
+		gap: 0 0.5rem;
+	}
+}
+@mixin controlBtn() {
+	width: 3rem;
+	height: 100%;
+	border-radius: 50%;
+	@include rowCenter();
+	background-color: transparent;
+	border: none;
+	outline: none;
+	&:hover {
+		cursor: pointer;
+	}
+
+	&_icon {
+		width: 2.5rem;
+		height: 2.5rem;
+		fill: var(--blueGrey300);
+		border-radius: 50%;
+	}
+	&:hover &_icon {
+		color: var(--accent);
+	}
+}
+
+.PrevButton {
+	@include controlBtn();
+	margin-right: auto;
+}
+.NextButton {
+	@include controlBtn();
+	margin-left: auto;
+}
+
+$current: 1.3rem;
+
+.Month {
+	font-size: $current;
+	font-weight: 800;
+	color: var(--blueGrey200);
+}
+.Year {
+	font-size: $current;
+	font-weight: 800;
+	color: $accent;
+}
+.Today {
+	font-size: 1.3rem;
+	font-weight: 800;
+	color: $accent;
+	margin-right: 1rem;
+}
+
+.AddButton {
+	width: 2.7rem;
+	height: 2.7rem;
+	border-radius: 50%;
+	border: 1px solid $accent;
+	@include rowCenter();
+	color: $accent;
+	font-size: 1.3rem;
+	font-weight: 800;
+
+	&_icon {
+		width: 2.3rem;
+		height: 2.3rem;
+		fill: $accent;
+	}
+}

@@ -1,0 +1,36 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DashboardCalendarEvent {
+	display: block;
+	width: 50rem;
+	max-width: 100%;
+	min-height: 40rem;
+	padding: 2rem;
+
+	&_nav {
+		width: 100%;
+		height: auto;
+	}
+}
+
+.BackButton {
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	border: 1px solid $accent;
+	@include flex_row(center, center);
+	&:hover {
+		cursor: pointer;
+	}
+
+	&_icon {
+		width: 2rem;
+		height: 2rem;
+		fill: $accent;
+	}
+}

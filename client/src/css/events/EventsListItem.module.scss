@@ -1,0 +1,52 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.ItemWrapper {
+	width: 100%;
+	text-decoration: none;
+}
+
+.EventsListItem {
+	width: 100%;
+	height: 7rem;
+	padding: 1rem 1rem;
+	@include flex_row(flex-start, flex-start);
+	border-bottom: 1px solid var(--blueGrey900);
+	&:hover {
+		cursor: pointer;
+	}
+
+	&_info {
+		width: 80%;
+		height: 100%;
+		@include flex_col(flex-start, flex-start);
+		gap: 0.3rem 0;
+
+		&_title {
+			font-size: 1.6rem;
+			font-weight: 600;
+			color: $text1;
+		}
+		&_desc {
+			font-size: 1.4rem;
+			font-weight: 500;
+			color: $text2;
+		}
+	}
+	&_times {
+		width: 20%;
+		height: 100%;
+		@include flex_col(flex-start, flex-end);
+		gap: 0.3rem 0;
+
+		&_start {
+			font-size: 1.3rem;
+			color: var(--blueGrey200);
+		}
+		&_end {
+			font-size: 1.3rem;
+			color: var(--blueGrey600);
+		}
+	}
+}

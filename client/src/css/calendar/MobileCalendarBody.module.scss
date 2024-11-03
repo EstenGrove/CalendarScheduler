@@ -1,0 +1,19 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.MobileCalendarBody {
+	@include fill_container;
+	// height: calc(100% - 1rem);
+	// min-height: 30vh;
+	height: 100%;
+	min-height: 20vh;
+	// background-color: #eaecef;
+
+	&_inner {
+		@include fill_container;
+		padding: 0.5rem 0;
+		@include flex_col(flex-end, center);
+		// min-height: 30vh;
+	}
+}

@@ -1,0 +1,20 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.EventsList {
+	width: 100%;
+	height: 100%;
+
+	&_list {
+		width: 100%;
+		height: 100%;
+		max-height: 52vh;
+		padding: 0.5rem;
+		list-style: none;
+		overflow-y: auto;
+		@include scrollbar();
+		@include flex_col(flex-start, flex-start);
+		gap: 1rem 0;
+	}
+}

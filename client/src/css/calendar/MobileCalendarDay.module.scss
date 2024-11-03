@@ -1,0 +1,54 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.MobileCalendarDay {
+	width: var(--dayWidth);
+	height: 100%;
+	font-size: 1.3rem;
+	font-weight: 600;
+	&:hover {
+		cursor: pointer;
+	}
+
+	&_inner {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		padding: 0.3rem 0;
+		@include flex_col(center, center);
+	}
+}
+
+.Today {
+	font-size: 1.3rem;
+	font-weight: 600;
+	width: 2.2rem;
+	height: 2.2rem;
+	border-radius: 50%;
+	background-color: $accent;
+	color: #fff;
+	@include flex_row(center, center);
+	margin-top: -0.3rem;
+}
+.SelectedDate {
+	font-size: 1.3rem;
+	font-weight: 600;
+	width: 2.2rem;
+	height: 2.2rem;
+	border-radius: 50%;
+	background-color: var(--blueGrey700);
+	color: #fff;
+	@include flex_row(center, center);
+	margin-top: -0.3rem;
+}
+
+$badgeSize: 0.5rem;
+$badgeColor: var(--accent-purple);
+.EventBadge {
+	width: $badgeSize;
+	height: $badgeSize;
+	border-radius: 50%;
+	background-color: $badgeColor;
+	margin-top: 0.3rem;
+}

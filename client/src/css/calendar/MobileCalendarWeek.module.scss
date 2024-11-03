@@ -1,0 +1,17 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$height: calc(100% / 5);
+
+.MobileCalendarWeek {
+	width: 100%;
+	min-height: 5rem;
+	height: $height;
+	// scroll-snap-align: y mandatory;
+
+	&_inner {
+		@include fill_container;
+		@include flex_row(flex-start, flex-start);
+	}
+}
