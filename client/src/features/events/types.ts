@@ -39,3 +39,6 @@ export interface CalendarEventDetails {
 	createdDate: string;
 	modifiedDate: string | null;
 }
+
+// { "2024-11-14": true, "2024-11-15": false, ...}
+export type MonthlySummary = Record<string, boolean>;

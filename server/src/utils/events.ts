@@ -1,7 +1,22 @@
-import type { CreateEventVals } from "../services/types";
+import type {
+	MonthlyEventSummaryClient,
+	MonthlyEventSummaryDB,
+} from "../services/types";
+import { formatDate } from "./dates";
 
-const createEvent = async (userID: string, newEvent: CreateEventVals) => {
-	//
+const createMonthlySummaryMap = (eventsSummary: MonthlyEventSummaryDB[]) => {
+	const grouped = {} as Record<string, boolean>;
+
+	for (let i = 0; i < eventsSummary.length; i++) {
+		const entry: MonthlyEventSummaryDB = eventsSummary[i];
+		const entryDate: string = formatDate(entry.target_date, "db");
+
+		if (!grouped[entryDate]) {
+			grouped[entryDate] = entry.has_event;
+		}
+	}
+
+	return grouped;
 };
 
-export { createEvent };
+export { createMonthlySummaryMap };

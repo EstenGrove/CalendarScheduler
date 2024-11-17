@@ -34,6 +34,8 @@ const API_ENDPOINTS = {
 	events: {
 		getByRange: "/events/getEventsByRange",
 		createEvent: "/events/createEvent",
+		getMonthlySummary: "/events/getMonthlySummary",
+		getByDate: "/events/getEventsByDate",
 	},
 } as const;
 

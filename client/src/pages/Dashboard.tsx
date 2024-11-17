@@ -1,6 +1,6 @@
 import styles from "../css/pages/Dashboard.module.scss";
 import { useState } from "react";
-import { formatDate } from "../utils/utils_dates";
+import { formatDate, formatDateTime } from "../utils/utils_dates";
 import { Outlet } from "react-router-dom";
 import { CreateEventVals, WeekDayToken } from "../utils/utils_options";
 import Modal from "../components/shared/Modal";
@@ -8,6 +8,11 @@ import CreateEvent from "../components/events/CreateEvent";
 import FloatingButton from "../components/dashboard/FloatingButton";
 import { createNewEvent } from "../features/events/operations";
 import { useAppDispatch } from "../store/store";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../features/user/userSlice";
+import { CurrentUser } from "../features/user/types";
+import { getMonthlySummary } from "../utils/utils_events";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 const initialValues: CreateEventVals = {
 	title: "Untitled Event",
@@ -22,8 +27,21 @@ const initialValues: CreateEventVals = {
 	byMonth: 0,
 };
 
+const start = formatDate(startOfMonth(new Date(2024, 11, 1)), "db");
+const end = formatDate(endOfMonth(new Date(2024, 11, 1)), "db");
+console.log("start", start);
+console.log("end", end);
+const data = await getMonthlySummary("user-id", {
+	startDate: start,
+	endDate: end,
+});
+
+console.log("data", data);
+
 const Dashboard = () => {
 	const dispatch = useAppDispatch();
+	const currentUser: CurrentUser = useSelector(selectCurrentUser);
+
 	const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
 	const [newEventValues, setNewEventValues] =
 		useState<CreateEventVals>(initialValues);
@@ -108,7 +126,7 @@ const Dashboard = () => {
 				...newEventValues,
 				interval: Number(newEventValues.interval),
 			},
-			userID: "af666794-212f-49b6-96d8-658d49194367",
+			userID: currentUser.userID,
 		};
 		console.log("Values:", eventValues);
 

@@ -4,11 +4,16 @@ import {
 	CalendarEvent,
 	CalendarEventDetails,
 	CalendarEventSchedule,
+	MonthlySummary,
 } from "./types";
 import { TStatus } from "../types";
 import { RootState } from "../../store/store";
 import { TRecord } from "../../utils/utils_misc";
-import { createNewEvent, fetchEventsByRange } from "./operations";
+import {
+	createNewEvent,
+	fetchEventsByRange,
+	fetchMonthlySummary,
+} from "./operations";
 import {
 	filterEventsByDate,
 	groupEventsByDate,
@@ -117,6 +122,7 @@ export interface CalendarEventsSlice {
 	events: CalendarEvent[];
 	eventsByDate: TRecord<CalendarEvent>;
 	eventsByMonth: TRecord<CalendarEvent[]>;
+	monthlySummary: MonthlySummary;
 	selectedDateEvents: CalendarEvent[];
 	selectedEvent: {
 		event: CalendarEvent | null;
@@ -130,6 +136,7 @@ const initialState: CalendarEventsSlice = {
 	events: fakeEvents,
 	eventsByDate: eventsByDate,
 	eventsByMonth: {},
+	monthlySummary: {},
 	selectedDateEvents: [],
 	selectedEvent: {
 		event: null,
@@ -208,6 +215,19 @@ const calendarEventsSlice = createSlice({
 					state.events = [newEvent, ...state.events];
 				}
 			);
+
+		// Monthly Summary
+		builder
+			.addCase(fetchMonthlySummary.pending, (state: CalendarEventsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				fetchMonthlySummary.fulfilled,
+				(state: CalendarEventsSlice, action: PayloadAction<MonthlySummary>) => {
+					state.status = "FULFILLED";
+					state.monthlySummary = action.payload;
+				}
+			);
 	},
 });
 
@@ -218,6 +238,9 @@ export const selectEvents = (state: RootState) => {
 	return state.events.events;
 };
 
+export const selectMonthlySummary = (state: RootState) => {
+	return state.events.monthlySummary as MonthlySummary;
+};
 export const selectEventByID =
 	(id: number) =>
 	(state: RootState): CalendarEvent => {
@@ -234,7 +257,6 @@ export const selectEventsByDate = (state: RootState) => {
 export const selectSelectedDateEvents = (state: RootState) => {
 	return state.events.selectedDateEvents;
 };
-
 // gets all events for the selected date
 export const selectEventsForDate =
 	(date: string) =>

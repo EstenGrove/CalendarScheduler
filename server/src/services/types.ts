@@ -24,13 +24,36 @@ export interface CreateEventVals {
 	tagColor: string;
 }
 
-const FREQ_OPTIONS = [
-	{ label: "Daily", value: "Daily" },
-	{ label: "Weekly", value: "Weekly" },
-	{ label: "Monthly", value: "Monthly" },
-	{ label: "Yearly", value: "Yearly" },
-	{ label: "Custom", value: "Custom" },
-	{ label: "Never", value: "Never" },
-];
+export interface CalendarEventDB {
+	event_id: number;
+	event_name: string;
+	event_desc: string;
+	start_date: string;
+	end_date: string;
+	start_time: string;
+	end_time: string;
+	is_active: boolean;
+	created_date: string;
+	modified_date: string | null;
+}
+export interface CalendarEventClient {
+	eventID: number;
+	eventName: string;
+	eventDesc: string;
+	startDate: string;
+	endDate: string;
+	startTime: string;
+	endTime: string;
+	isActive: boolean;
+	createdDate: string;
+	modifiedDate: string | null;
+}
 
-export { FREQ_OPTIONS };
+export interface MonthlyEventSummaryDB {
+	target_date: string;
+	has_event: boolean;
+}
+export interface MonthlyEventSummaryClient {
+	eventDate: string;
+	hasEvent: boolean;
+}

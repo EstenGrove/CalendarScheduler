@@ -2,14 +2,16 @@ import {
 	addWeeks,
 	eachDayOfInterval,
 	eachWeekOfInterval,
+	endOfMonth,
 	endOfWeek,
 	format,
 	getDate,
 	isSameDay,
+	startOfMonth,
 } from "date-fns";
 import { CalendarEvent } from "../features/events/types";
 import { groupByFn, TRecord } from "./utils_misc";
-import { formatDate } from "./utils_dates";
+import { DateRange, formatDate } from "./utils_dates";
 
 export interface CalendarWeek {
 	week: number;
@@ -103,6 +105,21 @@ const generateYearOptions2 = (numOfYears: number = 10): number[] => {
 	return years.sort((a, b) => a - b);
 };
 
+// Get Dates for Monthly Summary range
+const getMonthStartAndEnd = (
+	month: number,
+	year: number
+): { startDate: string; endDate: string } => {
+	const base: Date = new Date(year, month, 1);
+	const monthStart: Date = startOfMonth(base);
+	const monthEnd: Date = endOfMonth(base);
+
+	return {
+		startDate: formatDate(monthStart, "db"),
+		endDate: formatDate(monthEnd, "db"),
+	};
+};
+
 export {
 	generateWeeksAndDates,
 	isInMonth,
@@ -111,4 +128,5 @@ export {
 	filterEventsByDate,
 	generateYearOptions,
 	generateYearOptions2,
+	getMonthStartAndEnd,
 };

@@ -1,10 +1,33 @@
 import type { Pool } from "pg";
-import type { CreateEventVals } from "./types";
+import type { CreateEventVals, MonthlyEventSummaryDB } from "./types";
+
+export interface NewTagVals {
+	eventID: number;
+	userID: string;
+	tagName: string;
+	tagColor: string;
+}
 
 class EventsService {
 	#db: Pool;
 	constructor(db: Pool) {
 		this.#db = db;
+	}
+
+	async getMonthlySummary(
+		userID: string,
+		startDate: Date | string,
+		endDate: Date | string
+	): Promise<MonthlyEventSummaryDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM check_events_by_month_range($1, $2);`;
+			const results = await this.#db.query(query, [startDate, endDate]);
+			const rows = results?.rows;
+			console.log("rows", rows);
+			return rows;
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async createEvent(userID: string, newEvent: CreateEventVals) {
@@ -141,16 +164,25 @@ class EventsService {
 			return error;
 		}
 	}
-	async createEventTag(userID: string, newEvent: CreateEventVals) {
-		const { eventID, tagName, tagColor } = newEvent;
+	async createEventTag(userID: string, newTag: NewTagVals) {
+		const { eventID, tagName, tagColor } = newTag;
 		try {
 			// do stuff
 			const query = `SELECT * FROM create_calendar_tag(
 				$1,
 				$2,
-				$3
+				$3,
+				$4
 			)`;
-			const results = await this.#db.query(query, [userID, eventID, tagName]);
+			// UserID, TagName, TagColor, IsActive
+			const results = await this.#db.query(query, [
+				userID,
+				tagName,
+				tagColor,
+				true,
+			]);
+			const row = results?.rows?.[0];
+			return row;
 		} catch (error) {}
 	}
 }

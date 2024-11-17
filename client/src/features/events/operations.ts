@@ -1,13 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getEventsByRange, saveNewEvent } from "../../utils/utils_events";
+import {
+	getEventsByRange,
+	getMonthlySummary,
+	saveNewEvent,
+} from "../../utils/utils_events";
 import { AwaitedResponse } from "../types";
-import { CalendarEvent } from "./types";
+import { CalendarEvent, MonthlySummary } from "./types";
 import { CreateEventVals } from "../../utils/utils_options";
 
 export type EventsRangeParams = {
 	userID: string;
-	startDate: Date | string;
-	endDate: Date | string;
+	startDate: string;
+	endDate: string;
 };
 
 export interface NewEventParams {
@@ -20,12 +24,26 @@ const fetchEventsByRange = createAsyncThunk(
 	async (params: EventsRangeParams) => {
 		const { userID } = params;
 		const response = (await getEventsByRange(userID, {
-			startDate: params.startDate.toString(),
-			endDate: params.endDate.toString(),
+			startDate: params.startDate,
+			endDate: params.endDate,
 		})) as AwaitedResponse<{ events: CalendarEvent[] }>;
 		const data = response.Data;
 
 		return data.events as CalendarEvent[];
+	}
+);
+
+const fetchMonthlySummary = createAsyncThunk(
+	"events/fetchMonthlySummary",
+	async (params: EventsRangeParams) => {
+		const { userID } = params;
+		const response = (await getMonthlySummary(userID, {
+			startDate: params.startDate,
+			endDate: params.endDate,
+		})) as AwaitedResponse<{ eventsSummary: MonthlySummary }>;
+		const data = response.Data;
+
+		return data.eventsSummary as MonthlySummary;
 	}
 );
 
@@ -47,4 +65,4 @@ const createNewEvent = createAsyncThunk(
 	}
 );
 
-export { fetchEventsByRange, createNewEvent };
+export { fetchEventsByRange, fetchMonthlySummary, createNewEvent };
