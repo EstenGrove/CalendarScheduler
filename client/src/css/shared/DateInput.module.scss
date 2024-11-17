@@ -1,0 +1,36 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DateInput {
+	min-width: 18rem;
+	max-width: 100%;
+	height: 3.5rem;
+	border-radius: 0.5rem;
+	font-family: "Space Grotesk";
+
+	&_input {
+		width: 100%;
+		height: 3.5rem;
+		border-radius: 0.5rem;
+		font-family: "Space Grotesk";
+		padding: 0 0.5rem;
+		border: $border;
+		outline: none;
+		font-size: 1.6rem;
+		cursor: pointer;
+		color-scheme: dark;
+		background-color: $foreground;
+		&:hover {
+			border-color: var(--accent);
+			cursor: pointer;
+		}
+		&:focus-within {
+			border-color: var(--accent);
+			cursor: pointer;
+		}
+		&::placeholder {
+			color: var(--text-faded);
+		}
+	}
+}

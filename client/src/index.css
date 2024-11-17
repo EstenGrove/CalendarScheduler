@@ -1,6 +1,7 @@
 :root {
 	/* --font-primary: "Raleway", "Roboto", sans-serif; */
-	--font-primary: "Lato", "Roboto", sans-serif;
+	--font-primary: "Space Grotesk", "Lato", "Roboto", sans-serif;
+	/* --font-primary: "Lato", "Roboto", sans-serif; */
 	--font-secondary: "Open Sans", "Roboto", sans-serif;
 	--font-logo: "Rubik Glitch", system-ui;
 
@@ -79,4 +80,8 @@ body {
 	--bg-foreground: var(--bg-foreground-dark);
 	color: var(--blueGrey300);
 	--border-color: var(--blueGrey600);
+}
+
+input {
+	font-family: var(--font-primary);
 }

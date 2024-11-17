@@ -42,12 +42,6 @@ const isInMonth = (month: number, weekDate: Date) => {
 	return month === dateMonth;
 };
 
-const groupEventsByDate_NUMBER = (
-	events: CalendarEvent[]
-): TRecord<CalendarEvent> => {
-	const grouped = groupByFn(events, (x) => getDate(x.startDate));
-	return grouped;
-};
 const groupEventsByDate = (events: CalendarEvent[]): TRecord<CalendarEvent> => {
 	const grouped = groupByFn(events, (x) => format(x.startDate, "MM/dd/yyyy"));
 	return grouped;
@@ -78,10 +72,43 @@ const filterEventsByDate = (date: Date | string, events: CalendarEvent[]) => {
 	return dateEvents;
 };
 
+// GENERATOR UTILS & DATE-PICKER UTILS
+
+// Returns a set of years as an array of numbers: [2023, 2024, 2025, 2026, 2027]
+const generateYearOptions = (numOfYears: number = 10): number[] => {
+	const prevYear: number = new Date().getFullYear() - 1;
+	const years: number[] = [prevYear];
+
+	for (let i = 0; i < numOfYears; i++) {
+		const year = new Date().getFullYear();
+		const newYear = year + i;
+		years.push(newYear);
+	}
+
+	return years;
+};
+
+// generates 20 years (eg 10 before & 10 after the current year)
+const generateYearOptions2 = (numOfYears: number = 10): number[] => {
+	const years: number[] = [];
+
+	for (let i = 0; i < numOfYears; i++) {
+		const year = new Date().getFullYear();
+		const prevYear = year - i;
+		const nextYear = year + i;
+		years.push(prevYear);
+		years.push(nextYear);
+	}
+
+	return years.sort((a, b) => a - b);
+};
+
 export {
 	generateWeeksAndDates,
 	isInMonth,
 	groupEventsByDate,
 	hasEvent,
 	filterEventsByDate,
+	generateYearOptions,
+	generateYearOptions2,
 };

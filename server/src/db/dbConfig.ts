@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { type PoolConfig } from "pg";
 
 export interface PgSQLConfig extends PoolConfig {

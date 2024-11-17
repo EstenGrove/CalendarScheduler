@@ -1,0 +1,13 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.RadioButton {
+	width: max-content;
+	height: auto;
+
+	&_label {
+		font-size: 1.6rem;
+		font-family: inherit;
+	}
+}

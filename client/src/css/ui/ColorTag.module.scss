@@ -1,0 +1,15 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$tagSize: 1.3rem;
+
+.ColorTag {
+	min-width: $tagSize;
+	min-height: $tagSize;
+	max-width: $tagSize;
+	max-height: $tagSize;
+	width: $tagSize;
+	height: $tagSize;
+	border-radius: 50%;
+}

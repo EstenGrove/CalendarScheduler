@@ -1,0 +1,35 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.FloatingButton {
+	display: block;
+	position: absolute;
+	bottom: 2rem;
+	right: 2rem;
+	width: 5rem;
+	height: 5rem;
+	border-radius: 50%;
+	background-color: var(--accent);
+	border: none;
+	outline: none;
+	cursor: pointer;
+
+	&_icon {
+		width: 3.5rem;
+		height: 3.5rem;
+		fill: #fff;
+	}
+}
+
+@media only screen and (max-width: 80rem) {
+	.FloatingButton {
+		width: 4rem;
+		height: 4rem;
+
+		&_icon {
+			width: 2.8rem;
+			height: 2.8rem;
+		}
+	}
+}
