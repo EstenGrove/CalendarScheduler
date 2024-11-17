@@ -1,0 +1,45 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.RecurringOptions {
+	width: 100%;
+	height: auto;
+	&_row {
+		width: 100%;
+		margin: 2rem 0;
+	}
+}
+
+.FreqAndInterval {
+	width: 100%;
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+	font-size: 1.6rem;
+}
+
+.WeekDays {
+	width: 100%;
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+
+	&_day {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		border: 1px solid var(--blueGrey800);
+		font-size: 1.2rem;
+		background-color: $foreground;
+		color: #fff;
+		@include rowCenter();
+		&:hover {
+			cursor: pointer;
+			border-color: $accent;
+		}
+	}
+	& [data-selected="true"] {
+		background-color: $accent;
+		border-color: $accent;
+		color: #fff;
+	}
+}

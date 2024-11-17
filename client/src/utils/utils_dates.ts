@@ -32,6 +32,8 @@ export interface DateFormats {
 		long: string;
 		full: string;
 		fullMonth: string;
+		db: string;
+		input: string;
 	};
 	time: {
 		short: string;
@@ -51,6 +53,8 @@ const FORMAT_TOKENS: DateFormats = {
 		long: "MM/dd/yyyy",
 		full: "MMMM do, yyyy",
 		fullMonth: "MMMM do",
+		db: "yyyy-MM-dd",
+		input: "yyyy-MM-dd",
 	},
 	time: {
 		short: "h:m a",

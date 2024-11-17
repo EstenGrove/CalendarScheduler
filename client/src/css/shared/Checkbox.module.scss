@@ -1,0 +1,32 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$checkbox: 1.8rem;
+
+.Checkbox {
+	@include flex_row(flex-start, center);
+	gap: 0 0.7rem;
+
+	&_label {
+		font-size: 1.6rem;
+		font-weight: 400;
+		user-select: none;
+		cursor: pointer;
+	}
+
+	&_input {
+		width: 1.7rem;
+		height: 1.7rem;
+		border: $border;
+		border-radius: 0.5rem;
+		accent-color: $accent;
+		cursor: pointer;
+	}
+}
+
+input[type="checkbox"]:checked {
+	accent-color: $accent;
+	border-radius: 0.5rem;
+	background-color: none;
+}

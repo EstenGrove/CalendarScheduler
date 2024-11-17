@@ -56,12 +56,12 @@
 }
 
 .PrevButton {
-	@include controlBtn();
 	margin-right: auto;
+	@include controlBtn();
 }
 .NextButton {
-	@include controlBtn();
 	margin-left: auto;
+	@include controlBtn();
 }
 
 $current: 1.3rem;

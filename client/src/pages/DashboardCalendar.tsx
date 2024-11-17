@@ -11,8 +11,13 @@ import {
 	selectSelectedDateEvents,
 	setSelectedDateEvents,
 } from "../features/events/eventsSlice";
-import { groupEventsByDate } from "../utils/utils_calendar";
+import {
+	getMonthStartAndEnd,
+	groupEventsByDate,
+} from "../utils/utils_calendar";
 import { useAppDispatch } from "../store/store";
+import { fetchMonthlySummary } from "../features/events/operations";
+import { selectCurrentUser } from "../features/user/userSlice";
 
 const hideCalendarOnMobile = (params: Readonly<Params<string>>) => {
 	const hasSelected = !!params?.id;
@@ -24,6 +29,7 @@ const hideCalendarOnMobile = (params: Readonly<Params<string>>) => {
 const DashboardCalendar = () => {
 	const params = useParams();
 	const dispatch = useAppDispatch();
+	const currentUser = useSelector(selectCurrentUser);
 	const eventsByDate = useSelector(selectEventsByDate);
 	const selectedDateEvents = useSelector(selectSelectedDateEvents);
 	// local state
@@ -44,8 +50,16 @@ const DashboardCalendar = () => {
 	};
 
 	const changeMonth = (state: CalendarState) => {
-		console.log("state", state);
 		setCalendarState(state);
+		getEventSummary(state); // get monthly summary w/ new state as basis
+	};
+	// get monthly summary w/ new state as basis
+	const getEventSummary = (state: CalendarState) => {
+		const { year, month } = state;
+		const { userID } = currentUser;
+		const { startDate, endDate } = getMonthStartAndEnd(month, year);
+		// fire off request for monthly summary
+		dispatch(fetchMonthlySummary({ userID, startDate, endDate }));
 	};
 
 	const goToToday = () => {};
