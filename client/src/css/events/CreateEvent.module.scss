@@ -28,6 +28,23 @@
 		margin: 2rem 0;
 	}
 
+	&_more {
+		display: block;
+		width: 100%;
+		@include flex_row(flex-end, center);
+		margin-top: 2rem;
+		margin-bottom: 4rem;
+
+		&_options {
+			background-color: transparent;
+			outline: none;
+			border: none;
+			color: var(--accent);
+			font-size: 1.6rem;
+			cursor: pointer;
+		}
+	}
+
 	&_actions {
 		width: 100%;
 		padding-top: 2rem;
@@ -39,4 +56,10 @@ label {
 	font-size: 1.6rem;
 	font-weight: 500;
 	color: $text2;
+}
+
+@media only screen and (max-width: 800px) {
+	.CreateEvent {
+		padding: 0 1rem;
+	}
 }

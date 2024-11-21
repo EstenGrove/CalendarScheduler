@@ -1,6 +1,6 @@
 import styles from "../css/pages/Dashboard.module.scss";
 import { useState } from "react";
-import { formatDate, formatDateTime } from "../utils/utils_dates";
+import { formatDate } from "../utils/utils_dates";
 import { Outlet } from "react-router-dom";
 import { CreateEventVals, WeekDayToken } from "../utils/utils_options";
 import Modal from "../components/shared/Modal";
@@ -11,8 +11,9 @@ import { useAppDispatch } from "../store/store";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../features/user/userSlice";
 import { CurrentUser } from "../features/user/types";
-import { getMonthlySummary } from "../utils/utils_events";
-import { endOfMonth, startOfMonth } from "date-fns";
+import Navbar from "../components/layout/Navbar";
+import Sidebar from "../components/layout/Sidebar";
+import { useWindowSize } from "../hooks/useWindowSize";
 
 const initialValues: CreateEventVals = {
 	title: "Untitled Event",
@@ -25,21 +26,15 @@ const initialValues: CreateEventVals = {
 	byDay: [],
 	byMonthDay: 0,
 	byMonth: 0,
+	// optional
+	location: "",
+	url: "",
+	notes: "",
 };
-
-const start = formatDate(startOfMonth(new Date(2024, 11, 1)), "db");
-const end = formatDate(endOfMonth(new Date(2024, 11, 1)), "db");
-console.log("start", start);
-console.log("end", end);
-const data = await getMonthlySummary("user-id", {
-	startDate: start,
-	endDate: end,
-});
-
-console.log("data", data);
 
 const Dashboard = () => {
 	const dispatch = useAppDispatch();
+	const windowSize = useWindowSize();
 	const currentUser: CurrentUser = useSelector(selectCurrentUser);
 
 	const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -138,7 +133,9 @@ const Dashboard = () => {
 
 	return (
 		<div className={styles.Dashboard}>
+			{windowSize.width < 800 && <Navbar currentUser={currentUser} />}
 			<main className={styles.Dashboard_main}>
+				{windowSize.width > 800 && <Sidebar />}
 				<Outlet />
 
 				<FloatingButton onClick={openCreateModal} />

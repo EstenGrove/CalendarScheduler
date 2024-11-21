@@ -1,5 +1,4 @@
-import { CalendarEvent } from "../features/events/types";
-import { TRecord } from "../utils/utils_misc";
+import { CalendarEvent, MonthlySummary } from "../features/events/types";
 import styles from "../css/views/CalendarSplit.module.scss";
 import EventsList from "../components/events/EventsList";
 import MobileCalendar from "../components/calendar/MobileCalendar";
@@ -11,13 +10,13 @@ interface CalendarState {
 
 type Props = {
 	selectedDate: Date | null;
+	eventsSummary: MonthlySummary;
 	eventItems: CalendarEvent[];
-	eventsByDate: TRecord<CalendarEvent>;
 	onDateSelect: (date: Date) => void;
 	onEventSelect: (event: CalendarEvent) => void;
 	onNextMonth: (state: CalendarState) => void;
 	onPrevMonth: (state: CalendarState) => void;
-	onToday: () => void;
+	onToday: (state: CalendarState) => void;
 };
 
 const CalendarSplit = ({
@@ -27,12 +26,9 @@ const CalendarSplit = ({
 	onNextMonth,
 	onPrevMonth,
 	onToday,
+	eventsSummary,
 	eventItems,
-	eventsByDate,
 }: Props) => {
-	// an array of event dates: ['11/03/2024', '11/15/2024', '11/19/2024']
-	const eventDates: string[] = Object.keys(eventsByDate);
-
 	return (
 		<div className={styles.CalendarSplit}>
 			<div className={styles.CalendarSplit_calendar}>
@@ -42,7 +38,7 @@ const CalendarSplit = ({
 					onNext={onNextMonth}
 					onPrev={onPrevMonth}
 					onToday={onToday}
-					eventsList={eventDates}
+					eventsSummary={eventsSummary}
 				/>
 			</div>
 			<div className={styles.CalendarSplit_list}>

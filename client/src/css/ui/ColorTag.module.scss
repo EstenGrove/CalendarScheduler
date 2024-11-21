@@ -5,11 +5,23 @@
 $tagSize: 1.3rem;
 
 .ColorTag {
-	min-width: $tagSize;
-	min-height: $tagSize;
-	max-width: $tagSize;
-	max-height: $tagSize;
-	width: $tagSize;
-	height: $tagSize;
-	border-radius: 50%;
+	width: max-content;
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+
+	&_badge {
+		min-width: $tagSize;
+		min-height: $tagSize;
+		max-width: $tagSize;
+		max-height: $tagSize;
+		width: $tagSize;
+		height: $tagSize;
+		border-radius: 50%;
+	}
+
+	&_name {
+		font-size: 1.4rem;
+		font-weight: 500;
+		color: $text2;
+	}
 }

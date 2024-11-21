@@ -3,7 +3,7 @@
 @import "../../sass/custom";
 
 .NoDataFound {
-	width: 15rem;
+	width: max-content;
 	height: auto;
 	padding: 2rem;
 	@include flex_col(center, center);

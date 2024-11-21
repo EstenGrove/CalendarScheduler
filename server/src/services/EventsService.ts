@@ -1,5 +1,10 @@
 import type { Pool } from "pg";
-import type { CreateEventVals, MonthlyEventSummaryDB } from "./types";
+import type {
+	CalendarEventDB,
+	CreateEventVals,
+	EventInstanceDB,
+	MonthlyEventSummaryDB,
+} from "./types";
 
 export interface NewTagVals {
 	eventID: number;
@@ -14,6 +19,16 @@ class EventsService {
 		this.#db = db;
 	}
 
+	async getEventByID(userID: string, eventID: number) {
+		try {
+			const query = `SELECT * FROM calendar_events WHERE event_id = $1`;
+			const results = await this.#db.query(query, [eventID]);
+			const row = results?.rows?.[0];
+			return row;
+		} catch (error) {
+			return error;
+		}
+	}
 	async getMonthlySummary(
 		userID: string,
 		startDate: Date | string,
@@ -29,7 +44,30 @@ class EventsService {
 			return error;
 		}
 	}
+	async getEventsByDate(
+		userID: string,
+		targetDate: string
+	): Promise<EventInstanceDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_events_by_date($1, $2)`;
+			const results = await this.#db.query(query, [userID, targetDate]);
+			console.log("results", results);
+			const rows = results?.rows as EventInstanceDB[];
+			return rows as EventInstanceDB[];
+		} catch (error) {
+			return error;
+		}
+	}
+	async getEventDetails(userID: string, eventID: number) {
+		try {
+			const query = `SELECT * FROM get_event_details($1, $2)`;
+			const results = await this.#db.query(query, [userID, eventID]);
 
+			return results.rows;
+		} catch (error) {
+			return error;
+		}
+	}
 	async createEvent(userID: string, newEvent: CreateEventVals) {
 		const {
 			title,

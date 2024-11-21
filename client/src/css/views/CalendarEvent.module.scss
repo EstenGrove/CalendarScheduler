@@ -5,19 +5,73 @@
 .CalendarEventView {
 	@include fill_container;
 
+	&_actions {
+		width: 100%;
+		@include flex_row(flex-end, flex-start);
+	}
+
 	&_header {
 		width: 100%;
-		height: 5rem;
+		height: auto;
 		padding-top: 2rem;
+		margin-bottom: 2rem;
 
 		&_title {
+			width: 100%;
 			font-size: 3rem;
 			color: $text1;
 			margin-bottom: 0.5rem;
+			@include flex_row(space-between, baseline);
+			gap: 0 0.5rem;
 		}
 		&_desc {
 			font-size: 1.8rem;
 			color: $text2;
+		}
+	}
+	&_scheduled {
+		width: 100%;
+		margin: 1rem 0;
+		font-size: 1.5rem;
+	}
+	&_tags {
+		padding: 1rem 0;
+		width: 100%;
+		@include flex_col(flex-start, flex-start);
+		gap: 1rem 0;
+	}
+}
+
+.DateTimeDetails {
+	width: auto;
+	@include flex_col(flex-start, flex-start);
+	font-size: 1.5rem;
+	gap: 1rem 0;
+
+	&_icon {
+		width: 1.7rem;
+		height: 1.7rem;
+		fill: $text2;
+	}
+
+	&_date {
+		color: $text2;
+		@include flex_row(flex-start, center);
+		gap: 0 0.3rem;
+
+		& span {
+			color: $text3;
+			font-style: normal;
+		}
+	}
+	&_time {
+		@include flex_row(flex-start, center);
+		color: $text3;
+		gap: 0 0.3rem;
+
+		& span {
+			color: $text1;
+			font-style: normal;
 		}
 	}
 }

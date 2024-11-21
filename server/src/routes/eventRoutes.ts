@@ -1,8 +1,18 @@
 import { type Context, Hono } from "hono";
 import { eventsService, schedulesService } from "../services";
-import type { CreateEventVals, MonthlyEventSummaryDB } from "../services/types";
+import type {
+	CalendarEventDB,
+	CreateEventVals,
+	EventInstanceDB,
+	MonthlyEventSummaryDB,
+} from "../services/types";
 import { getResponseError, getResponseOk } from "../utils/data";
-import { summaryNormalizer } from "../utils/normalizing";
+import {
+	eventInstancesNormalizer,
+	eventsNormalizer,
+	schedulesNormalizer,
+	summaryNormalizer,
+} from "../utils/normalizing";
 import { groupByFn } from "../utils/processing";
 import { createMonthlySummaryMap } from "../utils/events";
 
@@ -10,10 +20,23 @@ const app: Hono = new Hono();
 
 // Get all 'calendar_event' records for a given date
 app.get("/getEventsByDate", async (ctx: Context) => {
-	const { targetDate } = ctx.req.query();
+	const { userID, targetDate } = ctx.req.query();
+	const rawEvents = (await eventsService.getEventsByDate(
+		userID,
+		targetDate
+	)) as EventInstanceDB[];
 
+	if (rawEvents instanceof Error) {
+		const errResponse = getResponseError(rawEvents, {
+			message: "Failed to find events",
+		});
+		return ctx.json(errResponse);
+	}
+
+	const eventsList = eventInstancesNormalizer.toClient(rawEvents);
 	const response = getResponseOk({
-		TargetDate: targetDate,
+		targetDate: targetDate,
+		events: eventsList,
 	});
 
 	return ctx.json(response);
@@ -28,7 +51,6 @@ app.get("/getEventsByRange", async (ctx: Context) => {
 		startDate,
 		endDate
 	);
-	// console.log("results", results);
 
 	return ctx.json({
 		Message: "Hi",
@@ -36,6 +58,30 @@ app.get("/getEventsByRange", async (ctx: Context) => {
 		EndDate: endDate,
 		Results: results,
 	});
+});
+
+app.get("/getEventDetails", async (ctx: Context) => {
+	const { userID, eventID: rawID } = ctx.req.query();
+
+	const eventID: number = Number(rawID);
+	const eventRecord = await eventsService.getEventByID(userID, eventID);
+	const scheduleRecord = await schedulesService.getScheduleByEventID(
+		userID,
+		eventID
+	);
+	// const details =
+
+	const event = eventInstancesNormalizer.toClientOne(eventRecord);
+	const schedule = schedulesNormalizer.toClientOne(scheduleRecord);
+
+	const response = getResponseOk({
+		event: event,
+		schedule: schedule,
+		futureEvents: [],
+		details: null,
+	});
+
+	return ctx.json(response);
 });
 
 // Fetch a summary for a given month; that indicates which dates have scheduled events

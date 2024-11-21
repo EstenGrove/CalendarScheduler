@@ -6,6 +6,8 @@ import TextInput from "../shared/TextInput";
 import Checkbox from "../shared/Checkbox";
 import RecurringOptions from "./RecurringOptions";
 import Button from "../shared/Button";
+import EventDetailsOptions from "./EventDetailsOptions";
+import { useState } from "react";
 
 type Props = {
 	values: CreateEventVals;
@@ -37,6 +39,12 @@ const CreateEvent = ({
 	createNewEvent,
 	cancelNewEvent,
 }: Props) => {
+	const [showMore, setShowMore] = useState<boolean>(false);
+
+	const toggleShowMore = () => {
+		setShowMore(!showMore);
+	};
+
 	return (
 		<div className={styles.CreateEvent}>
 			<div className={styles.CreateEvent_field}>
@@ -100,6 +108,20 @@ const CreateEvent = ({
 					/>
 				</div>
 			</div>
+			{/* MORE OPTIONS */}
+			<div className={styles.CreateEvent_more}>
+				<button
+					type="button"
+					onClick={toggleShowMore}
+					className={styles.CreateEvent_more_options}
+				>
+					{showMore ? "Hide" : "Show"} More options
+				</button>
+			</div>
+			{showMore && (
+				<EventDetailsOptions values={values} handleChange={handleChange} />
+			)}
+
 			<div className={styles.CreateEvent_actions}>
 				<Button style={customCSS.cancel} onClick={cancelNewEvent}>
 					Cancel

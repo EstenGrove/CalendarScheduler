@@ -7,5 +7,6 @@
 
 	&_main {
 		@include fill_container;
+		@include flex_row(flex-start, flex-start);
 	}
 }

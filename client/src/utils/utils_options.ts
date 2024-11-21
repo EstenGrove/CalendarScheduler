@@ -19,6 +19,10 @@ export interface CreateEventVals {
 	byDay: WeekDayToken[];
 	byMonthDay: number;
 	byMonth: number;
+	// optional
+	location: string;
+	url: string;
+	notes: string;
 }
 
 const FREQ_OPTIONS = [

@@ -36,6 +36,7 @@ const API_ENDPOINTS = {
 		createEvent: "/events/createEvent",
 		getMonthlySummary: "/events/getMonthlySummary",
 		getByDate: "/events/getEventsByDate",
+		getDetails: "/events/getEventDetails",
 	},
 } as const;
 

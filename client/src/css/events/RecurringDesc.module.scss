@@ -1,0 +1,10 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.RecurringDesc {
+	width: max-content;
+	font-size: 1.5rem;
+	color: $text2;
+	font-style: italic;
+}

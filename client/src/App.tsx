@@ -9,6 +9,7 @@ import { store } from "./store/store";
 import { getEventsInRange } from "./utils/utils_http";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { formatDate } from "./utils/utils_dates";
+import DashboardWorkouts from "./pages/DashboardWorkouts";
 
 const start = formatDate(startOfMonth(new Date()), "db");
 const end = formatDate(endOfMonth(new Date()), "db");
@@ -23,7 +24,8 @@ function App() {
 						<Routes>
 							<Route path="/" element={<Home />} />
 							<Route path="/dashboard" element={<Dashboard />}>
-								<Route path="calendar/*" element={<DashboardCalendar />}>
+								<Route path="workouts" element={<DashboardWorkouts />} />
+								<Route path="calendar" element={<DashboardCalendar />}>
 									<Route path=":id" element={<DashboardCalendarEvent />} />
 								</Route>
 							</Route>

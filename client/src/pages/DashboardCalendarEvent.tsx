@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/pages/DashboardCalendarEvent.module.scss";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectEventByID } from "../features/events/eventsSlice";
+import { selectSelectedEvent } from "../features/events/eventsSlice";
 import { CalendarEvent } from "../features/events/types";
+import { useAppDispatch } from "../store/store";
+import { fetchEventDetails } from "../features/events/operations";
+import { selectCurrentUser } from "../features/user/userSlice";
 import NoDataFound from "../components/layout/NoDataFound";
 import CalendarEventView from "../views/CalendarEventView";
 
@@ -23,11 +27,30 @@ const BackButton = ({ goBack }: BackProps) => {
 const DashboardCalendarEvent = () => {
 	const params = useParams();
 	const navigate = useNavigate();
-	const calendarEvent = useSelector(selectEventByID(Number(params.id)));
+	const dispatch = useAppDispatch();
+	const eventID: number = Number(params.id);
+	const currentUser = useSelector(selectCurrentUser);
+	const selectedEvent = useSelector(selectSelectedEvent);
+	const { event: calendarEvent } = selectedEvent;
 
 	const goBack = () => {
 		navigate("/dashboard/calendar");
 	};
+
+	// fetch when query param changes (eg. selected event changes)
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) return;
+
+		if (eventID) {
+			const { userID } = currentUser;
+			dispatch(fetchEventDetails({ userID, eventID }));
+		}
+
+		return () => {
+			isMounted = false;
+		};
+	}, [currentUser, dispatch, eventID]);
 
 	console.log("[EVENT-ID] :", params.id);
 	return (
@@ -37,7 +60,9 @@ const DashboardCalendarEvent = () => {
 			</div>
 			<div className={styles.DashboardCalendarEvent_main}>
 				{!calendarEvent?.eventID && <NoDataFound />}
-				<CalendarEventView calendarEvent={calendarEvent as CalendarEvent} />
+				{calendarEvent?.eventID && (
+					<CalendarEventView calendarEvent={calendarEvent as CalendarEvent} />
+				)}
 			</div>
 		</div>
 	);

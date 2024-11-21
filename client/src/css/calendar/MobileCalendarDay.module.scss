@@ -10,6 +10,9 @@
 	&:hover {
 		cursor: pointer;
 	}
+	&:hover .EventBadge {
+		background-color: var(--accent-purple);
+	}
 
 	&_inner {
 		position: relative;
@@ -44,11 +47,15 @@
 }
 
 $badgeSize: 0.5rem;
-$badgeColor: var(--accent-purple);
+$badgeColor: var(--blueGrey700);
 .EventBadge {
 	width: $badgeSize;
 	height: $badgeSize;
 	border-radius: 50%;
 	background-color: $badgeColor;
 	margin-top: 0.3rem;
+	&:hover {
+		cursor: pointer;
+		background-color: var(--accent-purple);
+	}
 }

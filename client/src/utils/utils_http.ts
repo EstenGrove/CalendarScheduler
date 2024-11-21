@@ -17,7 +17,6 @@ const getEventsInRange = async (
 	try {
 		const request = await fetch(url);
 		const response = await request.json();
-		console.log("response", response);
 		return response;
 	} catch (error) {
 		return error;
