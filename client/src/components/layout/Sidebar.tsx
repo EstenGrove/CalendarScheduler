@@ -1,11 +1,8 @@
-import React from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/layout/Sidebar.module.scss";
 import { NavLink } from "react-router-dom";
 
-type Props = {};
-
-const Sidebar = ({}: Props) => {
+const Sidebar = () => {
 	return (
 		<aside className={styles.Sidebar}>
 			<ul className={styles.Sidebar_list}>
@@ -31,7 +28,7 @@ const Sidebar = ({}: Props) => {
 					</NavLink>
 				</li>
 				<li className={styles.Sidebar_list_items}>
-					<NavLink to="workouts">
+					<NavLink to="workouts/week">
 						<svg className={styles.Sidebar_list_item_icon}>
 							<use xlinkHref={`${sprite}#icon-fitness_center`}></use>
 						</svg>

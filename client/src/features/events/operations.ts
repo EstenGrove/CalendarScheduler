@@ -71,7 +71,6 @@ const fetchEventDetails = createAsyncThunk(
 			eventID
 		)) as AwaitedResponse<EventDetails>;
 		const data = response.Data;
-		console.log("data", data);
 
 		return data as EventDetails;
 	}

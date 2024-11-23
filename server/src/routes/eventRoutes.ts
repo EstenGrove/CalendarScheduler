@@ -39,6 +39,8 @@ app.get("/getEventsByDate", async (ctx: Context) => {
 		events: eventsList,
 	});
 
+	ctx.header("Content-Type", "application/json");
+
 	return ctx.json(response);
 });
 
@@ -51,6 +53,8 @@ app.get("/getEventsByRange", async (ctx: Context) => {
 		startDate,
 		endDate
 	);
+
+	ctx.header("Content-Type", "application/json");
 
 	return ctx.json({
 		Message: "Hi",
@@ -80,6 +84,8 @@ app.get("/getEventDetails", async (ctx: Context) => {
 		futureEvents: [],
 		details: null,
 	});
+
+	ctx.header("Content-Type", "application/json");
 
 	return ctx.json(response);
 });
@@ -112,7 +118,7 @@ app.get("/getMonthlySummary", async (ctx: Context) => {
 	const response = getResponseOk({
 		eventsSummary: eventsSummary,
 	});
-
+	ctx.header("Content-Type", "application/json");
 	return ctx.json(response);
 });
 

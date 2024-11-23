@@ -3,11 +3,13 @@ import { useDispatch } from "react-redux";
 import goalsReducer from "../features/goals/goalsSlice";
 import eventsReducer from "../features/events/eventsSlice";
 import currentUserReducer from "../features/user/userSlice";
+import workoutsReducer from "../features/workouts/workoutsSlice";
 
 const store = configureStore({
 	reducer: {
 		events: eventsReducer,
 		goals: goalsReducer,
+		workouts: workoutsReducer,
 		currentUser: currentUserReducer,
 	},
 });

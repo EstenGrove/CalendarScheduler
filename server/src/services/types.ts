@@ -145,3 +145,29 @@ export interface CalendarScheduleClient {
 	modifiedDate: string;
 	isActive: boolean;
 }
+
+export interface WorkoutPlanDB {
+	plan_id: number;
+	workout_type_id: number;
+	plan_name: string;
+	plan_desc: string;
+	target_weight: number;
+	target_reps: number;
+	target_sets: number;
+	target_length: number;
+	is_active: boolean;
+	created_date: string;
+}
+
+export interface WorkoutPlanClient {
+	workoutTypeID: number;
+	planID: number;
+	planName: string;
+	planDesc: string;
+	planWeight: number;
+	planReps: number;
+	planSets: number;
+	planLength: number;
+	isActive: boolean;
+	createdDate: string;
+}

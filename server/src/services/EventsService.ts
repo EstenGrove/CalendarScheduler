@@ -51,8 +51,8 @@ class EventsService {
 		try {
 			const query = `SELECT * FROM get_events_by_date($1, $2)`;
 			const results = await this.#db.query(query, [userID, targetDate]);
-			console.log("results", results);
 			const rows = results?.rows as EventInstanceDB[];
+			console.log("Rows", rows);
 			return rows as EventInstanceDB[];
 		} catch (error) {
 			return error;

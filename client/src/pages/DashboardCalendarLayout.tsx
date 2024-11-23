@@ -1,15 +1,16 @@
-import { ReactNode, useState } from "react";
-import styles from "../../css/layout/CalendarLayout.module.scss";
-import FloatingButton from "../dashboard/FloatingButton";
-import Modal from "../shared/Modal";
-import CreateEvent from "../events/CreateEvent";
-import { createNewEvent } from "../../features/events/operations";
-import { CreateEventVals, WeekDayToken } from "../../utils/utils_options";
-import { useAppDispatch } from "../../store/store";
-import { CurrentUser } from "../../features/user/types";
+import { useState } from "react";
+import styles from "../css/pages/DashboardCalendarLayout.module.scss";
+import { createNewEvent } from "../features/events/operations";
+import { CreateEventVals, WeekDayToken } from "../utils/utils_options";
+import { useAppDispatch } from "../store/store";
+import { CurrentUser } from "../features/user/types";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../features/user/userSlice";
-import { formatDate } from "../../utils/utils_dates";
+import { selectCurrentUser } from "../features/user/userSlice";
+import { formatDate } from "../utils/utils_dates";
+import Modal from "../components/shared/Modal";
+import DashboardCalendar from "./DashboardCalendar";
+import CreateEvent from "../components/events/CreateEvent";
+import FloatingButton from "../components/dashboard/FloatingButton";
 
 const initialValues: CreateEventVals = {
 	title: "Untitled Event",
@@ -28,11 +29,7 @@ const initialValues: CreateEventVals = {
 	notes: "",
 };
 
-type Props = {
-	children?: ReactNode;
-};
-
-const CalendarLayout = ({ children }: Props) => {
+const DashboardCalendarLayout = () => {
 	const dispatch = useAppDispatch();
 	const currentUser: CurrentUser = useSelector(selectCurrentUser);
 
@@ -130,10 +127,12 @@ const CalendarLayout = ({ children }: Props) => {
 		setShowCreateModal(false);
 	};
 	return (
-		<div className={styles.CalendarLayout}>
-			<div className={styles.CalendarLayout}>{children}</div>
+		<div className={styles.DashboardCalendarLayout}>
+			<div className={styles.DashboardCalendarLayout}>
+				<DashboardCalendar />
+			</div>
 
-			<FloatingButton onClick={openCreateModal} />
+			<FloatingButton onClick={openCreateModal} icon="add" />
 
 			{showCreateModal && (
 				<Modal
@@ -155,4 +154,4 @@ const CalendarLayout = ({ children }: Props) => {
 	);
 };
 
-export default CalendarLayout;
+export default DashboardCalendarLayout;

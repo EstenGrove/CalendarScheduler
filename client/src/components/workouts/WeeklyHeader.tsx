@@ -10,7 +10,7 @@ import {
 import { formatDate } from "../../utils/utils_dates";
 
 type Props = {
-	baseDate: Date | string;
+	baseDate?: Date | string;
 };
 
 const weekDays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const;
@@ -21,6 +21,14 @@ type WeekDayProps = {
 	isSelected: boolean;
 	selectDate: () => void;
 };
+
+const getDateCss = (isSelected: boolean) => {
+	return {
+		color: isSelected ? "var(--accent)" : "",
+		borderBottom: isSelected ? "1px solid var(--accent)" : "none",
+	};
+};
+
 const WeekDay = ({
 	weekDay,
 	weekDate,
@@ -40,7 +48,7 @@ const WeekDay = ({
 			<div className={styles.WeekDay_day} style={css}>
 				{weekDay}
 			</div>
-			<div className={styles.WeekDay_date} style={css}>
+			<div className={styles.WeekDay_date} style={getDateCss(isSelected)}>
 				{date}
 			</div>
 		</div>

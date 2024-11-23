@@ -17,6 +17,7 @@ import {
 } from "../features/events/operations";
 import { selectCurrentUser } from "../features/user/userSlice";
 import { formatDate } from "../utils/utils_dates";
+import PageHeader from "../components/layout/PageHeader";
 
 const hideCalendarOnMobile = (params: Readonly<Params<string>>) => {
 	const hasSelected = !!params?.id;
@@ -91,9 +92,7 @@ const DashboardCalendar = () => {
 
 	return (
 		<div className={styles.DashboardCalendar}>
-			<div className={styles.DashboardCalendar_header}>
-				<h1 className={styles.DashboardCalendar_header_title}>Calendar</h1>
-			</div>
+			<PageHeader title="Calendar" />
 			<div className={styles.DashboardCalendar_main}>
 				<section className={styles.DashboardCalendar_left}>
 					{/* HIDE THIS ON "/calendar/:id" ROUTE */}

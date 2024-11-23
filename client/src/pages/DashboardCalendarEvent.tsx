@@ -6,10 +6,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { selectSelectedEvent } from "../features/events/eventsSlice";
 import { CalendarEvent } from "../features/events/types";
 import { useAppDispatch } from "../store/store";
-import { fetchEventDetails } from "../features/events/operations";
+import {
+	fetchEventDetails,
+	fetchMonthlySummary,
+} from "../features/events/operations";
 import { selectCurrentUser } from "../features/user/userSlice";
 import NoDataFound from "../components/layout/NoDataFound";
 import CalendarEventView from "../views/CalendarEventView";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { formatDate } from "../utils/utils_dates";
 
 type BackProps = {
 	goBack: () => void;
@@ -24,6 +29,16 @@ const BackButton = ({ goBack }: BackProps) => {
 	);
 };
 
+const getMonthAndYearFromDate = (date: Date | string) => {
+	const monthStart: Date = startOfMonth(date);
+	const monthEnd: Date = endOfMonth(date);
+
+	return {
+		startDate: monthStart,
+		endDate: monthEnd,
+	};
+};
+
 const DashboardCalendarEvent = () => {
 	const params = useParams();
 	const navigate = useNavigate();
@@ -35,6 +50,24 @@ const DashboardCalendarEvent = () => {
 
 	const goBack = () => {
 		navigate("/dashboard/calendar");
+		// refresh monthly view
+		refreshMonthlySummary();
+	};
+
+	const refreshMonthlySummary = () => {
+		// fetch monthly summary again
+		const eventDate = calendarEvent?.eventDate || new Date();
+		const { userID } = currentUser;
+		const { startDate: start, endDate: end } =
+			getMonthAndYearFromDate(eventDate);
+		const startDate: string = formatDate(start, "db");
+		const endDate: string = formatDate(end, "db");
+		const params = {
+			userID,
+			startDate,
+			endDate,
+		};
+		dispatch(fetchMonthlySummary(params));
 	};
 
 	// fetch when query param changes (eg. selected event changes)
