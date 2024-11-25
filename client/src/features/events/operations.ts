@@ -1,19 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+	getEventDetails,
+	getEventsByDate,
 	getEventsByRange,
 	getMonthlySummary,
 	saveNewEvent,
 } from "../../utils/utils_events";
 import { AwaitedResponse } from "../types";
-import { CalendarEvent, MonthlySummary } from "./types";
+import { CalendarEvent, CalendarEventSchedule, MonthlySummary } from "./types";
 import { CreateEventVals } from "../../utils/utils_options";
 
-export type EventsRangeParams = {
+export interface EventParams {
+	userID: string;
+	eventID: number;
+}
+export interface EventsRangeParams {
 	userID: string;
 	startDate: string;
 	endDate: string;
-};
-
+}
+export interface EventsDateParams {
+	userID: string;
+	targetDate: string;
+}
 export interface NewEventParams {
 	userID: string;
 	newEvent: CreateEventVals;
@@ -30,6 +39,40 @@ const fetchEventsByRange = createAsyncThunk(
 		const data = response.Data;
 
 		return data.events as CalendarEvent[];
+	}
+);
+
+const fetchEventsByDate = createAsyncThunk(
+	"events/fetchEventsByDate",
+	async (params: EventsDateParams) => {
+		const { userID, targetDate } = params;
+		const response = (await getEventsByDate(
+			userID,
+			targetDate
+		)) as AwaitedResponse<{ events: CalendarEvent[] }>;
+		const data = response.Data;
+
+		return data.events as CalendarEvent[];
+	}
+);
+
+export interface EventDetails {
+	event: CalendarEvent;
+	schedule: CalendarEventSchedule;
+	futureEvents: string[];
+}
+
+const fetchEventDetails = createAsyncThunk(
+	"events/fetchEventDetails",
+	async (params: EventParams) => {
+		const { userID, eventID } = params;
+		const response = (await getEventDetails(
+			userID,
+			eventID
+		)) as AwaitedResponse<EventDetails>;
+		const data = response.Data;
+
+		return data as EventDetails;
 	}
 );
 
@@ -65,4 +108,10 @@ const createNewEvent = createAsyncThunk(
 	}
 );
 
-export { fetchEventsByRange, fetchMonthlySummary, createNewEvent };
+export {
+	fetchEventsByRange,
+	fetchMonthlySummary,
+	fetchEventsByDate,
+	fetchEventDetails,
+	createNewEvent,
+};

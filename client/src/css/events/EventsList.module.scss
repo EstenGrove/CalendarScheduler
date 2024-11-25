@@ -18,3 +18,18 @@
 		gap: 1rem 0;
 	}
 }
+
+.NoData {
+	width: 100%;
+	font-size: 1.6rem;
+	font-weight: 600;
+	color: var(--blueGrey300);
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+
+	&_icon {
+		width: 2rem;
+		height: 2rem;
+		fill: var(--accent);
+	}
+}

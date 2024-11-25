@@ -34,6 +34,7 @@ export interface DateFormats {
 		fullMonth: string;
 		db: string;
 		input: string;
+		shortMonth: string;
 	};
 	time: {
 		short: string;
@@ -55,6 +56,7 @@ const FORMAT_TOKENS: DateFormats = {
 		fullMonth: "MMMM do",
 		db: "yyyy-MM-dd",
 		input: "yyyy-MM-dd",
+		shortMonth: "MMM do, yyyy",
 	},
 	time: {
 		short: "h:m a",
@@ -87,7 +89,8 @@ const formatTime = (
 	date: Date | string,
 	formatToken: keyof DateFormats["time"] = "long"
 ) => {
-	const formatted = format(date, formatToken);
+	const token = TIME_TOKENS[formatToken];
+	const formatted = format(date, token);
 
 	return formatted;
 };

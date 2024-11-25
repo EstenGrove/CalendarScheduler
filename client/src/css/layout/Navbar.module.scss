@@ -1,0 +1,138 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.Navbar {
+	width: 100%;
+	height: 6rem;
+	padding: 2rem 1rem;
+	border-bottom: 1px solid var(--blueGrey900);
+	@include flex_row(flex-start, center);
+
+	&_list {
+		width: 70%;
+		height: 100%;
+		list-style: none;
+		@include flex_row(flex-start, center);
+		gap: 0 1rem;
+
+		&_item {
+			color: $text1;
+			padding: 0.6rem 1.3rem;
+			font-size: 2.5rem;
+			font-weight: 700;
+			text-decoration: none;
+			border-radius: 0.5rem;
+			font-family: "Space Grotesk";
+			@include flex_row(flex-start, center);
+
+			&_icon {
+				width: 2.5rem;
+				height: 2.5rem;
+				border-radius: 50%;
+				fill: $text2;
+			}
+		}
+	}
+	&_settings {
+		width: 30%;
+		height: 100%;
+		list-style: none;
+		@include flex_row(flex-end, center);
+
+		&_item {
+			border-radius: 50%;
+
+			& a {
+				width: max-content;
+			}
+
+			&_icon {
+				@include flex_row(center, center);
+				width: 2.5rem;
+				height: 2.5rem;
+				border-radius: 50%;
+				fill: $text2;
+			}
+		}
+	}
+}
+
+.isActive {
+	background-color: var(--blueGrey800);
+}
+
+.MobileMenu {
+	position: fixed;
+	display: block;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100vw;
+	height: 100vh;
+	max-height: 100vh;
+	background-color: $foreground;
+	z-index: 99;
+	padding: 2rem;
+
+	&_top {
+		width: 100%;
+		// height: 5rem;
+		padding: 5rem 0;
+		@include flex_row(space-between, flex-start);
+
+		& h2 {
+			font-size: 2.5rem;
+			color: #fff;
+			margin-right: auto;
+		}
+		&_icon {
+			width: 2rem;
+			height: 2rem;
+			fill: red;
+			margin-left: auto;
+		}
+	}
+
+	&_list {
+		width: 100%;
+		height: auto;
+		@include flex_col(flex-start, flex-start);
+		gap: 4rem 0;
+		list-style: none;
+		padding: 4rem 0;
+
+		&_item {
+			font-size: 2rem;
+			font-weight: 800;
+
+			& a {
+				text-decoration: none;
+				color: $text2;
+			}
+		}
+	}
+}
+
+.UserAvatar {
+	width: 3.5rem;
+	min-width: 3.5rem;
+	max-width: 3.5rem;
+	min-height: 3.5rem;
+	max-height: 3.5rem;
+	height: 3.5rem;
+	border-radius: 50%;
+	@include rowCenter();
+	border: $border;
+	background-color: $text2;
+
+	&_icon {
+		width: 2.6rem;
+		height: 2.6rem;
+		min-width: 2.6rem;
+		max-width: 2.6rem;
+		min-height: 2.6rem;
+		max-height: 2.6rem;
+		fill: $text1;
+	}
+}

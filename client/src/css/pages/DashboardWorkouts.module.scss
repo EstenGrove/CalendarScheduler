@@ -1,0 +1,25 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DashboardWorkouts {
+	width: 100%;
+
+	&_tabs {
+		padding: 0 4rem;
+		@include headerRow();
+		@include flex_row(flex-start, center);
+	}
+
+	&_thisWeek {
+		@include headerRow();
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.DashboardWorkouts {
+		&_tabs {
+			@include rowCenter();
+		}
+	}
+}

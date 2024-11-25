@@ -1,0 +1,18 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.EventDetailsOptions {
+	width: 100%;
+
+	&_field {
+		width: 100%;
+		margin: 2rem 0;
+
+		& label {
+			font-size: 1.6rem;
+			font-weight: 500;
+			color: $text2;
+		}
+	}
+}

@@ -11,7 +11,7 @@ import {
 } from "date-fns";
 import { CalendarEvent } from "../features/events/types";
 import { groupByFn, TRecord } from "./utils_misc";
-import { DateRange, formatDate } from "./utils_dates";
+import { formatDate } from "./utils_dates";
 
 export interface CalendarWeek {
 	week: number;

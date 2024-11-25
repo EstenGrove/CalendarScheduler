@@ -12,3 +12,9 @@
 		background-color: $color;
 	}
 }
+
+@mixin headerRow($height: 7rem) {
+	width: 100%;
+	height: $height;
+	border-bottom: 1px solid var(--blueGrey800);
+}

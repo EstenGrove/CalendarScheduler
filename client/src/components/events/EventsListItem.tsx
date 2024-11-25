@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import styles from "../../css/events/EventsListItem.module.scss";
 import { CalendarEvent } from "../../features/events/types";
+import styles from "../../css/events/EventsListItem.module.scss";
 
 type Props = {
 	eventItem: CalendarEvent;
@@ -8,7 +8,10 @@ type Props = {
 };
 
 const EventsListItem = ({ eventItem, onSelect }: Props) => {
-	const css = { borderLeft: `3px solid ${eventItem.tagColor}` };
+	const tagColor: string = eventItem.tagColor || "var(--blueGrey800)";
+	const css = {
+		borderLeft: `3px solid ${tagColor}`,
+	};
 
 	return (
 		<NavLink to={`${eventItem.eventID}`} className={styles.ItemWrapper}>

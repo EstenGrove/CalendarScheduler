@@ -1,3 +1,5 @@
+import { EventFrequency, WeekDayToken } from "../../utils/utils_options";
+
 export interface CalendarState {
 	month: number;
 	year: number;
@@ -7,6 +9,7 @@ export interface CalendarEvent {
 	eventID: number;
 	title: string;
 	desc: string;
+	eventDate: string;
 	isActive: boolean;
 	createdDate: string;
 	modifiedDate: string | null;
@@ -14,7 +17,7 @@ export interface CalendarEvent {
 	endDate: string | null;
 	startTime: string;
 	endTime: string | null;
-	tagColor: string;
+	tagColor?: string;
 }
 
 export interface CalendarEventSchedule {
@@ -22,9 +25,11 @@ export interface CalendarEventSchedule {
 	eventID: number;
 	startDate: string;
 	endDate: string | null;
-	startTime: string;
-	endTime: string | null;
-	intervalInDays: number;
+	interval: number;
+	frequency: EventFrequency;
+	byDay: WeekDayToken[];
+	byMonth: number;
+	byMonthDay: number;
 	isActive: boolean;
 	createdDate: string;
 	modifiedDate: string | null;
@@ -32,6 +37,7 @@ export interface CalendarEventSchedule {
 
 export interface CalendarEventDetails {
 	detailsID: number;
+	eventID: number;
 	notes: string;
 	url: string;
 	location: string;

@@ -4,6 +4,7 @@ import {
 	CalendarWeek,
 	generateWeeksAndDates,
 } from "../../utils/utils_calendar";
+import { MonthlySummary } from "../../features/events/types";
 import { formatDate } from "../../utils/utils_dates";
 import MobileCalendarDay from "./MobileCalendarDay";
 import MobileCalendarBody from "./MobileCalendarBody";
@@ -21,13 +22,19 @@ type Props = {
 	onDateSelect: (date: Date) => void;
 	onPrev: (state: CalendarState) => void;
 	onNext: (state: CalendarState) => void;
-	onToday: () => void;
-	eventsList: string[]; // an array of formatted date strings: ['11/21/2024', '11/28/2024']
+	onToday: (state: CalendarState) => void;
+	eventsSummary: MonthlySummary;
 };
 
-// checks if a formatted date: '11/22/2024' exists in array of ['11/21/2024', '11/28/2024']
-const hasEvent = (dayDate: Date, eventDates: string[]): boolean => {
-	return eventDates.includes(formatDate(dayDate, "long"));
+// checks if a formatted date: '2024-11-17' as a key exists in the summary, then if it has an event scheduled
+const hasEvent = (dayDate: Date, eventsSummary: MonthlySummary): boolean => {
+	const targetDate: string = formatDate(dayDate, "db");
+
+	if (targetDate in eventsSummary) {
+		return eventsSummary?.[targetDate];
+	} else {
+		return false;
+	}
 };
 
 const isSelected = (dayDate: Date, selectedDate: Date | null): boolean => {
@@ -44,7 +51,7 @@ const MobileCalendar = ({
 	onPrev,
 	onNext,
 	onToday,
-	eventsList,
+	eventsSummary,
 	selectedDate,
 }: Props) => {
 	const [calendarState, setCalendarState] = useState<CalendarState>({
@@ -90,12 +97,10 @@ const MobileCalendar = ({
 		const today = new Date();
 		const month = today.getMonth();
 		const year = today.getFullYear();
+		const newState = { month, year };
 
-		setCalendarState({
-			month,
-			year,
-		});
-		return onToday && onToday();
+		setCalendarState(newState);
+		return onToday && onToday(newState);
 	};
 
 	return (
@@ -118,7 +123,7 @@ const MobileCalendar = ({
 									day={day}
 									month={currentMonth}
 									onSelect={() => onDateSelect(day)}
-									hasEvent={hasEvent(day, eventsList)}
+									hasEvent={hasEvent(day, eventsSummary)}
 									isSelected={isSelected(day, selectedDate)}
 								/>
 							))}

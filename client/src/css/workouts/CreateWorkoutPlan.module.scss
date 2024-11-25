@@ -1,0 +1,33 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.CreateWorkoutPlan {
+	@include fill_container;
+	padding: 0 2rem;
+
+	&_row {
+		width: 100%;
+		height: auto;
+		padding: 1rem 0;
+		margin: 4rem 0;
+		border-bottom: $border;
+	}
+}
+
+.WorkoutTypesMenu {
+	width: 100%;
+	height: 100%;
+	@include flex_row(center, center, wrap);
+	gap: 1rem;
+}
+
+.WorkoutType {
+	width: 15rem;
+	height: 10rem;
+	border: $border;
+	border-radius: 1rem;
+	padding: 1rem;
+	@include rowCenter();
+	cursor: pointer;
+}

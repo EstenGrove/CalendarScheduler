@@ -11,6 +11,9 @@ import { RootState } from "../../store/store";
 import { TRecord } from "../../utils/utils_misc";
 import {
 	createNewEvent,
+	EventDetails,
+	fetchEventDetails,
+	fetchEventsByDate,
 	fetchEventsByRange,
 	fetchMonthlySummary,
 } from "./operations";
@@ -18,102 +21,6 @@ import {
 	filterEventsByDate,
 	groupEventsByDate,
 } from "../../utils/utils_calendar";
-
-const fakeEvents: CalendarEvent[] = [
-	{
-		eventID: 1,
-		title: "Curls (10x)",
-		desc: "At 3:00 PM perform at least 10 curls of 20 pounds",
-		startTime: "3:00 PM",
-		endTime: "3:30 PM",
-		tagColor: "var(--accent)",
-		isActive: true,
-		createdDate: new Date(2024, 9, 18).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 3, 13).toString(),
-		endDate: new Date(2024, 10, 3, 13, 30).toString(),
-	},
-	{
-		eventID: 2,
-		title: "Chest Pulls (10x)",
-		desc: "At 4:00 PM perform at least 10 curls of 20 pounds",
-		startTime: "4:00 PM",
-		endTime: "4:30 PM",
-		tagColor: "var(--accent-purple)",
-		isActive: true,
-		createdDate: new Date(2024, 9, 18).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 13, 16).toString(),
-		endDate: new Date(2024, 10, 13, 16, 30).toString(),
-	},
-	{
-		eventID: 3,
-		title: "Situps (20x)",
-		desc: "At 5:00 PM perform at least 10 curls of 20 pounds",
-		startTime: "5:00 PM",
-		endTime: "5:30 PM",
-		tagColor: "blue",
-		isActive: true,
-		createdDate: new Date(2024, 10, 1).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 19, 17).toString(),
-		endDate: new Date(2024, 10, 19, 17, 30).toString(),
-	},
-	{
-		eventID: 4,
-		title: "Do Pushups (10 min.)",
-		desc: "Perform at least 10 pushups between 10:30 AM & 10:45 AM",
-		startTime: "10:30 AM",
-		endTime: "10:45 AM",
-		tagColor: "blue",
-		isActive: true,
-		createdDate: new Date(2024, 9, 18).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 28, 10, 30).toString(),
-		endDate: new Date(2024, 10, 28, 10, 45).toString(),
-	},
-	{
-		eventID: 5,
-		title: "More Curls (10x at 15lbs.)",
-		desc: "Around 1:30 PM I need to do a set of 10 curls (both arms) w/ the 15 lbs weights.",
-		startTime: "13:30 PM",
-		endTime: "14:00 PM",
-		tagColor: "blue",
-		isActive: true,
-		createdDate: new Date(2024, 10, 1).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 28, 13, 30).toString(),
-		endDate: new Date(2024, 10, 19, 14).toString(),
-	},
-	{
-		eventID: 6,
-		title: "Another Event",
-		desc: "Do some stuff at some today on this day.",
-		startTime: "",
-		endTime: "",
-		tagColor: "var(--accent-purple)",
-		isActive: true,
-		createdDate: new Date(2024, 9, 18).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 28, 10, 30).toString(),
-		endDate: new Date(2024, 10, 28, 10, 45).toString(),
-	},
-	{
-		eventID: 7,
-		title: "Update Debit Card on Various Sites (see notes)",
-		desc: "Some sites to update ",
-		startTime: "13:30 PM",
-		endTime: "14:00 PM",
-		tagColor: "blue",
-		isActive: true,
-		createdDate: new Date(2024, 10, 1).toString(),
-		modifiedDate: null,
-		startDate: new Date(2024, 10, 28, 13, 30).toString(),
-		endDate: new Date(2024, 10, 19, 14).toString(),
-	},
-];
-
-const eventsByDate = groupEventsByDate(fakeEvents);
 
 export type EventsByMonth = TRecord<CalendarEvent[]>;
 
@@ -127,21 +34,25 @@ export interface CalendarEventsSlice {
 	selectedEvent: {
 		event: CalendarEvent | null;
 		details: CalendarEventDetails | null;
-		schedule: CalendarEventSchedule[];
+		schedule: CalendarEventSchedule | null;
+		upcoming: string[];
 	};
 }
 
 const initialState: CalendarEventsSlice = {
 	status: "IDLE",
-	events: fakeEvents,
-	eventsByDate: eventsByDate,
+	events: [],
+	eventsByDate: {},
+	// events: fakeEvents,
+	// eventsByDate: eventsByDate,
 	eventsByMonth: {},
 	monthlySummary: {},
 	selectedDateEvents: [],
 	selectedEvent: {
 		event: null,
 		details: null,
-		schedule: [],
+		schedule: null,
+		upcoming: [],
 	},
 };
 
@@ -169,6 +80,17 @@ const calendarEventsSlice = createSlice({
 			const targetDate = new Date(action.payload);
 			const eventsForDate = filterEventsByDate(targetDate, state.events);
 			state.selectedDateEvents = eventsForDate;
+		},
+		setSelectedEvent(
+			state: CalendarEventsSlice,
+			action: PayloadAction<CalendarEvent>
+		) {
+			state.selectedEvent = {
+				event: action.payload,
+				details: null,
+				schedule: null,
+				upcoming: [],
+			};
 		},
 	},
 	extraReducers(builder) {
@@ -228,11 +150,55 @@ const calendarEventsSlice = createSlice({
 					state.monthlySummary = action.payload;
 				}
 			);
+
+		// Events for a given Date
+		builder
+			.addCase(fetchEventsByDate.pending, (state: CalendarEventsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				fetchEventsByDate.fulfilled,
+				(
+					state: CalendarEventsSlice,
+					action: PayloadAction<CalendarEvent[]>
+				) => {
+					state.status = "FULFILLED";
+					state.selectedDateEvents = action.payload;
+				}
+			);
+
+		// Event Details
+		builder
+			.addCase(fetchEventDetails.pending, (state: CalendarEventsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				fetchEventDetails.fulfilled,
+				(state, action: PayloadAction<EventDetails>) => {
+					const newEvent = {
+						...state.selectedEvent.event,
+						...action.payload.event,
+					};
+					state.status = "FULFILLED";
+
+					console.log("newEvent", newEvent);
+					state.selectedEvent = {
+						...state.selectedEvent,
+						event: newEvent,
+						schedule: action.payload.schedule,
+						upcoming: action.payload.futureEvents,
+					};
+				}
+			);
 	},
 });
 
-export const { setEvents, setEventsByDate, setSelectedDateEvents } =
-	calendarEventsSlice.actions;
+export const {
+	setEvents,
+	setEventsByDate,
+	setSelectedDateEvents,
+	setSelectedEvent,
+} = calendarEventsSlice.actions;
 
 export const selectEvents = (state: RootState) => {
 	return state.events.events;
@@ -256,6 +222,9 @@ export const selectEventsByDate = (state: RootState) => {
 };
 export const selectSelectedDateEvents = (state: RootState) => {
 	return state.events.selectedDateEvents;
+};
+export const selectSelectedEvent = (state: RootState) => {
+	return state.events.selectedEvent;
 };
 // gets all events for the selected date
 export const selectEventsForDate =

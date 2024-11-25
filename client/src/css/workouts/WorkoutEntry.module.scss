@@ -1,0 +1,27 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.WorkoutEntry {
+	width: 100%;
+
+	&_name {
+		width: 100%;
+		height: 2rem;
+		font-size: 1.6rem;
+	}
+	&_controls {
+		width: 100%;
+
+		&_labels {
+			width: 100%;
+			@include flex_row(space-evenly, center);
+			// gap: 0 0.3rem;
+		}
+		&_inputs {
+			width: 100%;
+			@include flex_row(space-evenly, center);
+			// gap: 0 0.3rem;
+		}
+	}
+}

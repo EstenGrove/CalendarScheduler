@@ -70,17 +70,20 @@ $current: 1.3rem;
 	font-size: $current;
 	font-weight: 800;
 	color: var(--blueGrey200);
+	cursor: pointer;
 }
 .Year {
 	font-size: $current;
 	font-weight: 800;
 	color: $accent;
+	cursor: pointer;
 }
 .Today {
 	font-size: 1.3rem;
 	font-weight: 800;
 	color: $accent;
 	margin-right: 1rem;
+	cursor: pointer;
 }
 
 .AddButton {
