@@ -1,3 +1,4 @@
+import { formatDate } from "date-fns";
 import {
 	CalendarEvent,
 	CalendarEventSchedule,
@@ -52,7 +53,12 @@ const getEventsByDate = async (
 
 const getEventDetails = async (userID: string, eventID: number) => {
 	let url = currentEnv.base + eventApis.getDetails;
-	url += "?" + new URLSearchParams({ userID, eventID: String(eventID) });
+	url +=
+		"?" +
+		new URLSearchParams({
+			userID,
+			eventID: String(eventID),
+		});
 
 	try {
 		const request = await fetch(url);

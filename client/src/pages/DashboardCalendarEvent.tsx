@@ -75,9 +75,17 @@ const DashboardCalendarEvent = () => {
 		let isMounted = true;
 		if (!isMounted) return;
 
+		console.log("EventID:", eventID);
+
 		if (eventID) {
+			console.log("Fetching...");
 			const { userID } = currentUser;
-			dispatch(fetchEventDetails({ userID, eventID }));
+			dispatch(
+				fetchEventDetails({
+					userID,
+					eventID,
+				})
+			);
 		}
 
 		return () => {
@@ -85,7 +93,6 @@ const DashboardCalendarEvent = () => {
 		};
 	}, [currentUser, dispatch, eventID]);
 
-	console.log("[EVENT-ID] :", params.id);
 	return (
 		<div className={styles.DashboardCalendarEvent}>
 			<div className={styles.DashboardCalendarEvent_nav}>

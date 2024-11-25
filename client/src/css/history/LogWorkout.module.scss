@@ -1,0 +1,52 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LogWorkout {
+	width: 100%;
+	height: 100%;
+	max-height: auto;
+	overflow-y: auto;
+}
+
+.isSelected {
+	background-color: var(--accent-purple);
+}
+
+@mixin navBtn() {
+	padding: 0.8rem 1.6rem;
+	border-radius: 1rem;
+	background-color: var(--blueGrey800);
+	color: #fff;
+	border: none;
+	outline: none;
+	font-size: 1.6rem;
+	@include rowCenter();
+	gap: 0 0.5rem;
+	cursor: pointer;
+
+	&_icon {
+		width: 1.6rem;
+		height: 1.6rem;
+		fill: #fff;
+	}
+
+	&:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+}
+
+.BackButton {
+	@include navBtn();
+	margin-right: auto;
+}
+.NextButton {
+	@include navBtn();
+	margin-left: auto;
+}
+.SaveButton {
+	@include navBtn();
+	margin-left: auto;
+	background-color: var(--accent-purple);
+}

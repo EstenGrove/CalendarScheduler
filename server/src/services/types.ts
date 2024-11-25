@@ -171,3 +171,48 @@ export interface WorkoutPlanClient {
 	isActive: boolean;
 	createdDate: string;
 }
+
+export interface WorkoutLogDB {
+	log_id: number;
+	workout_type_id: number;
+	reps: number;
+	sets: number;
+	weight: number;
+	miles: number;
+	steps: number;
+	workout_mins: number;
+	start_time: string | null;
+	end_time: string | null;
+	workout_date: string;
+	is_active: boolean;
+	created_date: string;
+}
+
+export interface WorkoutLogClient {
+	logID: number;
+	workoutTypeID: number;
+	reps: number;
+	sets: number;
+	weight: number;
+	miles: number;
+	steps: number;
+	workoutMins: number;
+	startTime: string | null;
+	endTime: string | null;
+	workoutDate: string;
+	isActive: boolean;
+	createdDate: string;
+}
+
+export interface CreateLogValues {
+	workoutTypeID: number;
+	mins: number; // mins
+	reps: number;
+	sets: number;
+	weight: number;
+	steps: number;
+	miles: number;
+	startTime: string;
+	endTime: string;
+	workoutDate: string;
+}

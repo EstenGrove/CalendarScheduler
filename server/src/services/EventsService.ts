@@ -24,6 +24,7 @@ class EventsService {
 			const query = `SELECT * FROM calendar_events WHERE event_id = $1`;
 			const results = await this.#db.query(query, [eventID]);
 			const row = results?.rows?.[0];
+			console.log("row(EventByID):", row);
 			return row;
 		} catch (error) {
 			return error;

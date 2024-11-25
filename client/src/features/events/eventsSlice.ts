@@ -175,11 +175,16 @@ const calendarEventsSlice = createSlice({
 			.addCase(
 				fetchEventDetails.fulfilled,
 				(state, action: PayloadAction<EventDetails>) => {
-					console.log("action.payload", action.payload);
+					const newEvent = {
+						...state.selectedEvent.event,
+						...action.payload.event,
+					};
 					state.status = "FULFILLED";
+
+					console.log("newEvent", newEvent);
 					state.selectedEvent = {
 						...state.selectedEvent,
-						event: action.payload.event,
+						event: newEvent,
 						schedule: action.payload.schedule,
 						upcoming: action.payload.futureEvents,
 					};

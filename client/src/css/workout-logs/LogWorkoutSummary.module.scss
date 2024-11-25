@@ -1,0 +1,58 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LogWorkoutSummary {
+	width: 100%;
+	height: auto;
+	margin-top: 1rem;
+	margin-bottom: 4rem;
+
+	&_row {
+		width: 100%;
+		display: block;
+		margin-bottom: 4rem;
+
+		& h3 {
+			font-size: 2rem;
+			font-weight: 700;
+			color: $text1;
+			margin-bottom: 0.5rem;
+		}
+		&_value {
+			font-size: 1.8rem;
+			font-weight: 500;
+			color: $text2;
+		}
+	}
+}
+
+.Summary {
+	margin: 2rem 0 4rem 0;
+
+	&_item {
+		font-size: 1.8rem;
+		font-weight: 700;
+		color: $text1;
+		@include flex_row(flex-start, center);
+		gap: 0 0.5rem;
+		margin-bottom: 0.8rem;
+
+		&_icon {
+			width: 1.7rem;
+			height: 1.7rem;
+			fill: $text2;
+		}
+	}
+
+	&_value {
+		font-size: 1.6rem;
+		color: $text2;
+		color: var(--blueGrey600);
+		padding-left: 2.2rem;
+
+		& > b {
+			color: var(--blueGrey400);
+		}
+	}
+}

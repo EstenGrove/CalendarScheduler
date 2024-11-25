@@ -89,7 +89,8 @@ const formatTime = (
 	date: Date | string,
 	formatToken: keyof DateFormats["time"] = "long"
 ) => {
-	const formatted = format(date, formatToken);
+	const token = TIME_TOKENS[formatToken];
+	const formatted = format(date, token);
 
 	return formatted;
 };

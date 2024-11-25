@@ -1,6 +1,7 @@
-import React from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/shared/CounterInput.module.scss";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 type Props = {
 	name: string;
@@ -12,6 +13,53 @@ type Props = {
 	onChange: (name: string, value: number) => void;
 };
 
+type HiddenInputProps = {
+	name: string;
+	id: string;
+	value: number;
+	handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	hideInput: () => void;
+};
+
+const HiddenInput = ({
+	value,
+	name,
+	handleChange,
+	hideInput,
+}: HiddenInputProps) => {
+	const inputRef = useRef<HTMLInputElement>(null);
+	useOutsideClick(inputRef, hideInput);
+
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) {
+			return;
+		}
+
+		if (inputRef.current) {
+			inputRef.current.focus();
+			inputRef.current.select();
+		}
+
+		return () => {
+			isMounted = false;
+		};
+	}, []);
+
+	return (
+		<input
+			ref={inputRef}
+			type="number"
+			name={name}
+			id={name}
+			value={value}
+			onChange={handleChange}
+			onBlur={hideInput}
+			className={styles.CounterInput_value_input}
+		/>
+	);
+};
+
 const CounterInput = ({
 	name,
 	value,
@@ -20,6 +68,7 @@ const CounterInput = ({
 	step = 1,
 	onChange,
 }: Props) => {
+	const [showInput, setShowInput] = useState<boolean>(false);
 	const isMinusDisabled: boolean = min !== null && value <= (min as number);
 	const isPlusDisabled: boolean = !!max && value >= max;
 
@@ -36,6 +85,19 @@ const CounterInput = ({
 		return onChange && onChange(name, newValue);
 	};
 
+	const openInput = () => {
+		setShowInput(true);
+	};
+	const closeInput = () => {
+		setShowInput(false);
+	};
+
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+
+		return onChange && onChange(name, Number(value));
+	};
+
 	return (
 		<div className={styles.CounterInput}>
 			<button
@@ -48,8 +110,18 @@ const CounterInput = ({
 					<use xlinkHref={`${sprite}#icon-remove`}></use>
 				</svg>
 			</button>
-			<div className={styles.CounterInput_value}>
-				<div>{value}</div>
+			<div className={styles.CounterInput_value} onClick={openInput}>
+				{!showInput && <div>{value}</div>}
+				{showInput && (
+					<HiddenInput
+						// inputRef={inputRef}
+						name={name}
+						id={name}
+						value={value}
+						handleChange={handleChange}
+						hideInput={closeInput}
+					/>
+				)}
 			</div>
 			<button
 				type="button"

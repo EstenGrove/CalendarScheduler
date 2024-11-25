@@ -1,0 +1,56 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.StepWorkoutType {
+	width: 100%;
+	@include flex_row(space-evenly, center, wrap);
+	gap: 1rem 0.5rem;
+}
+
+.WorkoutType {
+	width: max-content;
+	height: 5rem;
+	padding: 0.5rem 1.2rem;
+	border-radius: 1rem;
+	border: $border;
+	@include rowCenter();
+	font-size: 1.3rem;
+}
+
+.isSelected {
+	background-color: var(--accent-purple);
+}
+
+.StepWithEquipment {
+	width: 100%;
+	padding-top: 4rem;
+	@include colCenter();
+
+	&_row {
+		width: 100%;
+		margin: 2rem 0;
+		@include colCenter();
+
+		&_label {
+			font-size: 1.5rem;
+			margin-bottom: 0.5rem;
+		}
+	}
+}
+.StepNonEquipment {
+	width: 100%;
+	padding-top: 4rem;
+	@include colCenter();
+
+	&_row {
+		width: 100%;
+		margin: 2rem 0;
+		@include colCenter();
+
+		&_label {
+			font-size: 1.5rem;
+			margin-bottom: 0.5rem;
+		}
+	}
+}

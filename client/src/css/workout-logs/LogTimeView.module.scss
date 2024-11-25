@@ -1,0 +1,10 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LogTimeView {
+	width: 100%;
+	display: block;
+	@include colCenter();
+	margin-bottom: 4rem;
+}

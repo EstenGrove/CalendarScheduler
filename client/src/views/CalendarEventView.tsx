@@ -24,7 +24,7 @@ type DetailsProps = {
 // CALENDAR EVENT DETAILS VIEW
 
 const DateTimeDetails = ({ calendarEvent }: DetailsProps) => {
-	const { startDate, endDate, startTime, endTime } = calendarEvent;
+	const { startDate, endDate, startTime, endTime, eventDate } = calendarEvent;
 	const eventStart: string = formatDate(startDate, "shortMonth");
 	const eventEnd: string = formatDate(endDate as string, "shortMonth");
 	return (
@@ -51,6 +51,12 @@ const DateTimeDetails = ({ calendarEvent }: DetailsProps) => {
 				</svg>
 				Occurs at <span>{startTime}</span> - <span>{endTime}</span>
 			</div>
+			<div className={styles.DateTimeDetails_time}>
+				<svg className={styles.DateTimeDetails_icon}>
+					<use xlinkHref={`${sprite}#icon-access_time`}></use>
+				</svg>
+				Current Event: <span>{eventDate}</span>
+			</div>
 		</div>
 	);
 };
@@ -63,6 +69,8 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 	const initDeleteEvent = () => {
 		// do stuff
 	};
+
+	console.log("selectedEvent", selectedEvent);
 
 	return (
 		<div className={styles.CalendarEventView}>

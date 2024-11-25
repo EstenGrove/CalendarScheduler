@@ -1,0 +1,19 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LogWeightedEntry {
+	width: 100%;
+	height: auto;
+	border-radius: 1rem;
+	@include colCenter();
+
+	&_row {
+		@include colCenter();
+		margin: 2rem 0;
+
+		&_label {
+			font-size: 1.6rem;
+		}
+	}
+}

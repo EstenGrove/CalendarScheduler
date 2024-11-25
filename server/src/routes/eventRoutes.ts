@@ -54,8 +54,6 @@ app.get("/getEventsByRange", async (ctx: Context) => {
 		endDate
 	);
 
-	ctx.header("Content-Type", "application/json");
-
 	return ctx.json({
 		Message: "Hi",
 		StartDate: startDate,
@@ -65,7 +63,7 @@ app.get("/getEventsByRange", async (ctx: Context) => {
 });
 
 app.get("/getEventDetails", async (ctx: Context) => {
-	const { userID, eventID: rawID } = ctx.req.query();
+	const { userID, eventID: rawID, eventDate } = ctx.req.query();
 
 	const eventID: number = Number(rawID);
 	const eventRecord = await eventsService.getEventByID(userID, eventID);
@@ -79,13 +77,11 @@ app.get("/getEventDetails", async (ctx: Context) => {
 	const schedule = schedulesNormalizer.toClientOne(scheduleRecord);
 
 	const response = getResponseOk({
-		event: event,
+		event: { ...event },
 		schedule: schedule,
 		futureEvents: [],
 		details: null,
 	});
-
-	ctx.header("Content-Type", "application/json");
 
 	return ctx.json(response);
 });
@@ -118,7 +114,6 @@ app.get("/getMonthlySummary", async (ctx: Context) => {
 	const response = getResponseOk({
 		eventsSummary: eventsSummary,
 	});
-	ctx.header("Content-Type", "application/json");
 	return ctx.json(response);
 });
 

@@ -3,8 +3,8 @@
 @import "../../sass/custom";
 
 @mixin counterBtn() {
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 3.5rem;
+	height: 3.5rem;
 	border-radius: 50%;
 	border: $border;
 	@include rowCenter();
@@ -47,6 +47,18 @@
 		height: 100%;
 		@include rowCenter();
 		font-size: 2rem;
+		color: $text1;
+
+		&_input {
+			color: $text1;
+			width: 5rem;
+			height: 100%;
+			font-size: 2rem;
+			border: 1px solid $accent;
+			outline: none;
+			text-align: center;
+			background-color: transparent;
+		}
 	}
 
 	&_add {
@@ -58,4 +70,15 @@
 			fill: #fff;
 		}
 	}
+}
+
+.HiddenInput {
+	color: $text1;
+	width: 5rem;
+	height: 100%;
+	font-size: 2rem;
+	border: 1px solid $accent;
+	outline: none;
+	text-align: center;
+	background-color: transparent;
 }

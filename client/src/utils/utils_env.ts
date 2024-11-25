@@ -47,12 +47,16 @@ const API_ENDPOINTS = {
 	},
 	plans: {},
 	workouts: {},
+	workoutHistory: {
+		createLog: "/history/createLog",
+	},
 } as const;
 
 export const {
 	events: eventApis,
 	plans: planApis,
 	workouts: workoutApis,
+	workoutHistory: historyApis,
 } = API_ENDPOINTS;
 
 export {
