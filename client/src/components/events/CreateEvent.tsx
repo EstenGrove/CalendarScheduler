@@ -12,6 +12,7 @@ import { useState } from "react";
 type Props = {
 	values: CreateEventVals;
 	handleDays: (day: WeekDayToken) => void;
+	handleMonth: (name: string, value: number | string) => void;
 	handleChange: (name: string, value: string | number) => void;
 	handleCheckbox: (name: string, value: boolean) => void;
 	handleFrequency: (name: string, value: string) => void;
@@ -35,6 +36,7 @@ const CreateEvent = ({
 	handleChange,
 	handleCheckbox,
 	handleDays,
+	handleMonth,
 	handleFrequency,
 	createNewEvent,
 	cancelNewEvent,
@@ -81,6 +83,7 @@ const CreateEvent = ({
 					<RecurringOptions
 						values={values}
 						handleDays={handleDays}
+						handleMonth={handleMonth}
 						handleChange={handleChange}
 						handleCheckbox={handleCheckbox}
 						handleFrequency={handleFrequency}

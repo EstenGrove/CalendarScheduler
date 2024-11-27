@@ -1,0 +1,24 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$listWidth: 70rem;
+
+.HistoryLogList {
+	width: $listWidth;
+	max-width: 100%;
+	height: calc(100dvh - 12rem);
+	display: block;
+	margin: 0 auto;
+	padding: 2rem 4rem;
+	overflow-y: auto;
+	@include colCenter();
+	gap: 1rem 0;
+}
+
+@media only screen and (max-width: 800px) {
+	.HistoryLogList {
+		width: 100%;
+		padding: 2rem 2rem;
+	}
+}

@@ -1,0 +1,27 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LogWorkoutSuccess {
+	width: 100%;
+	min-height: 15rem;
+	@include colCenter();
+
+	&_icon {
+		width: 6rem;
+		height: 6rem;
+		fill: var(--accent-green);
+		border-radius: 50%;
+	}
+
+	&_msg {
+		font-size: 2.5rem;
+		font-weight: 800;
+		color: var(--accent-green);
+		text-align: center;
+
+		& b {
+			color: var(--accent-blue);
+		}
+	}
+}

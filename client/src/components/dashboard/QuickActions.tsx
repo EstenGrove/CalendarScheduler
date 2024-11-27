@@ -1,8 +1,7 @@
 import { useState } from "react";
+import { CurrentUser } from "../../features/user/types";
 import styles from "../../css/dashboard/QuickActions.module.scss";
 import ActionsBar from "./ActionsBar";
-import { CurrentUser } from "../../features/user/types";
-import LogWorkout from "../history/LogWorkoutSteps";
 import LogWorkoutModal from "../history/LogWorkoutModal";
 
 type Props = {

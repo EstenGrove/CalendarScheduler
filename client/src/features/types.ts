@@ -1,5 +1,3 @@
-import { CalendarEvent, CalendarEventSchedule } from "./events/types";
-
 export type TStatus = "IDLE" | "PENDING" | "FULFILLED" | "REJECTED";
 
 export type TResponseStatus = "SUCCESS" | "FAIL";

@@ -43,3 +43,14 @@
 		color: #fff;
 	}
 }
+
+.MonthlyOptions {
+	width: max-content;
+	font-size: 1.6rem;
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+
+	& > b {
+		color: var(--blue500);
+	}
+}

@@ -56,6 +56,7 @@ const HiddenInput = ({
 			onChange={handleChange}
 			onBlur={hideInput}
 			className={styles.CounterInput_value_input}
+			inputMode="decimal"
 		/>
 	);
 };

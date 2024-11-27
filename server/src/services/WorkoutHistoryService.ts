@@ -1,5 +1,10 @@
 import type { Pool } from "pg";
-import type { CreateLogValues, WorkoutLogClient } from "./types";
+import type { CreateLogValues, WorkoutLogClient, WorkoutLogDB } from "./types";
+
+export interface LogRange {
+	startDate: string;
+	endDate: string;
+}
 
 class WorkoutHistoryService {
 	#db: Pool;
@@ -10,7 +15,7 @@ class WorkoutHistoryService {
 	async createLog(userID: string, log: CreateLogValues) {
 		const {
 			workoutTypeID,
-			workoutDate,
+			date,
 			mins,
 			weight,
 			reps,
@@ -32,7 +37,8 @@ class WorkoutHistoryService {
           steps,
           start_time,
           end_time,
-          workout_mins
+          workout_mins,
+					user_id
         ) VALUES (
           $1,
           $2,
@@ -43,12 +49,13 @@ class WorkoutHistoryService {
           $7, 
           $8, 
           $9,
-          $10 
+          $10,
+					$11 
         ) RETURNING *;
         `;
 			const params = [
 				workoutTypeID,
-				workoutDate,
+				date,
 				weight,
 				reps,
 				sets,
@@ -57,6 +64,7 @@ class WorkoutHistoryService {
 				startTime,
 				endTime,
 				mins,
+				userID,
 			];
 			const result = await this.#db.query(query, params);
 			const row = result?.rows?.[0];
@@ -67,11 +75,11 @@ class WorkoutHistoryService {
 			return error;
 		}
 	}
-	async createWeightLog(userID: string, log: WorkoutLogClient) {
+	async createWeightLog(userID: string, log: CreateLogValues) {
 		const {
 			workoutTypeID,
-			workoutDate,
-			workoutMins,
+			date,
+			mins,
 			weight,
 			reps,
 			sets,
@@ -102,19 +110,40 @@ class WorkoutHistoryService {
         `;
 			const params = [
 				workoutTypeID,
-				workoutDate,
+				date,
 				weight,
 				reps,
 				sets,
 				startTime,
 				endTime,
-				workoutMins,
+				mins,
 			];
 			const result = await this.#db.query(query, params);
 			const row = result?.rows?.[0];
 			console.log("result", result);
 			console.log("row", row);
 			return row;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async getWorkoutLogs(
+		userID: string,
+		range: LogRange
+	): Promise<WorkoutLogDB[] | unknown> {
+		const { startDate, endDate } = range;
+
+		try {
+			const query = `SELECT * FROM get_user_workout_history(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [userID, startDate, endDate]);
+			const rows = results?.rows;
+			console.log("rows", rows);
+			return rows;
 		} catch (error) {
 			return error;
 		}

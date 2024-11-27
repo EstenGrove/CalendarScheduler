@@ -5,7 +5,7 @@ import {
 	FREQ_OPTIONS as freqOptions,
 	WeekDayToken,
 } from "../../utils/utils_options";
-import DateInput from "../shared/DateInput";
+import { getMonthlySuffix } from "../../utils/utils_recurring";
 import NumberInput from "../shared/NumberInput";
 import Select from "../shared/Select";
 
@@ -14,6 +14,7 @@ type Props = {
 	handleFrequency: (name: string, value: string) => void;
 	handleDays: (day: WeekDayToken) => void;
 	handleChange: (name: string, value: string | number) => void;
+	handleMonth: (name: string, value: number | string) => void;
 	handleCheckbox: (name: string, value: boolean) => void;
 };
 
@@ -131,26 +132,25 @@ const FreqAndInterval = ({
 				value={values.interval}
 				onChange={handleChange}
 				min={1}
+				style={{ width: "5rem" }}
 			/>
 			<span>{label}</span>
 		</div>
 	);
 };
 
-const WeeklyOptions = () => {
-	return;
-};
-
 type MonthProps = {
-	byMonth: number;
-	byMonthDay: number;
-	handleMonth: (name: string, value: string | number) => void;
+	values: CreateEventVals;
+	handleMonth: (name: string, value: number | string) => void;
 };
 
-const MonthlyOptions = ({ byMonth, byMonthDay, handleMonth }: MonthProps) => {
+const MonthlyOptions = ({ values, handleMonth }: MonthProps) => {
+	const { byMonthDay } = values;
+	const monthSuffix = getMonthlySuffix(byMonthDay);
 	return (
 		<div className={styles.MonthlyOptions}>
 			{/* on day:  */}
+			<span>On the </span>
 			<NumberInput
 				name="byMonthDay"
 				id="byMonthDay"
@@ -159,6 +159,9 @@ const MonthlyOptions = ({ byMonth, byMonthDay, handleMonth }: MonthProps) => {
 				onChange={handleMonth}
 				value={byMonthDay}
 			/>
+			<span>
+				<b>{monthSuffix}</b> of the month
+			</span>
 		</div>
 	);
 };
@@ -166,6 +169,7 @@ const MonthlyOptions = ({ byMonth, byMonthDay, handleMonth }: MonthProps) => {
 const RecurringOptions = ({
 	values,
 	handleDays,
+	handleMonth,
 	handleChange,
 	handleFrequency,
 }: Props) => {
@@ -182,6 +186,11 @@ const RecurringOptions = ({
 			{isRecurring && frequency === "Weekly" && (
 				<div className={styles.RecurringOptions_row}>
 					<WeekDays selectDay={handleDays} values={values} />
+				</div>
+			)}
+			{isRecurring && frequency === "Monthly" && (
+				<div className={styles.RecurringOptions_row}>
+					<MonthlyOptions handleMonth={handleMonth} values={values} />
 				</div>
 			)}
 

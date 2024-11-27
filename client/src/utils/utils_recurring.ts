@@ -5,6 +5,27 @@ const numsMap = {
 	1: "st",
 	2: "nd",
 	3: "rd",
+	11: "th",
+	12: "th",
+	13: "th",
+	21: "st",
+	22: "nd",
+	23: "rd",
+	31: "st",
+};
+
+// 23 => "rd" (eg. "23rd")
+const getMonthlySuffix = (dayOfMonth: number): string => {
+	if (!dayOfMonth || dayOfMonth === 0 || dayOfMonth === null) return "";
+
+	const lastNum = Number(String(dayOfMonth).slice(-1));
+
+	if (lastNum < 4 && lastNum > 0) {
+		const suffix = numsMap[dayOfMonth as keyof object];
+		return suffix;
+	} else {
+		return "th";
+	}
 };
 
 const getRepeatByFreq = (schedule: CalendarEventSchedule) => {
@@ -22,16 +43,13 @@ const getRepeatByFreq = (schedule: CalendarEventSchedule) => {
 			return desc;
 		}
 		case "Monthly": {
-			const nthSuffix: string =
-				byMonthDay in numsMap ? numsMap[byMonthDay as keyof object] : "th";
+			const nthSuffix: string = getMonthlySuffix(byMonthDay);
 			let desc: string = "Repeats every " + interval + " month" + suffix;
 			desc += " on the " + byMonthDay + nthSuffix + " of the month";
 			return desc;
 		}
 		case "Yearly": {
-			const nthSuffix: string =
-				byMonth in numsMap ? numsMap[byMonth as keyof object] : "th";
-
+			const nthSuffix: string = getMonthlySuffix(byMonth);
 			let desc: string = "Repeats every " + interval + " year" + suffix;
 			desc += " on the " + byMonth + nthSuffix;
 			return desc;
@@ -41,4 +59,4 @@ const getRepeatByFreq = (schedule: CalendarEventSchedule) => {
 	}
 };
 
-export { getRepeatByFreq };
+export { getRepeatByFreq, getMonthlySuffix };

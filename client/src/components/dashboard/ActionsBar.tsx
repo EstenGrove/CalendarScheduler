@@ -110,25 +110,25 @@ const ActionsBar = ({ onAction }: Props) => {
 					<ActionButton
 						title="Start a timer"
 						icon="timer"
-						color="var(--blue500)"
+						color="var(--bg-foreground)"
 						onAction={() => selectAction("Timer")}
 					/>
 					<ActionButton
 						title="Add a task"
 						icon="task"
-						color="var(--blue500)"
+						color="var(--bg-foreground)"
 						onAction={() => selectAction("Task")}
 					/>
 					<ActionButton
 						title="Log a workout"
 						icon="logWorkout"
-						color="var(--blue500)"
+						color="var(--bg-foreground)"
 						onAction={() => selectAction("LogWorkout")}
 					/>
 					<ActionButton
 						title="Create a workout"
 						icon="workout"
-						color="var(--blue500)"
+						color="var(--bg-foreground)"
 						onAction={() => selectAction("Workout")}
 					/>
 				</Menu>

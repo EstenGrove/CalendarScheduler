@@ -29,3 +29,19 @@ export interface WorkoutLog {
 	isActive: boolean;
 	createdDate: string;
 }
+export interface WorkoutLogEntry {
+	userID: string;
+	logID: number;
+	workoutType: string; // eg. Curls, Situps etc
+	weight: number;
+	reps: number;
+	sets: number;
+	steps: number;
+	miles: number;
+	mins: number;
+	date: string;
+	startTime: string;
+	endTime: string;
+	isActive?: boolean;
+	createdDate: string;
+}

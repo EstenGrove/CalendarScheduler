@@ -38,6 +38,12 @@ const CURRENT_ENV_NAME = "network";
 const CURRENT_ENV_AUTH = API_AUTH[CURRENT_ENV_NAME];
 
 const API_ENDPOINTS = {
+	user: {
+		getUserByLogin: "/user/getUserByLogin",
+		getUserByID: "/user/getUserByID",
+		login: "/user/login",
+		logout: "/user/logout",
+	},
 	events: {
 		getByRange: "/events/getEventsByRange",
 		createEvent: "/events/createEvent",
@@ -49,10 +55,12 @@ const API_ENDPOINTS = {
 	workouts: {},
 	workoutHistory: {
 		createLog: "/history/createLog",
+		getLogs: "/history/getWorkoutLogs",
 	},
 } as const;
 
 export const {
+	user: userApis,
 	events: eventApis,
 	plans: planApis,
 	workouts: workoutApis,

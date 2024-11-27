@@ -8,8 +8,11 @@
 	/* Theme/Color Variables */
 	--bg-body: rgb(234, 236, 239);
 	--main-accent: rgb(124, 58, 237);
-	--alt-accent: rgb(0, 226, 189);
+	--accent-green: rgb(0, 226, 189);
 	--accent-bright-red: rgb(255, 0, 102);
+	--accent-blue: #007cff;
+	--accent-red: #ff001b;
+	--accent-red2: rgba(255, 0, 27, 0.4);
 
 	/* --accent: #ff0066; */
 	--accent: rgb(255, 0, 102);
@@ -23,6 +26,65 @@
 	--bg-foreground-dark: #0c0f13;
 	--bg-foreground: var(--bg-foreground-dark);
 	--border-color: var(--blueGrey600);
+
+	/* Purple Shades (accent: 1000|1100) */
+
+	--purple100: rgb(255, 255, 255);
+	--purple200: rgb(240, 232, 255);
+	--purple300: rgb(225, 209, 255);
+	--purple400: rgb(210, 186, 255);
+	--purple500: rgb(195, 163, 255);
+	--purple600: rgb(180, 140, 255);
+	--purple700: rgb(165, 117, 255);
+	--purple800: rgb(150, 94, 255);
+	--purple900: rgb(135, 71, 255);
+	--purple1000: rgb(120, 48, 255);
+	--purple1100: rgb(105, 25, 255);
+	--purple1200: rgb(95, 23, 230);
+	--purple1300: rgb(84, 20, 204);
+	--purple1400: rgb(74, 18, 179);
+	--purple1500: rgb(63, 15, 153);
+	--purple1600: rgb(53, 13, 128);
+	--purple1700: rgb(42, 10, 102);
+	--purple1800: rgb(32, 8, 77);
+	--purple1900: rgb(21, 5, 51);
+	--purple2000: rgb(10, 2, 25);
+	--purple2100: rgb(0, 0, 0);
+
+	/* Purple Background Accent(s) */
+	--purpleBG100: rgb(255, 255, 255);
+	--purpleBG200: rgba(253, 252, 255, 0.92);
+	--purpleBG300: rgba(251, 249, 255, 0.84);
+	--purpleBG400: rgba(248, 245, 255, 0.76);
+	--purpleBG500: rgba(245, 239, 255, 0.68);
+	--purpleBG600: rgba(240, 232, 255, 0.6);
+	--purpleBG700: rgba(234, 222, 255, 0.52);
+	--purpleBG800: rgba(224, 208, 255, 0.44);
+	--purpleBG900: rgba(209, 184, 255, 0.36);
+	--purpleBG1000: rgba(180, 140, 255, 0.28);
+	--purpleBG1100: rgba(105, 25, 255, 0.2);
+	--purpleBG1200: rgba(53, 13, 128, 0.28);
+	--purpleBG1300: rgba(32, 8, 78, 0.36);
+	--purpleBG1400: rgba(22, 5, 52, 0.44);
+	--purpleBG1500: rgba(15, 4, 36, 0.52);
+	--purpleBG1600: rgba(10, 2, 25, 0.6);
+	--purpleBG1700: rgba(7, 2, 18, 0.68);
+	--purpleBG1800: rgba(5, 1, 12, 0.76);
+	--purpleBG1900: rgba(3, 1, 7, 0.84);
+	--purpleBG2000: rgba(1, 0, 3, 0.92);
+	--purpleBG2100: rgb(0, 0, 0);
+
+	/* Blue Shades */
+	--blue50: rgb(239, 246, 255);
+	--blue100: rgb(219, 234, 254);
+	--blue200: rgb(191, 219, 254);
+	--blue300: rgb(147, 197, 253);
+	--blue400: rgb(96, 165, 250);
+	--blue500: rgb(59, 130, 246);
+	--blue600: rgb(37, 99, 235);
+	--blue700: rgb(29, 78, 216);
+	--blue800: rgb(30, 64, 175);
+	--blue900: rgb(30, 58, 138);
 
 	/* BLUE-GREY SHADES */
 	--blueGrey50: rgb(248, 250, 252);
@@ -97,11 +159,6 @@ input {
 	backdrop-filter: blur(15px);
 	filter: blur(15px) grayscale(90%);
 	z-index: -1;
-	/* -webkit-filter: blur(1px);
-	-moz-filter: blur(1px);
-	-o-filter: blur(1px);
-	-ms-filter: blur(1px);
-	filter: blur(1px); */
 }
 
 .blurOverlay {
@@ -110,8 +167,12 @@ input {
 	left: 0;
 	width: 100dvw;
 	height: 100dvh;
+	max-width: 100%;
+	max-height: 100%;
 	background-color: rgba(0, 0, 0, 0.8);
 	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
 	filter: blur(5px) grayscale(90%);
+	-webkit-filter: blur(5px) grayscale(90%);
 	z-index: 0;
 }

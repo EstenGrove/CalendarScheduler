@@ -1,8 +1,9 @@
 import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import { historyService } from "../services";
-import type { CreateLogValues, WorkoutLogClient } from "../services/types";
+import type { CreateLogValues, WorkoutLogDB } from "../services/types";
 import { formatDate } from "../utils/dates";
+import { historyNormalizer } from "../utils/normalizing";
 
 const app = new Hono();
 
@@ -10,14 +11,14 @@ const prepareLogEntry = (log: CreateLogValues) => {
 	const {
 		startTime = new Date().toString(),
 		endTime = new Date().toString(),
-		workoutDate = formatDate(new Date(), "db").toString(),
+		date = new Date().toString(),
 	} = log;
 
 	return {
 		...log,
 		startTime,
 		endTime,
-		workoutDate: workoutDate,
+		workoutDate: date,
 	};
 };
 
@@ -25,9 +26,9 @@ app.post("/createLog", async (ctx: Context) => {
 	const { userID, workoutLog } = await ctx.req.json();
 	// prepare record before insert!!!
 	const cleanRecord = prepareLogEntry(workoutLog);
+	const record = await historyService.createLog(userID, cleanRecord);
 
-	// const record = await historyService.createLog(userID, cleanRecord);
-	const record = cleanRecord;
+	console.log("record", record);
 
 	if (record instanceof Error) {
 		const errResp = getResponseError(record);
@@ -38,6 +39,34 @@ app.post("/createLog", async (ctx: Context) => {
 		UserID: userID,
 		Record: record,
 		Clean: cleanRecord,
+	});
+
+	return ctx.json(response);
+});
+
+app.get("/getWorkoutLogs", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+
+	const logRecords = (await historyService.getWorkoutLogs(userID, {
+		startDate,
+		endDate,
+	})) as WorkoutLogDB[];
+
+	console.log("logRecords", logRecords);
+	if (logRecords instanceof Error) {
+		const errResp = getResponseError(logRecords, {
+			history: [],
+			logs: [],
+			message: "Request for history logs failed",
+		});
+		return ctx.json(errResp);
+	}
+
+	const workoutLogs = historyNormalizer.toClient(logRecords);
+
+	const response = getResponseOk({
+		history: [],
+		logs: workoutLogs,
 	});
 
 	return ctx.json(response);

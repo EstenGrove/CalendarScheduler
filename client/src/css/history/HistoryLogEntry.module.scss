@@ -1,0 +1,47 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.HistoryLogEntry {
+	width: 100%;
+	height: 10rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	@include flex_row(flex-start, flex-start);
+	&:hover {
+		cursor: pointer;
+		border-color: var(--accent-blue);
+	}
+
+	&_top {
+		width: 100%;
+		height: 3rem;
+		padding: 0.5rem 1rem;
+		@include flex_row(space-between, flex-start);
+
+		&_title {
+			width: max-content;
+			height: 100%;
+			display: block;
+
+			& > h3 {
+				font-size: 1.7rem;
+				color: $text1;
+			}
+			&_when {
+				color: $text2;
+				font-size: 1.2rem;
+			}
+		}
+		&_options {
+			width: 4rem;
+			@include flex_row(flex-end, center);
+
+			&_icon {
+				width: 2.5rem;
+				height: 2.5rem;
+				fill: $text2;
+			}
+		}
+	}
+}

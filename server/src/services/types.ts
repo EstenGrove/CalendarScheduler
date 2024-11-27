@@ -1,3 +1,5 @@
+import type { UserWorkoutPayload } from "./UserWorkoutService";
+
 export type WeekDayToken = "Su" | "Mo" | "Tu" | "We" | "Th" | "Fr" | "Sa";
 
 export type EventFrequency =
@@ -174,7 +176,8 @@ export interface WorkoutPlanClient {
 
 export interface WorkoutLogDB {
 	log_id: number;
-	workout_type_id: number;
+	user_id: string;
+	workout_type_name: string;
 	reps: number;
 	sets: number;
 	weight: number;
@@ -189,19 +192,32 @@ export interface WorkoutLogDB {
 }
 
 export interface WorkoutLogClient {
+	workoutType: string;
+	userID: string;
 	logID: number;
-	workoutTypeID: number;
 	reps: number;
 	sets: number;
 	weight: number;
 	miles: number;
 	steps: number;
-	workoutMins: number;
+	mins: number;
 	startTime: string | null;
 	endTime: string | null;
-	workoutDate: string;
+	date: string;
 	isActive: boolean;
 	createdDate: string;
+}
+
+// PAYLOAD TYPES
+
+export interface NewWorkoutPlanPayload {
+	workoutTypeID: number;
+	name: string;
+	desc: string;
+	weight: number;
+	reps: number;
+	sets: number;
+	mins: number;
 }
 
 export interface CreateLogValues {
@@ -214,5 +230,29 @@ export interface CreateLogValues {
 	miles: number;
 	startTime: string;
 	endTime: string;
-	workoutDate: string;
+	date: string;
+}
+
+export interface NewEventPayload {
+	userID: string;
+	newEvent: CreateEventVals;
+}
+
+export interface RecurringWorkoutPayload extends NewEventPayload {
+	newWorkout: {
+		planID: number;
+		workoutName: string;
+		workoutDesc: string;
+	};
+}
+
+export interface NewWorkoutPayload {
+	planID: number;
+	workoutName: string;
+	workoutDesc: string;
+}
+
+export interface NewUserWorkoutPayload {
+	workout: UserWorkoutPayload;
+	schedule: CreateEventVals;
 }

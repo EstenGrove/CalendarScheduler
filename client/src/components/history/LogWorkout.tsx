@@ -3,24 +3,32 @@ import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/history/LogWorkout.module.scss";
 import { CurrentUser } from "../../features/user/types";
 import { CreateLogValues } from "../workout-logs/types";
+import { useAppDispatch } from "../../store/store";
+import { saveLogEntry } from "../../features/workoutHistory/operations";
+import { formatDate, formatDateTime } from "../../utils/utils_dates";
+import { endOfDay, parse, startOfDay } from "date-fns";
 import {
+	getWorkoutTypeIDFromName,
 	isDistanceType,
 	isOtherType,
 	isWalkingType,
 	isWeightedType,
 	LogStep,
 } from "../../utils/utils_workoutLogs";
+// components
 import LogTypeView from "../workout-logs/LogTypeView";
 import LogWeightedView from "../workout-logs/LogWeightedView";
 import LogWalkingView from "../workout-logs/LogWalkingView";
 import LogTimeView from "../workout-logs/LogTimeView";
 import LogWorkoutSummary from "../workout-logs/LogWorkoutSummary";
+import LogWorkoutSuccess from "../workout-logs/LogWorkoutSuccess";
 
 // WORKOUT LOG FLOWS
 // - Type => Weights/Reps
 
 type Props = {
 	currentUser: CurrentUser;
+	closeModal: () => void;
 };
 
 type BackProps = {
@@ -33,6 +41,10 @@ type NextProps = {
 };
 type SaveProps = {
 	saveLog: () => void;
+	isDisabled?: boolean;
+};
+type CloseProps = {
+	close: () => void;
 	isDisabled?: boolean;
 };
 
@@ -48,6 +60,12 @@ const get2ndStepFromType = (type: string): LogStep => {
 	if (isOther) return "Time";
 	// if 'Other', then just record the time
 	return "Time";
+};
+
+const getPrevStep = (stepsList: LogStep[]) => {
+	const prevStep = stepsList.pop();
+
+	return prevStep as LogStep;
 };
 
 const BackButton = ({ goToPrev, isDisabled = false }: BackProps) => {
@@ -95,21 +113,75 @@ const SaveButton = ({ saveLog, isDisabled = false }: SaveProps) => {
 		</button>
 	);
 };
+const CreateNewButton = ({ goToPrev, isDisabled = false }: BackProps) => {
+	return (
+		<button
+			type="button"
+			onClick={goToPrev}
+			disabled={isDisabled}
+			className={styles.CreateNewButton}
+		>
+			<svg className={styles.CreateNewButton_icon}>
+				<use xlinkHref={`${sprite}#icon-arrow_back`}></use>
+			</svg>
+			<span>Reset</span>
+		</button>
+	);
+};
+const CloseButton = ({ close, isDisabled = false }: CloseProps) => {
+	return (
+		<button
+			type="button"
+			onClick={close}
+			disabled={isDisabled}
+			className={styles.CloseButton}
+		>
+			<span>Close</span>
+		</button>
+	);
+};
 
-const LogWorkout = ({ currentUser }: Props) => {
+// Add any field validations/changes/adjustments here before fetch request
+// - Find matching workoutTypeID
+// - Adjust start/end times based off 'date' selection
+const prepareWorkoutEntry = (values: CreateLogValues) => {
+	const { date, workoutType } = values;
+	// must parse the date string, to get the correct day/date of the month
+	const parsed = parse(date, "yyyy-MM-dd", new Date());
+	const typeID = getWorkoutTypeIDFromName(workoutType);
+	const adjustedStart = formatDateTime(startOfDay(parsed), "db");
+	const adjustedEnd = formatDateTime(endOfDay(parsed), "db");
+
+	const newLog = {
+		...values,
+		workoutTypeID: typeID,
+		startTime: adjustedStart,
+		endTime: adjustedEnd,
+	};
+
+	return newLog;
+};
+
+const initialState: CreateLogValues = {
+	workoutType: "",
+	mins: 30,
+	reps: 20,
+	sets: 1,
+	weight: 15,
+	steps: 0,
+	miles: 0,
+	startTime: formatDateTime(new Date(), "db"), // optional start time
+	endTime: formatDateTime(new Date(), "db"), // optional end time
+	date: formatDate(new Date(), "db"), // date of workout
+};
+
+const LogWorkout = ({ currentUser, closeModal }: Props) => {
+	const dispatch = useAppDispatch();
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [activeStep, setActiveStep] = useState<LogStep | null>("Type");
-	const [newLog, setNewLog] = useState<CreateLogValues>({
-		workoutType: "",
-		mins: 30,
-		reps: 20,
-		sets: 1,
-		weight: 15,
-		steps: 0,
-		miles: 0,
-		startTime: "",
-		endTime: "",
-	});
+	const [newLog, setNewLog] = useState<CreateLogValues>(initialState);
 	const { workoutType } = newLog;
+	const stepsList: LogStep[] = ["Type"];
 
 	const handleSelect = (name: string, value: string | number) => {
 		setNewLog({
@@ -120,10 +192,33 @@ const LogWorkout = ({ currentUser }: Props) => {
 
 	const changeStep = (step: LogStep) => {
 		setActiveStep(step);
+		stepsList.push(step);
 	};
 
-	const saveNewLog = () => {
-		//
+	const saveNewLog = async () => {
+		const { userID } = currentUser;
+		const newEntry = prepareWorkoutEntry(newLog);
+		const params = { userID, workoutLog: newEntry };
+
+		const result = await dispatch(saveLogEntry(params)).unwrap();
+
+		if (result) {
+			setIsSubmitting(false);
+			changeStep("SUCCESS");
+		} else {
+			setIsSubmitting(false);
+			alert("WHOOPS! Log entry failed to save :(");
+		}
+	};
+
+	const resetForm = () => {
+		setNewLog(initialState);
+		changeStep("Type");
+	};
+
+	const closeLogModal = () => {
+		resetForm();
+		closeModal();
 	};
 
 	return (
@@ -171,8 +266,13 @@ const LogWorkout = ({ currentUser }: Props) => {
 			>
 				<BackButton
 					goToPrev={() => {
-						const prevStep: LogStep = get2ndStepFromType(workoutType);
-						changeStep(prevStep);
+						const secondStep: LogStep = get2ndStepFromType(workoutType);
+						const prevStep: LogStep = getPrevStep(stepsList);
+						if (secondStep === activeStep) {
+							changeStep(prevStep);
+						} else {
+							changeStep(prevStep);
+						}
 					}}
 				/>
 				<NextButton goToNext={() => changeStep("Summary")} />
@@ -181,8 +281,20 @@ const LogWorkout = ({ currentUser }: Props) => {
 			{/* 4TH: WORKOUT SUMMARY */}
 			<LogWorkoutSummary values={newLog} currentStep={activeStep}>
 				<BackButton goToPrev={() => changeStep("Time")} />
-				<SaveButton saveLog={() => changeStep("Summary")} />
+				<SaveButton
+					isDisabled={isSubmitting}
+					saveLog={() => {
+						setIsSubmitting(true);
+						saveNewLog();
+					}}
+				/>
 			</LogWorkoutSummary>
+
+			{/* SUCCESS MESSAGE */}
+			<LogWorkoutSuccess values={newLog} currentStep={activeStep}>
+				<CreateNewButton goToPrev={resetForm} />
+				<CloseButton close={closeLogModal} />
+			</LogWorkoutSuccess>
 		</div>
 	);
 };
