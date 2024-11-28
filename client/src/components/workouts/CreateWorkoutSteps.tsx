@@ -1,21 +1,27 @@
-import { CSSProperties, ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/workouts/CreateWorkoutSteps.module.scss";
 import { workoutTypes } from "../../utils/utils_workoutPlans";
-import MultiStepForm from "../ui/MultiStepForm";
-import MultiStepFormStep from "../ui/MultiStepFormStep";
-import CounterInput from "../shared/CounterInput";
 import {
-	CreateScheduleValues,
 	CreateWorkoutStep,
 	CreateWorkoutValues,
 	NewWorkoutValues,
 } from "./types";
-import TimerInput from "../shared/TimerInput";
-import DateInput from "../shared/DateInput";
-import RecurringOptions from "../events/RecurringOptions";
-import { CreateEventVals, WeekDayToken } from "../../utils/utils_options";
+import { WeekDayToken } from "../../utils/utils_options";
+// components
 import Checkbox from "../shared/Checkbox";
+import DateInput from "../shared/DateInput";
+import TimerInput from "../shared/TimerInput";
+import MultiStepForm from "../ui/MultiStepForm";
+import CounterInput from "../shared/CounterInput";
+import MultiStepFormStep from "../ui/MultiStepFormStep";
+import RecurringOptions from "../events/RecurringOptions";
+import { getRecurringDesc } from "../../utils/utils_recurring";
+import TimeInput from "../shared/TimeInput";
+import TextInput from "../shared/TextInput";
+import TextArea from "../shared/TextArea";
+
+type PlanType = "New" | "Existing" | null;
 
 type FooterProps = {
 	children?: ReactNode;
@@ -29,13 +35,16 @@ type StepProps = {
 };
 
 type StepFlowProps = {
+	planType: PlanType;
 	workoutValues: NewWorkoutValues;
 	handleDays: (day: WeekDayToken) => void;
 	handleCheckbox: (name: string, value: boolean) => void;
 	handleSelect: (name: string, value: string | number) => void;
 	handleChange: (name: string, value: string | number) => void;
 	changePlanType: (type: "New" | "Existing" | null) => void;
-	changeStep: (step: CreateWorkoutStep) => void;
+	// dispatch/requests
+	saveNewWorkoutPlan: () => void;
+	saveNewWorkout: () => void;
 };
 
 type NavButtonProps = {
@@ -52,6 +61,7 @@ type TypeProps = {
 
 type StepperDeps = {
 	values: CreateWorkoutValues;
+	planType: PlanType;
 	changeStep: (step: CreateWorkoutStep) => void;
 	changePlanType: (type: "New" | "Existing" | null) => void;
 	saveNewWorkout?: () => void;
@@ -59,12 +69,31 @@ type StepperDeps = {
 };
 
 const getStepFooter = (step: CreateWorkoutStep, stepperDeps: StepperDeps) => {
-	const { changeStep, changePlanType } = stepperDeps;
+	const { planType, changeStep, changePlanType, saveWorkout, saveNewWorkout } =
+		stepperDeps;
 	switch (step) {
 		case "Type": {
 			return (
 				<StepFooter>
 					<NavButton onClick={() => changePlanType(null)}>
+						<svg className={styles.BackButton_icon}>
+							<use xlinkHref={`${sprite}#icon-arrow_back`}></use>
+						</svg>
+						<span>Back</span>
+					</NavButton>
+					<NavButton onClick={() => changeStep("About")}>
+						<span>Next</span>
+						<svg className={styles.NextButton_icon}>
+							<use xlinkHref={`${sprite}#icon-arrow_forward`}></use>
+						</svg>
+					</NavButton>
+				</StepFooter>
+			);
+		}
+		case "About": {
+			return (
+				<StepFooter>
+					<NavButton onClick={() => changeStep("Type")}>
 						<svg className={styles.BackButton_icon}>
 							<use xlinkHref={`${sprite}#icon-arrow_back`}></use>
 						</svg>
@@ -133,6 +162,34 @@ const getStepFooter = (step: CreateWorkoutStep, stepperDeps: StepperDeps) => {
 				</StepFooter>
 			);
 		}
+		case "Summary": {
+			return (
+				<StepFooter>
+					<NavButton onClick={() => changeStep("Schedule")}>
+						<svg className={styles.BackButton_icon}>
+							<use xlinkHref={`${sprite}#icon-arrow_back`}></use>
+						</svg>
+						<span>Back</span>
+					</NavButton>
+					<NavButton
+						onClick={() => {
+							if (planType === "New") {
+								return saveNewWorkout && saveNewWorkout();
+							} else if (planType === "Existing") {
+								return saveWorkout && saveWorkout();
+							} else {
+								return;
+							}
+						}}
+					>
+						<span>Next</span>
+						<svg className={styles.NextButton_icon}>
+							<use xlinkHref={`${sprite}#icon-arrow_forward`}></use>
+						</svg>
+					</NavButton>
+				</StepFooter>
+			);
+		}
 
 		default:
 			return null;
@@ -183,6 +240,32 @@ const WorkoutTypesStep = ({ workoutValues, handleSelect }: StepProps) => {
 						selectType={() => handleSelect("workoutType", type.workoutType)}
 					/>
 				))}
+		</div>
+	);
+};
+const AboutStep = ({ workoutValues, handleChange }: StepProps) => {
+	return (
+		<div className={styles.AboutStep}>
+			<div className={styles.AboutStep_row}>
+				<label htmlFor="planName">Add a name/label</label>
+				<TextInput
+					name="planName"
+					id="planName"
+					value={workoutValues.planName}
+					onChange={handleChange}
+					placeholder="Weekly curls..."
+				/>
+			</div>
+			<div className={styles.AboutStep_row}>
+				<label htmlFor="planDesc">Add any notes or details</label>
+				<TextArea
+					name="planDesc"
+					id="planDesc"
+					value={workoutValues.planDesc}
+					onChange={handleChange}
+					placeholder="About this workout..."
+				/>
+			</div>
 		</div>
 	);
 };
@@ -244,6 +327,7 @@ const ScheduleWorkoutStep = ({
 	handleCheckbox,
 }: StepProps) => {
 	const { isRecurring } = workoutValues;
+	const desc = getRecurringDesc(workoutValues);
 
 	return (
 		<div className={styles.ScheduleWorkoutStep}>
@@ -252,10 +336,13 @@ const ScheduleWorkoutStep = ({
 					name="startDate"
 					value={workoutValues.startDate}
 					onChange={handleChange}
-					style={{ minWidth: "25rem" } as CSSProperties}
+					style={{ minWidth: "25rem" }}
 				/>
 			</div>
-			<div className={styles.ScheduleWorkoutStep_row}>
+			<div
+				className={styles.ScheduleWorkoutStep_row}
+				style={{ paddingLeft: "2rem" }}
+			>
 				<Checkbox
 					name="isRecurring"
 					id="isRecurring"
@@ -264,6 +351,7 @@ const ScheduleWorkoutStep = ({
 					onChange={handleCheckbox}
 				/>
 			</div>
+			<div className={styles.Break}></div>
 			{isRecurring && (
 				<div className={styles.ScheduleWorkoutStep_recurrence}>
 					<div className={styles.ScheduleWorkoutStep_recurrence_title}>
@@ -277,6 +365,37 @@ const ScheduleWorkoutStep = ({
 						handleMonth={handleSelect}
 						handleFrequency={handleSelect}
 					/>
+					<div className={styles.ScheduleWorkoutStep_row}>
+						<label htmlFor="endDate">When should this schedule end?</label>
+						<DateInput
+							name="endDate"
+							value={workoutValues.endDate}
+							onChange={handleChange}
+							style={{ minWidth: "25rem" }}
+						/>
+					</div>
+					<div className={styles.ScheduleWorkoutStep_row}>
+						<label htmlFor="startTime">Start Time - End Time</label>
+						<div className={styles.ScheduleWorkoutStep_time}>
+							<TimeInput
+								name="startTime"
+								id="startTime"
+								value={workoutValues.startTime}
+								onChange={handleChange}
+								style={{ minWidth: "12rem", maxWidth: "100%" }}
+							/>
+							<TimeInput
+								name="endTime"
+								id="endTime"
+								value={workoutValues.endTime}
+								onChange={handleChange}
+								style={{ minWidth: "12rem", maxWidth: "100%" }}
+							/>
+						</div>
+					</div>
+					<div className={styles.ScheduleWorkoutStep_row}>
+						<span className={styles.ScheduleWorkoutStep_desc}>{desc}</span>
+					</div>
 				</div>
 			)}
 		</div>
@@ -294,7 +413,9 @@ const WithNewPlan = ({
 	handleChange,
 	handleDays,
 	handleCheckbox,
-	saveNewPlan,
+	saveNewWorkoutPlan,
+	saveNewWorkout,
+	planType,
 	changePlanType,
 }: StepFlowProps) => {
 	const [currentStep, setCurrentStep] = useState<CreateWorkoutStep>("Type");
@@ -305,8 +426,11 @@ const WithNewPlan = ({
 
 	const stepFooter: JSX.Element | null = getStepFooter(currentStep, {
 		values: workoutValues,
+		planType: planType,
 		changeStep: changeStep,
 		changePlanType: changePlanType,
+		saveWorkout: saveNewWorkout, // w/ existing plan
+		saveNewWorkout: saveNewWorkoutPlan, // w/ new plan
 	});
 
 	return (
@@ -320,6 +444,22 @@ const WithNewPlan = ({
 				>
 					<WorkoutTypesStep
 						key="Workout Types"
+						workoutValues={workoutValues}
+						handleDays={handleDays}
+						handleChange={handleChange}
+						handleSelect={handleSelect}
+						handleCheckbox={handleCheckbox}
+					/>
+				</MultiStepFormStep>
+
+				{/* ABOUT STEP (eg. NAME, DESC, NOTES) */}
+				<MultiStepFormStep
+					title="What's the name of this workout?"
+					isActiveStep={currentStep === "About"}
+					footer={stepFooter}
+				>
+					<AboutStep
+						key="About this Workout"
 						workoutValues={workoutValues}
 						handleDays={handleDays}
 						handleChange={handleChange}

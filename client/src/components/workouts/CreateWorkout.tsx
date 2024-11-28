@@ -77,10 +77,20 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 	};
 
 	const handleSelect = (name: string, value: string | number) => {
-		setWorkoutValues({
-			...workoutValues,
-			[name]: value,
-		});
+		// set a default name according to workout type selection
+		if (name === "workoutType") {
+			const plan = !workoutValues.planName ? value : workoutValues.planName;
+			setWorkoutValues({
+				...workoutValues,
+				planName: plan as string,
+				workoutType: value as string,
+			});
+		} else {
+			setWorkoutValues({
+				...workoutValues,
+				[name]: value,
+			});
+		}
 	};
 	const handleChange = (name: string, value: string | number) => {
 		setWorkoutValues({
@@ -97,21 +107,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 
 		if (name === "isRecurring") {
 			toggleIsRecurring(value);
-		}
-	};
-
-	const handleFrequency = (name: string, value: string) => {
-		if (value !== "Weekly") {
-			setWorkoutValues({
-				...workoutValues,
-				[name]: value,
-				byDay: [],
-			});
-		} else {
-			setWorkoutValues({
-				...workoutValues,
-				[name]: value,
-			});
 		}
 	};
 
@@ -153,6 +148,16 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 		}
 	};
 
+	// save the workout w/ a newly created workout plan
+	const saveNewWorkoutPlan = () => {
+		// do stuff
+	};
+
+	// saves a new workout using an existing workout plan
+	const saveNewWorkout = () => {
+		// do stuff
+	};
+
 	return (
 		<div className={styles.CreateWorkout}>
 			{!planType && (
@@ -180,13 +185,15 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 			{/* NEW PLAN FORM */}
 			{planType === "New" && (
 				<WithNewPlan
+					planType={planType}
 					workoutValues={workoutValues}
 					handleChange={handleChange}
 					handleSelect={handleSelect}
 					handleDays={handleDays}
-					handleFrequency={handleFrequency}
 					handleCheckbox={handleCheckbox}
 					changePlanType={choosePlanType}
+					saveNewWorkoutPlan={saveNewWorkoutPlan}
+					saveNewWorkout={saveNewWorkout}
 				/>
 			)}
 			{/* EXISTING PLAN FORM */}

@@ -112,6 +112,16 @@ const formatDateTime = (
 	return formatted;
 };
 
+const parseDate = (
+	dateStr: string,
+	formatToken: keyof DateFormats["date"] = "db"
+) => {
+	const token = DATE_TOKENS[formatToken];
+	const parsed = parse(dateStr, token, new Date());
+
+	return parsed;
+};
+
 // Parses => '2024-11-22' & converts to a real date w/ a given format
 const parseDateTime = (
 	dateStr: string,
@@ -139,5 +149,6 @@ export {
 	formatTime,
 	formatDateTime,
 	parseDateTime,
+	parseDate,
 	getDistanceToNow,
 };

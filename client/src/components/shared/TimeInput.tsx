@@ -1,9 +1,9 @@
 import { ChangeEvent, FocusEvent, ComponentPropsWithoutRef } from "react";
-import "../../css/shared/TimeInput.module.scss";
+import styles from "../../css/shared/TimeInput.module.scss";
 
 type InputProps = {
 	name: string;
-	id: string;
+	id?: string;
 	value: number | string;
 	onChange: (name: string, value: string) => void;
 	onFocus?: (e: FocusEvent) => void;
@@ -12,7 +12,7 @@ type InputProps = {
 // @ts-expect-error: this is fine
 interface Props extends InputProps, ComponentPropsWithoutRef<"input"> {}
 
-const TimeInput = ({ name, id, value, onChange, onFocus }: Props) => {
+const TimeInput = ({ name, id, value, onChange, onFocus, ...rest }: Props) => {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
 
@@ -20,7 +20,7 @@ const TimeInput = ({ name, id, value, onChange, onFocus }: Props) => {
 	};
 
 	return (
-		<div className="TimeInput">
+		<div className={styles.TimeInput}>
 			<input
 				type="time"
 				name={name}
@@ -29,7 +29,8 @@ const TimeInput = ({ name, id, value, onChange, onFocus }: Props) => {
 				value={value}
 				onChange={handleChange}
 				onFocus={onFocus}
-				className="TimeInput_input"
+				className={styles.TimeInput_input}
+				{...rest}
 			/>
 		</div>
 	);

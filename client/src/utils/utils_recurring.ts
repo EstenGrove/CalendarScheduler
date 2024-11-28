@@ -1,4 +1,6 @@
 import { CalendarEventSchedule } from "../features/events/types";
+import { formatDate, parseDate } from "./utils_dates";
+import { RecurringVals } from "./utils_options";
 
 // Descriptions map for 'nth' (eg 1st, 2nd, 3rd, 4th, etc...)
 const numsMap = {
@@ -59,4 +61,60 @@ const getRepeatByFreq = (schedule: CalendarEventSchedule) => {
 	}
 };
 
-export { getRepeatByFreq, getMonthlySuffix };
+// We need to parse the date string value that comes from the date inputs
+// - eg. '2024-11-18' => '11/18/2024' otherwise we're off by one day when it's formatted
+const getRepeatDate = (date: string) => {
+	const parsed = parseDate(date, "db");
+	const formatted = formatDate(parsed, "long");
+	return formatted;
+};
+
+const getRecurringDesc = (values: RecurringVals) => {
+	const {
+		startDate,
+		endDate,
+		frequency,
+		interval,
+		byDay,
+		byMonth,
+		byMonthDay,
+	} = values;
+	const sDate: string = getRepeatDate(startDate);
+	const eDate: string = getRepeatDate(endDate);
+	const prefix: string = `Repeats every ${interval}`;
+	const suffix: string = interval > 1 ? "s" : "";
+	const from: string = `from ${sDate}`;
+	const until: string = endDate ? `until ${eDate}` : `until cancelled`;
+
+	switch (frequency) {
+		case "Daily": {
+			const desc: string = `${prefix} day${suffix} ${from} ${until}`;
+			return desc;
+		}
+		case "Weekly": {
+			const days: string = byDay.join(", ");
+			const desc: string = `${prefix} week${suffix} on ${days} ${from} ${until}`;
+			return desc;
+		}
+		case "Monthly": {
+			const nthSuffix: string = getMonthlySuffix(byMonthDay);
+			const desc: string = `${prefix} month${suffix} on the ${nthSuffix} of the month ${from} ${until}`;
+			return desc;
+		}
+		case "Yearly": {
+			const nthSuffix: string = getMonthlySuffix(byMonth);
+			const desc: string = `${prefix} year${suffix} on the ${nthSuffix} ${from} ${until}`;
+			return desc;
+		}
+		case "Custom": {
+			return "Custom repeat schedule.";
+		}
+		case "Never": {
+			return "Does not repeat.";
+		}
+		default:
+			return "Does not repeat";
+	}
+};
+
+export { getRepeatByFreq, getMonthlySuffix, getRecurringDesc, getRepeatDate };

@@ -7,6 +7,7 @@ type Props = {
 	workoutLogs: WorkoutLogEntry[];
 	filteredLogs: WorkoutLogEntry[];
 	selectFilter: (filter: string) => void;
+	toggleTodayFilter: () => void;
 	filters: string[];
 	clearFilters: () => void;
 	openFiltersModal: () => void;
@@ -51,6 +52,7 @@ const FilterOption = ({ children, onClick, ...rest }: FilterProps) => {
 
 const HistoryFilters = ({
 	selectFilter,
+	toggleTodayFilter,
 	filters = [],
 	clearFilters,
 	workoutLogs,
@@ -76,7 +78,7 @@ const HistoryFilters = ({
 						Clear All
 					</FilterOption>
 				)}
-				<FilterOption onClick={() => selectFilter("Today")}>Today</FilterOption>
+				<FilterOption onClick={toggleTodayFilter}>Today</FilterOption>
 				<FilterButton onClick={openFiltersModal} />
 			</div>
 			{/*  */}

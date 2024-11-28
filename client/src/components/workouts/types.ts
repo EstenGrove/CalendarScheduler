@@ -2,6 +2,7 @@ import { EventFrequency, WeekDayToken } from "../../utils/utils_options";
 
 export type CreateWorkoutStep =
 	| "Type"
+	| "About"
 	| "Reps"
 	| "Steps"
 	| "Time"

@@ -13,7 +13,7 @@ import {
 } from "../features/workoutHistory/operations";
 import { CurrentUser } from "../features/user/types";
 import { selectCurrentUser } from "../features/user/userSlice";
-import { endOfWeek, startOfWeek } from "date-fns";
+import { endOfWeek, isToday, startOfWeek } from "date-fns";
 import { formatDate } from "../utils/utils_dates";
 // components
 import Loader from "../components/ui/Loader";
@@ -33,17 +33,6 @@ const getLogRange = () => {
 	};
 };
 
-const filterFns = {
-	Today: (logs: WorkoutLogEntry[]): WorkoutLogEntry[] => {
-		const todaysDate = formatDate(new Date(), "db");
-		return logs.filter((log) => {
-			const logDate = formatDate(log.date, "db");
-
-			return logDate === todaysDate;
-		});
-	},
-};
-
 const searchLogs = (
 	value: string,
 	logs: WorkoutLogEntry[]
@@ -52,7 +41,7 @@ const searchLogs = (
 	const normVal = value.toLowerCase();
 
 	return logs.filter((log) => {
-		const { workoutType, date, weight, reps } = log;
+		const { workoutType, weight, reps } = log;
 		const wt = workoutType.toLowerCase();
 		const isMatch =
 			wt.includes(normVal) ||
@@ -63,6 +52,12 @@ const searchLogs = (
 			String(reps).startsWith(normVal);
 
 		return isMatch;
+	});
+};
+
+const getTodaysLogs = (logs: WorkoutLogEntry[]): WorkoutLogEntry[] => {
+	return logs.filter((log) => {
+		return isToday(log.date) || isToday(log.createdDate);
 	});
 };
 
@@ -86,6 +81,18 @@ const DashboardWorkoutHistory = () => {
 		}
 	};
 
+	const toggleTodayFilter = () => {
+		if (filters.includes("Today")) {
+			// remove 'Today' filter
+			setFilters([...filters.filter((x) => x !== "Today")]);
+			setFilteredLogs(workoutLogs);
+		} else {
+			const todaysLogs = getTodaysLogs(workoutLogs);
+			setFilters([...filters, "Today"]);
+			setFilteredLogs(todaysLogs);
+		}
+	};
+
 	const handleSearch = (_: string, value: string) => {
 		setSearchVal(value);
 		const results = searchLogs(value, workoutLogs);
@@ -95,6 +102,7 @@ const DashboardWorkoutHistory = () => {
 	const clearFilters = () => {
 		//  do stuff
 		setFilters([]);
+		setFilteredLogs(workoutLogs);
 	};
 
 	const openFiltersModal = () => {
@@ -130,12 +138,13 @@ const DashboardWorkoutHistory = () => {
 		<div className={styles.DashboardWorkoutHistory}>
 			<div className={styles.DashboardWorkoutHistory_filters}>
 				<HistoryFilters
-					openFiltersModal={openFiltersModal}
-					selectFilter={selectFilter}
 					filters={filters}
 					workoutLogs={workoutLogs}
 					filteredLogs={filteredLogs}
+					selectFilter={selectFilter}
 					clearFilters={clearFilters}
+					toggleTodayFilter={toggleTodayFilter}
+					openFiltersModal={openFiltersModal}
 				/>
 			</div>
 			<div className={styles.DashboardWorkoutHistory_search}>
@@ -145,6 +154,7 @@ const DashboardWorkoutHistory = () => {
 					id="searchLogs"
 					className={styles.DashboardWorkoutHistory_search_input}
 					placeholder="Search logs..."
+					value={searchVal}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
 						const { name, value } = e.target;
 						handleSearch(name, value);

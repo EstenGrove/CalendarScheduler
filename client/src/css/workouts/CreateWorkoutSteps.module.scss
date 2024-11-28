@@ -46,6 +46,20 @@
 		border-color: var(--accent-purple);
 	}
 }
+.AboutStep {
+	width: 100%;
+
+	& label {
+		font-size: 1.5rem;
+		color: $text2;
+	}
+
+	&_row {
+		width: 100%;
+		display: block;
+		margin-bottom: 3rem;
+	}
+}
 .WorkoutWeights {
 	width: 100%;
 	height: auto;
@@ -75,6 +89,11 @@
 .ScheduleWorkoutStep {
 	width: 100%;
 
+	& label {
+		font-size: 1.5rem;
+		color: $text2;
+	}
+
 	&_date {
 		width: 100%;
 		padding: 0 2rem;
@@ -83,7 +102,7 @@
 
 	&_row {
 		width: 100%;
-		padding: 0 2rem;
+		padding: 1rem 0;
 	}
 	&_recurrence {
 		width: 100%;
@@ -95,9 +114,28 @@
 			color: $text2;
 		}
 	}
+
+	&_time {
+		width: 100%;
+		margin: 2rem 0;
+		@include rowCenter();
+	}
+
+	&_desc {
+		font-size: 1.5rem;
+	}
 }
 
 // NAVIGATION & LAYOUT
+.Break {
+	display: block;
+	width: 80%;
+	height: 1px;
+	margin: 0.5rem auto;
+	margin-top: 2rem;
+	background-color: $borderLightColor;
+}
+
 .StepFooter {
 	@include fill_container;
 	@include flex_row(space-between, center);

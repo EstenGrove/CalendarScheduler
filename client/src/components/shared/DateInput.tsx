@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject } from "react";
+import { ChangeEvent, CSSProperties, RefObject } from "react";
 import styles from "../../css/shared/DateInput.module.scss";
 
 type DateProps = {
@@ -7,6 +7,7 @@ type DateProps = {
 	value: number | string;
 	inputRef?: RefObject<HTMLInputElement>;
 	onChange: (name: string, value: string) => void;
+	style?: CSSProperties;
 };
 
 // @ts-expect-error: this is fine

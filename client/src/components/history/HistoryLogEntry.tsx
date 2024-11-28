@@ -46,8 +46,7 @@ const HistoryLogEntry = ({ logEntry }: Props) => {
 				<div className={styles.HistoryLogEntry_top_title}>
 					<h3>{workoutType}</h3>
 					<div className={styles.HistoryLogEntry_top_title_when}>
-						{/* {dateParts.distance} ago */}
-						{formatted}
+						{dateParts.distance} ago ({formatted})
 					</div>
 				</div>
 				<div className={styles.HistoryLogEntry_top_options}>
@@ -55,6 +54,21 @@ const HistoryLogEntry = ({ logEntry }: Props) => {
 						<use xlinkHref={`${sprite}#icon-keyboard_control`}></use>
 					</svg>
 				</div>
+			</div>
+			<div className={styles.HistoryLogEntry_middle}>
+				{/*  */}
+				{/*  */}
+				{/*  */}
+			</div>
+			<div className={styles.HistoryLogEntry_bottom}>
+				<div className={styles.HistoryLogEntry_bottom_mins}>
+					<svg className={styles.HistoryLogEntry_bottom_mins_icon}>
+						<use xlinkHref={`${sprite}#icon-stopwatch`}></use>
+					</svg>
+					<span>{mins}m</span>
+				</div>
+				{/*  */}
+				{/*  */}
 			</div>
 			{/*  */}
 			{/*  */}
