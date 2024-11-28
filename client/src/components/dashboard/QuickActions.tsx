@@ -3,6 +3,8 @@ import { CurrentUser } from "../../features/user/types";
 import styles from "../../css/dashboard/QuickActions.module.scss";
 import ActionsBar from "./ActionsBar";
 import LogWorkoutModal from "../history/LogWorkoutModal";
+import Modal from "../shared/Modal";
+import CreateWorkout from "../workouts/CreateWorkout";
 
 type Props = {
 	currentUser: CurrentUser;
@@ -24,6 +26,15 @@ const QuickActions = ({ currentUser }: Props) => {
 	return (
 		<div className={styles.QuickActions}>
 			<ActionsBar onAction={selectAction} />
+
+			{actionType === "CreateWorkout" && (
+				<Modal title="Create Workout" closeModal={closeActionModal}>
+					<CreateWorkout
+						currentUser={currentUser}
+						closeModal={closeActionModal}
+					/>
+				</Modal>
+			)}
 
 			{actionType === "LogWorkout" && (
 				<LogWorkoutModal

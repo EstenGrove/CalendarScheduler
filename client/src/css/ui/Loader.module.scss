@@ -5,7 +5,8 @@
 $size: 48px;
 
 .Loader {
-	width: max-content;
+	width: 100%;
+	height: auto;
 	@include colCenter;
 
 	&_inner {

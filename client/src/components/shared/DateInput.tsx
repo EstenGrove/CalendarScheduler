@@ -12,7 +12,7 @@ type DateProps = {
 // @ts-expect-error: this is fine
 interface Props extends DateProps, ComponentPropsWithoutRef<"input"> {}
 
-const DateInput = ({ name, id, value, onChange, inputRef }: Props) => {
+const DateInput = ({ name, id, value, onChange, inputRef, ...rest }: Props) => {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
 		return onChange && onChange(name, value);
@@ -28,6 +28,7 @@ const DateInput = ({ name, id, value, onChange, inputRef }: Props) => {
 				value={value}
 				onChange={handleChange}
 				className={styles.DateInput_input}
+				{...rest}
 			/>
 		</div>
 	);

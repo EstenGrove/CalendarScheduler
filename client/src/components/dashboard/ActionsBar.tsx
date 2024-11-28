@@ -129,7 +129,7 @@ const ActionsBar = ({ onAction }: Props) => {
 						title="Create a workout"
 						icon="workout"
 						color="var(--bg-foreground)"
-						onAction={() => selectAction("Workout")}
+						onAction={() => selectAction("CreateWorkout")}
 					/>
 				</Menu>
 			)}

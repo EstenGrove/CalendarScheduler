@@ -1,4 +1,3 @@
-import ColorTag from "../components/ui/ColorTag";
 import styles from "../css/views/CalendarEvent.module.scss";
 import sprite from "../assets/icons/calendar.svg";
 import {
@@ -6,13 +5,10 @@ import {
 	CalendarEvent as ICalendarEvent,
 } from "../features/events/types";
 import { formatDate } from "../utils/utils_dates";
-import Button from "../components/shared/Button";
 import { useSelector } from "react-redux";
 import { selectSelectedEvent } from "../features/events/eventsSlice";
-import {
-	getRepeatByFreq,
-	getRepeatDescription,
-} from "../utils/utils_recurring";
+import Button from "../components/shared/Button";
+import ColorTag from "../components/ui/ColorTag";
 import RecurringDesc from "../components/events/RecurringDesc";
 
 type Props = { calendarEvent: ICalendarEvent };
@@ -24,14 +20,21 @@ type DetailsProps = {
 // CALENDAR EVENT DETAILS VIEW
 
 const DateTimeDetails = ({ calendarEvent }: DetailsProps) => {
-	const { startDate, endDate, startTime, endTime, eventDate } = calendarEvent;
-	const eventStart: string = formatDate(startDate, "shortMonth");
-	const eventEnd: string = formatDate(endDate as string, "shortMonth");
+	const {
+		startDate,
+		endDate,
+		startTime,
+		endTime,
+		eventDate: date,
+	} = calendarEvent;
+	const eventStart: string = formatDate(startDate, "long");
+	const eventEnd: string = formatDate(endDate as string, "long");
+	const eventDate: string = formatDate(date, "shortMonth");
 	return (
 		<div className={styles.DateTimeDetails}>
 			<div className={styles.DateTimeDetails_date}>
 				<svg className={styles.DateTimeDetails_icon}>
-					<use xlinkHref={`${sprite}#icon-event_note`}></use>
+					<use xlinkHref={`${sprite}#icon-calendar_today`}></use>
 				</svg>
 				Started on <span>{eventStart}</span>
 			</div>
@@ -53,7 +56,7 @@ const DateTimeDetails = ({ calendarEvent }: DetailsProps) => {
 			</div>
 			<div className={styles.DateTimeDetails_time}>
 				<svg className={styles.DateTimeDetails_icon}>
-					<use xlinkHref={`${sprite}#icon-access_time`}></use>
+					<use xlinkHref={`${sprite}#icon-event_available`}></use>
 				</svg>
 				Current Event: <span>{eventDate}</span>
 			</div>

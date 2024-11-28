@@ -25,6 +25,11 @@ export interface CreateEventVals {
 	notes: string;
 }
 
+export type RecurringVals = Omit<
+	CreateEventVals,
+	"location" | "url" | "title" | "desc"
+>;
+
 const FREQ_OPTIONS = [
 	{ label: "Daily", value: "Daily" },
 	{ label: "Weekly", value: "Weekly" },

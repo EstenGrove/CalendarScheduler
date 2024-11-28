@@ -8,3 +8,13 @@
 		display: block;
 	}
 }
+
+.Fallback {
+	width: 100%;
+	height: 40rem;
+	display: flex;
+	flex-direction: column;
+	place-items: center;
+	font-size: 1.7rem;
+	color: var(--accent);
+}

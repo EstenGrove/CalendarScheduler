@@ -1,10 +1,13 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/history/HistoryFilters.module.scss";
+import { WorkoutLogEntry } from "../../features/workoutHistory/types";
 
 type Props = {
+	workoutLogs: WorkoutLogEntry[];
+	filteredLogs: WorkoutLogEntry[];
 	selectFilter: (filter: string) => void;
-	selectedFilters: string[];
+	filters: string[];
 	clearFilters: () => void;
 	openFiltersModal: () => void;
 };
@@ -48,18 +51,25 @@ const FilterOption = ({ children, onClick, ...rest }: FilterProps) => {
 
 const HistoryFilters = ({
 	selectFilter,
-	selectedFilters = [],
+	filters = [],
 	clearFilters,
+	workoutLogs,
+	filteredLogs,
 	openFiltersModal,
 }: Props) => {
+	const totalCount = workoutLogs?.length || 0;
+	const logCount = filteredLogs?.length || 0;
 	return (
 		<div className={styles.HistoryFilters}>
 			<div className={styles.HistoryFilters_inner}>
-				{selectedFilters && selectedFilters.length > 0 && (
+				<div className={styles.HistoryFilters_inner_count}>
+					<b>{logCount}</b> / <b>{totalCount}</b> logs
+				</div>
+				{filters && filters.length > 0 && (
 					<FilterOption
 						onClick={clearFilters}
 						style={{
-							marginRight: "auto",
+							marginLeft: "auto",
 							backgroundColor: "var(--accent-red2)",
 						}}
 					>

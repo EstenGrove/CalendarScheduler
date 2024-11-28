@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/shared/CounterInput.module.scss";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
@@ -30,6 +30,14 @@ const HiddenInput = ({
 	const inputRef = useRef<HTMLInputElement>(null);
 	useOutsideClick(inputRef, hideInput);
 
+	const onKeyDown = (e: KeyboardEvent) => {
+		const key = e.key;
+
+		if (key === "Enter") {
+			hideInput();
+		}
+	};
+
 	useEffect(() => {
 		let isMounted = true;
 		if (!isMounted) {
@@ -54,6 +62,7 @@ const HiddenInput = ({
 			id={name}
 			value={value}
 			onChange={handleChange}
+			onKeyDown={onKeyDown}
 			onBlur={hideInput}
 			className={styles.CounterInput_value_input}
 			inputMode="decimal"
@@ -112,10 +121,13 @@ const CounterInput = ({
 				</svg>
 			</button>
 			<div className={styles.CounterInput_value} onClick={openInput}>
-				{!showInput && <div>{value}</div>}
+				{!showInput && (
+					<div tabIndex={0} onFocus={openInput}>
+						{value}
+					</div>
+				)}
 				{showInput && (
 					<HiddenInput
-						// inputRef={inputRef}
 						name={name}
 						id={name}
 						value={value}

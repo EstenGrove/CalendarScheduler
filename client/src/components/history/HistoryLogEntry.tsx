@@ -38,6 +38,7 @@ const getSuffix = (dayOfMonth: number) => {
 const HistoryLogEntry = ({ logEntry }: Props) => {
 	const { date, workoutType, reps, sets, weight, mins } = logEntry;
 	const dateParts = parseWorkoutDate(date);
+	const formatted = formatDate(date, "long");
 
 	return (
 		<div className={styles.HistoryLogEntry}>
@@ -45,7 +46,8 @@ const HistoryLogEntry = ({ logEntry }: Props) => {
 				<div className={styles.HistoryLogEntry_top_title}>
 					<h3>{workoutType}</h3>
 					<div className={styles.HistoryLogEntry_top_title_when}>
-						{dateParts.distance} ago
+						{/* {dateParts.distance} ago */}
+						{formatted}
 					</div>
 				</div>
 				<div className={styles.HistoryLogEntry_top_options}>

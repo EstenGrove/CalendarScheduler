@@ -1,16 +1,16 @@
 import styles from "../../css/events/RecurringOptions.module.scss";
 import {
-	CreateEventVals,
 	EventFrequency,
-	FREQ_OPTIONS as freqOptions,
 	WeekDayToken,
+	RecurringVals,
+	FREQ_OPTIONS as freqOptions,
 } from "../../utils/utils_options";
 import { getMonthlySuffix } from "../../utils/utils_recurring";
 import NumberInput from "../shared/NumberInput";
 import Select from "../shared/Select";
 
 type Props = {
-	values: CreateEventVals;
+	values: RecurringVals;
 	handleFrequency: (name: string, value: string) => void;
 	handleDays: (day: WeekDayToken) => void;
 	handleChange: (name: string, value: string | number) => void;
@@ -19,13 +19,13 @@ type Props = {
 };
 
 type FreqAndIntervalProps = {
-	values: CreateEventVals;
+	values: RecurringVals;
 	handleFrequency: (name: string, value: string) => void;
 	handleChange: (name: string, value: string | number) => void;
 };
 
 type WeekDayProps = {
-	values: CreateEventVals;
+	values: RecurringVals;
 	selectDay: (day: WeekDayToken) => void;
 };
 
@@ -140,7 +140,7 @@ const FreqAndInterval = ({
 };
 
 type MonthProps = {
-	values: CreateEventVals;
+	values: RecurringVals;
 	handleMonth: (name: string, value: number | string) => void;
 };
 
@@ -193,9 +193,6 @@ const RecurringOptions = ({
 					<MonthlyOptions handleMonth={handleMonth} values={values} />
 				</div>
 			)}
-
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

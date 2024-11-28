@@ -37,9 +37,6 @@ const LogWorkoutModal = ({ currentUser, closeModal }: Props) => {
 			<div className={styles.LogWorkoutModal_steps}>
 				<LogWorkout currentUser={currentUser} closeModal={closeModal} />
 			</div>
-			{/*  */}
-			{/*  */}
-			{/*  */}
 		</aside>
 	);
 };

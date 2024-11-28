@@ -1,13 +1,15 @@
-import { ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 import styles from "../../css/ui/Loader.module.scss";
 
-type Props = {
+type LoaderProps = {
 	children?: ReactNode;
 };
 
-const Loader = ({ children }: Props) => {
+interface Props extends LoaderProps, ComponentPropsWithoutRef<"div"> {}
+
+const Loader = ({ children, ...rest }: Props) => {
 	return (
-		<div className={styles.Loader}>
+		<div className={styles.Loader} {...rest}>
 			<div className={styles.ripple}>
 				<div></div>
 				<div></div>

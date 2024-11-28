@@ -1,0 +1,40 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.CreateWorkout {
+	width: 100%;
+
+	&_planTypes {
+		width: 100%;
+
+		&_title {
+			font-size: 2rem;
+			text-align: center;
+			margin-bottom: 6rem;
+		}
+
+		&_options {
+			@include rowCenter;
+			gap: 0 2rem;
+			&_plan {
+				width: 18rem;
+				height: 5rem;
+				border-radius: 1rem;
+				border: $borderLight;
+				@include rowCenter;
+				font-size: 1.5rem;
+				&:hover {
+					cursor: pointer;
+					border-color: $accent;
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.CreateWorkout {
+		width: 100%;
+	}
+}
