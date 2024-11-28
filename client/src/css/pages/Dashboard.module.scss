@@ -8,5 +8,12 @@
 	&_main {
 		@include fill_container;
 		@include flex_row(flex-start, flex-start);
+
+		&_overflow {
+			@include fill_container;
+			// height: 100%;
+			// min-height: 90rem;
+			// overflow-y: auto;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import { ChangeEvent, RefObject } from "react";
+import { ChangeEvent, CSSProperties, RefObject } from "react";
 import styles from "../../css/shared/DateInput.module.scss";
 
 type DateProps = {
@@ -7,12 +7,13 @@ type DateProps = {
 	value: number | string;
 	inputRef?: RefObject<HTMLInputElement>;
 	onChange: (name: string, value: string) => void;
+	style?: CSSProperties;
 };
 
 // @ts-expect-error: this is fine
 interface Props extends DateProps, ComponentPropsWithoutRef<"input"> {}
 
-const DateInput = ({ name, id, value, onChange, inputRef }: Props) => {
+const DateInput = ({ name, id, value, onChange, inputRef, ...rest }: Props) => {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { value } = e.target;
 		return onChange && onChange(name, value);
@@ -28,6 +29,7 @@ const DateInput = ({ name, id, value, onChange, inputRef }: Props) => {
 				value={value}
 				onChange={handleChange}
 				className={styles.DateInput_input}
+				{...rest}
 			/>
 		</div>
 	);

@@ -18,6 +18,7 @@ app.get("/ping", (ctx) => {
 });
 
 app.route("/events", allRoutes.events);
+app.route("/history", allRoutes.history);
 app.route("/workouts", allRoutes.workouts);
 
 console.log(`✅ Server is running on port: ${port}`);

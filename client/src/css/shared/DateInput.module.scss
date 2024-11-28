@@ -21,6 +21,7 @@
 		cursor: pointer;
 		color-scheme: dark;
 		background-color: $foreground;
+		text-align: left;
 		&:hover {
 			border-color: var(--accent);
 			cursor: pointer;

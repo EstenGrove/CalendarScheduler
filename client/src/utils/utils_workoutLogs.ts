@@ -1,6 +1,9 @@
-import { CreateLogValues } from "../components/workout-logs/types";
+import { AsyncResponse } from "../features/types";
 import { currentEnv, historyApis } from "./utils_env";
 import { WorkoutType, workoutTypes } from "./utils_workoutPlans";
+import { CreateLogValues } from "../components/workout-logs/types";
+import { WorkoutLogEntry } from "../features/workoutHistory/types";
+import { WorkoutLogParams } from "../features/workoutHistory/operations";
 
 export type LogStep =
 	| "Type"
@@ -9,6 +12,8 @@ export type LogStep =
 	| "Length"
 	| "Time"
 	| "Summary"
+	| "SUCCESS"
+	| "FAILED"
 	| null;
 
 // Checks if workout type uses weights, like curls, dumbells etc
@@ -50,11 +55,40 @@ const isOtherType = (type: string): boolean => {
 
 	const hasOtherName = !!record && record.workoutType === "Other";
 	const hasOtherUnit = !!record && record.units === "other";
+	// yoga/stretching or other timed excercise
+	const hasOtherLikeness = !!record && record.units === "other";
 
-	return !!record && hasOtherName && hasOtherUnit;
+	return !!record && (hasOtherName || hasOtherUnit || hasOtherLikeness);
+};
+
+// Finds matching workout typeID from name, falls back to 'Other' type, if not found
+const getWorkoutTypeIDFromName = (type: string): number => {
+	const record = workoutTypes.find((entry) => entry.workoutType === type);
+
+	const typeID: number = record?.workoutTypeID || 10;
+
+	return typeID;
 };
 
 // SAVING WORKOUT LOGS
+
+const getWorkoutLogs = async (
+	userID: string,
+	range: WorkoutLogParams["range"]
+): AsyncResponse<{ history: object[]; logs: WorkoutLogEntry[] }> => {
+	const { start, end } = range;
+	let url = currentEnv.base + historyApis.getLogs;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate: start, endDate: end });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
 
 const saveWorkoutLog = async (userID: string, workoutLog: CreateLogValues) => {
 	const url = currentEnv.base + historyApis.createLog;
@@ -76,5 +110,9 @@ export {
 	isWalkingType,
 	isDistanceType,
 	isOtherType,
+	// request utils
+	getWorkoutLogs,
 	saveWorkoutLog,
+	// utils
+	getWorkoutTypeIDFromName,
 };

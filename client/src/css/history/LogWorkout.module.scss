@@ -50,3 +50,12 @@
 	margin-left: auto;
 	background-color: var(--accent-purple);
 }
+.CreateNewButton {
+	@include navBtn();
+	margin-right: auto;
+	background-color: var(--accent-red);
+}
+.CloseButton {
+	@include navBtn();
+	margin-left: auto;
+}

@@ -9,6 +9,8 @@ import type {
 	CalendarScheduleDB,
 	EventDetailsClient,
 	EventDetailsDB,
+	WorkoutLogClient,
+	WorkoutLogDB,
 } from "../services/types";
 
 class MonthlySummaryNormalizer {
@@ -249,7 +251,65 @@ class SchedulesNormalizer {
 	}
 }
 
+class HistoryNormalizer {
+	#toDB(record: WorkoutLogClient): WorkoutLogDB {
+		const dbRecord: WorkoutLogDB = {
+			log_id: record.logID,
+			user_id: record.userID,
+			workout_type_name: record.workoutType,
+			reps: record.reps,
+			sets: record.sets,
+			weight: record.weight,
+			miles: record.miles,
+			steps: record.steps,
+			workout_mins: record.mins,
+			workout_date: record.date,
+			is_active: record.isActive,
+			created_date: record.createdDate,
+			start_time: record.startTime,
+			end_time: record.endTime,
+		};
+		return dbRecord;
+	}
+	#toClient(record: WorkoutLogDB): WorkoutLogClient {
+		const clientRecord: WorkoutLogClient = {
+			userID: record.user_id,
+			logID: record.log_id,
+			workoutType: record.workout_type_name,
+			reps: record.reps,
+			sets: record.sets,
+			weight: record.weight,
+			miles: record.miles,
+			steps: record.steps,
+			mins: record.workout_mins,
+			startTime: record.start_time,
+			endTime: record.end_time,
+			date: record.workout_date,
+			isActive: record.is_active,
+			createdDate: record.created_date,
+		};
+		return clientRecord;
+	}
+
+	toClientOne(record: WorkoutLogDB): WorkoutLogClient {
+		return this.#toClient(record);
+	}
+	toDBOne(record: WorkoutLogClient): WorkoutLogDB {
+		return this.#toDB(record);
+	}
+
+	toClient(records: WorkoutLogDB[]): WorkoutLogClient[] {
+		if (!records || records.length <= 0) return [];
+		return records.map(this.#toClient);
+	}
+	toDB(records: WorkoutLogClient[]): WorkoutLogDB[] {
+		if (!records || records.length <= 0) return [];
+		return records.map(this.#toDB);
+	}
+}
+
 const eventsNormalizer = new EventsNormalizer();
+const historyNormalizer = new HistoryNormalizer();
 const schedulesNormalizer = new SchedulesNormalizer();
 const summaryNormalizer = new MonthlySummaryNormalizer();
 const eventDetailsNormalizer = new EventDetailsNormalizer();
@@ -261,4 +321,5 @@ export {
 	eventDetailsNormalizer,
 	eventInstancesNormalizer,
 	schedulesNormalizer,
+	historyNormalizer,
 };

@@ -31,7 +31,7 @@
 			cursor: pointer;
 		}
 		&::placeholder {
-			color: var(--text-faded);
+			color: $text2;
 		}
 	}
 }

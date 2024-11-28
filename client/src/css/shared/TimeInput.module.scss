@@ -1,0 +1,18 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.TimeInput {
+	width: 100%;
+	font-size: 1.6rem;
+
+	&_input {
+		height: 3.5rem;
+		font-size: 1.6rem;
+		color-scheme: dark;
+		background-color: $foreground;
+		border-radius: 0.5rem;
+		border: $borderLight;
+		padding: 0 0.5rem;
+	}
+}

@@ -13,6 +13,8 @@ export interface NewTagVals {
 	tagColor: string;
 }
 
+export type EventSvcResp = Promise<EventInstanceDB[] | unknown>;
+
 class EventsService {
 	#db: Pool;
 	constructor(db: Pool) {
@@ -45,15 +47,11 @@ class EventsService {
 			return error;
 		}
 	}
-	async getEventsByDate(
-		userID: string,
-		targetDate: string
-	): Promise<EventInstanceDB[] | unknown> {
+	async getEventsByDate(userID: string, targetDate: string) {
 		try {
 			const query = `SELECT * FROM get_events_by_date($1, $2)`;
 			const results = await this.#db.query(query, [userID, targetDate]);
 			const rows = results?.rows as EventInstanceDB[];
-			console.log("Rows", rows);
 			return rows as EventInstanceDB[];
 		} catch (error) {
 			return error;
@@ -69,7 +67,10 @@ class EventsService {
 			return error;
 		}
 	}
-	async createEvent(userID: string, newEvent: CreateEventVals) {
+	async createEvent(
+		userID: string,
+		newEvent: CreateEventVals
+	): Promise<EventInstanceDB[] | unknown> {
 		const {
 			title,
 			desc,
@@ -119,7 +120,10 @@ class EventsService {
 			return error;
 		}
 	}
-	async createEventRecord(userID: string, newEvent: CreateEventVals) {
+	async createEventRecord(
+		userID: string,
+		newEvent: CreateEventVals
+	): Promise<EventInstanceDB[] | unknown> {
 		const { title, desc, startDate, endDate, startTime, endTime } = newEvent;
 
 		try {

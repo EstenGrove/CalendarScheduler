@@ -100,6 +100,22 @@ const workoutTypes: WorkoutType[] = [
 		units: "miles",
 	},
 	{
+		workoutTypeID: 11,
+		workoutType: "Stretch",
+		workoutTypeDesc: "Stretching excersise",
+		isActive: true,
+		createdDate: "2024-11-23 11:04:57.394021",
+		units: "other",
+	},
+	{
+		workoutTypeID: 12,
+		workoutType: "Yoga",
+		workoutTypeDesc: "Yoga excersise",
+		isActive: true,
+		createdDate: "2024-11-23 11:04:57.394021",
+		units: "other",
+	},
+	{
 		workoutTypeID: 10,
 		workoutType: "Other",
 		workoutTypeDesc: "Miscellaneous workout type.",

@@ -21,7 +21,7 @@ const initialValues: CreateEventVals = {
 	frequency: "Never",
 	isRecurring: false,
 	byDay: [],
-	byMonthDay: 0,
+	byMonthDay: new Date().getDate(),
 	byMonth: 0,
 	// optional
 	location: "",
@@ -90,6 +90,13 @@ const DashboardCalendarLayout = () => {
 		}
 	};
 
+	const handleMonth = (name: string, value: number | string) => {
+		setNewEventValues({
+			...newEventValues,
+			[name]: value,
+		});
+	};
+
 	const toggleIsRecurring = (isRecurring: boolean) => {
 		if (isRecurring) {
 			setNewEventValues({
@@ -142,6 +149,7 @@ const DashboardCalendarLayout = () => {
 					<CreateEvent
 						values={newEventValues}
 						handleDays={handleDays}
+						handleMonth={handleMonth}
 						handleChange={handleChange}
 						handleCheckbox={handleCheckbox}
 						handleFrequency={handleFrequency}

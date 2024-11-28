@@ -5,6 +5,7 @@ import type {
 	CreateEventVals,
 	EventInstanceDB,
 	MonthlyEventSummaryDB,
+	NewEventPayload,
 } from "../services/types";
 import { getResponseError, getResponseOk } from "../utils/data";
 import {
@@ -117,14 +118,8 @@ app.get("/getMonthlySummary", async (ctx: Context) => {
 	return ctx.json(response);
 });
 
-interface NewEventPayload {
-	userID: string;
-	newEvent: CreateEventVals;
-}
-
 app.post("/createEvent", async (ctx: Context) => {
 	const body = await ctx.req.json<NewEventPayload>();
-	console.log("Body:", body);
 	const { userID, newEvent } = body;
 	const cleanEvent = { ...newEvent, startTime: "12:00 PM", endTime: "1:00 PM" };
 
@@ -135,15 +130,11 @@ app.post("/createEvent", async (ctx: Context) => {
 				console.log("❌ [ERROR]: ", err);
 			}
 		});
-	console.log("eventRecord", eventRecord);
-	// const schedule = await eventsService.createEventSchedule(3, cleanEvent);
-	// console.log("schedule", schedule);
 
 	const response = getResponseOk({
 		UserID: body.userID,
 		Message: "Success",
 		eventDates: [],
-		// newEvent: schedule || body.newEvent,
 		newEvent: eventRecord || body.newEvent,
 	});
 	return ctx.json(response);

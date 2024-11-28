@@ -24,8 +24,8 @@
 	gap: 0 0.5rem;
 
 	&_day {
-		width: 2.5rem;
-		height: 2.5rem;
+		width: 3.5rem;
+		height: 3.5rem;
 		border-radius: 50%;
 		border: 1px solid var(--blueGrey800);
 		font-size: 1.2rem;
@@ -41,5 +41,16 @@
 		background-color: $accent;
 		border-color: $accent;
 		color: #fff;
+	}
+}
+
+.MonthlyOptions {
+	width: max-content;
+	font-size: 1.6rem;
+	@include flex_row(flex-start, center);
+	gap: 0 0.5rem;
+
+	& > b {
+		color: var(--blue500);
 	}
 }

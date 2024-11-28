@@ -22,7 +22,9 @@ const Dashboard = () => {
 				<QuickActions currentUser={currentUser} />
 
 				{/* DASHBOARD ROUTES */}
-				<Outlet />
+				<div className={styles.Dashboard_main_overflow}>
+					<Outlet />
+				</div>
 			</main>
 		</div>
 	);

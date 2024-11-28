@@ -24,4 +24,5 @@ export interface CreateLogValues {
 	miles: number;
 	startTime: string;
 	endTime: string;
+	date: string;
 }

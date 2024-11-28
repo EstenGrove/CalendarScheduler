@@ -7,4 +7,9 @@
 	display: block;
 	@include colCenter();
 	margin-bottom: 4rem;
+
+	&_row {
+		width: auto;
+		margin: 4rem;
+	}
 }
