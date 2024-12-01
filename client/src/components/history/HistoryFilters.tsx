@@ -4,13 +4,13 @@ import styles from "../../css/history/HistoryFilters.module.scss";
 import { WorkoutLogEntry } from "../../features/workoutHistory/types";
 
 type Props = {
+	filters: string[];
 	workoutLogs: WorkoutLogEntry[];
 	filteredLogs: WorkoutLogEntry[];
-	selectFilter: (filter: string) => void;
+	// selectFilter: (filter: string) => void;
 	toggleTodayFilter: () => void;
-	filters: string[];
-	clearFilters: () => void;
 	openFiltersModal: () => void;
+	clearFilters: () => void;
 };
 
 type FilterBtnProps = {
@@ -51,7 +51,6 @@ const FilterOption = ({ children, onClick, ...rest }: FilterProps) => {
 };
 
 const HistoryFilters = ({
-	selectFilter,
 	toggleTodayFilter,
 	filters = [],
 	clearFilters,

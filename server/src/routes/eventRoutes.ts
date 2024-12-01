@@ -140,4 +140,14 @@ app.post("/createEvent", async (ctx: Context) => {
 	return ctx.json(response);
 });
 
+app.post("/deleteEvent", async (ctx: Context) => {
+	// check if user wants to delete ALL events, just this instance and any associated workouts
+
+	const response = getResponseOk({
+		message: "",
+	});
+
+	return ctx.json(response);
+});
+
 export default app;

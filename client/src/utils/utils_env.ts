@@ -52,7 +52,10 @@ const API_ENDPOINTS = {
 		getDetails: "/events/getEventDetails",
 	},
 	plans: {},
-	workouts: {},
+	workouts: {
+		createWorkout: "/workouts/createWorkout",
+		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
+	},
 	workoutHistory: {
 		createLog: "/history/createLog",
 		getLogs: "/history/getWorkoutLogs",

@@ -1,7 +1,9 @@
 import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import type {
+	CreateNewWorkoutPayload,
 	NewEventPayload,
+	RecurringWorkoutEventPayload,
 	RecurringWorkoutPayload,
 } from "../services/types";
 import { eventsService, workoutsService } from "../services";
@@ -19,30 +21,42 @@ app.get("/getWorkoutsByDate", async (ctx: Context) => {
 	return ctx.json(response);
 });
 
-app.post("/createRecurringWorkout", async (ctx: Context) => {
-	const body = await ctx.req.json<RecurringWorkoutPayload>();
+// Supports creating a new workout AND A NEW WORKOUT PLAN
+app.post("/createNewWorkout", async (ctx: Context) => {
+	const body = await ctx.req.json<RecurringWorkoutEventPayload>();
 	const { userID, newEvent, newWorkout } = body;
-	const { planID } = newWorkout;
-	const workoutRecord = await workoutsService.createWorkout(userID, {
-		planID: planID,
-		name: newWorkout.workoutName,
-		desc: newWorkout.workoutDesc,
+
+	console.log("newEvent", newEvent);
+	console.log("newWorkout", newWorkout);
+	console.log("userID", userID);
+
+	const workoutRecord = await workoutsService.createRecurringWorkout(userID, {
+		newEvent,
+		newWorkout,
 	});
-	const eventRecord = await eventsService
-		.createEvent(userID, newEvent)
-		.catch((err) => {
-			if (err) {
-				console.log("❌ [ERROR]: ", err);
-			}
+
+	console.log("workoutRecord", workoutRecord);
+
+	if (workoutRecord instanceof Error) {
+		const errResp = getResponseError(workoutRecord, {
+			message: "Create recurring workout failed!!",
 		});
-	// - Get event_id
-	// - Get schedule_id
-	// - Get workout_id
+
+		return ctx.json(errResp);
+	}
 
 	const response = getResponseOk({
 		message: "",
 	});
 
+	return ctx.json(response);
+});
+
+// Supports creating a new workout from an EXISTING workout plan
+app.post("/createWorkout", async (ctx: Context) => {
+	const response = getResponseOk({
+		message: "hi",
+	});
 	return ctx.json(response);
 });
 

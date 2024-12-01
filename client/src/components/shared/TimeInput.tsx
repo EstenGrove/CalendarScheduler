@@ -25,7 +25,7 @@ const TimeInput = ({ name, id, value, onChange, onFocus, ...rest }: Props) => {
 				type="time"
 				name={name}
 				id={id}
-				defaultValue={"01:35 PM"}
+				// defaultValue={"01:35 PM"}
 				value={value}
 				onChange={handleChange}
 				onFocus={onFocus}

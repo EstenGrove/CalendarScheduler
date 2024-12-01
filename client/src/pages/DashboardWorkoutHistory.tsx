@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
+import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/pages/DashboardWorkoutHistory.module.scss";
 import {
 	selectIsHistoryLoading,
@@ -13,6 +14,7 @@ import {
 } from "../features/workoutHistory/operations";
 import { CurrentUser } from "../features/user/types";
 import { selectCurrentUser } from "../features/user/userSlice";
+import { FilterSettings } from "../utils/utils_filters";
 import { endOfWeek, isToday, startOfWeek } from "date-fns";
 import { formatDate } from "../utils/utils_dates";
 // components
@@ -20,6 +22,7 @@ import Loader from "../components/ui/Loader";
 import HistoryFilters from "../components/history/HistoryFilters";
 import HistoryLogList from "../components/history/HistoryLogList";
 import HistoryFiltersModal from "../components/history/HistoryFiltersModal";
+import HistoryFilterOptions from "../components/history/HistoryFilterOptions";
 
 const getLogRange = () => {
 	const start = startOfWeek(new Date());
@@ -42,14 +45,16 @@ const searchLogs = (
 
 	return logs.filter((log) => {
 		const { workoutType, weight, reps } = log;
+		const ct = String(reps);
+		const lbs = String(weight);
 		const wt = workoutType.toLowerCase();
 		const isMatch =
 			wt.includes(normVal) ||
 			wt.startsWith(normVal) ||
-			String(weight).includes(normVal) ||
-			String(weight).startsWith(normVal) ||
-			String(reps).includes(normVal) ||
-			String(reps).startsWith(normVal);
+			lbs.includes(normVal) ||
+			lbs.startsWith(normVal) ||
+			ct.includes(normVal) ||
+			ct.startsWith(normVal);
 
 		return isMatch;
 	});
@@ -70,6 +75,13 @@ const DashboardWorkoutHistory = () => {
 	const [showFiltersModal, setShowFiltersModal] = useState<boolean>(false);
 	const [filteredLogs, setFilteredLogs] = useState<WorkoutLogEntry[]>([]);
 	const [filters, setFilters] = useState<string[]>([]);
+	const [filterSettings, setFilterSettings] = useState<FilterSettings>({
+		rangeType: "Week",
+		startDate: startOfWeek(new Date()).toString(),
+		endDate: endOfWeek(new Date()).toString(),
+		workoutType: null,
+		workoutLength: 0,
+	});
 	const [searchVal, setSearchVal] = useState<string>("");
 
 	const selectFilter = (logsFilter: string) => {
@@ -79,6 +91,13 @@ const DashboardWorkoutHistory = () => {
 		} else {
 			setFilters([...filters, logsFilter]);
 		}
+	};
+
+	const handleFilter = (name: string, value: string | number) => {
+		setFilterSettings({
+			...filterSettings,
+			[name]: value,
+		});
 	};
 
 	const toggleTodayFilter = () => {
@@ -103,6 +122,10 @@ const DashboardWorkoutHistory = () => {
 		//  do stuff
 		setFilters([]);
 		setFilteredLogs(workoutLogs);
+	};
+
+	const clearSearch = () => {
+		handleSearch("searchVal", "");
 	};
 
 	const openFiltersModal = () => {
@@ -141,25 +164,37 @@ const DashboardWorkoutHistory = () => {
 					filters={filters}
 					workoutLogs={workoutLogs}
 					filteredLogs={filteredLogs}
-					selectFilter={selectFilter}
 					clearFilters={clearFilters}
 					toggleTodayFilter={toggleTodayFilter}
 					openFiltersModal={openFiltersModal}
 				/>
 			</div>
 			<div className={styles.DashboardWorkoutHistory_search}>
-				<input
-					type="text"
-					name="searchLogs"
-					id="searchLogs"
-					className={styles.DashboardWorkoutHistory_search_input}
-					placeholder="Search logs..."
-					value={searchVal}
-					onChange={(e: ChangeEvent<HTMLInputElement>) => {
-						const { name, value } = e.target;
-						handleSearch(name, value);
-					}}
-				/>
+				<div className={styles.SearchInputWrapper}>
+					<input
+						type="text"
+						name="searchLogs"
+						id="searchLogs"
+						className={styles.SearchInput}
+						placeholder="Search logs..."
+						value={searchVal}
+						onChange={(e: ChangeEvent<HTMLInputElement>) => {
+							const { name, value } = e.target;
+							handleSearch(name, value);
+						}}
+					/>
+					{!!searchVal && (
+						<button
+							type="button"
+							onClick={clearSearch}
+							className={styles.SearchInputWrapper_btn}
+						>
+							<svg className={styles.SearchInputWrapper_btn_icon}>
+								<use xlinkHref={`${sprite}#icon-clear`}></use>
+							</svg>
+						</button>
+					)}
+				</div>
 			</div>
 			<div className={styles.DashboardWorkoutHistory_list}>
 				{isLoading && (
@@ -172,8 +207,10 @@ const DashboardWorkoutHistory = () => {
 
 			{showFiltersModal && (
 				<HistoryFiltersModal closeModal={closeFiltersModal}>
-					{/*  */}
-					{/*  */}
+					<HistoryFilterOptions
+						values={filterSettings}
+						handleFilter={handleFilter}
+					/>
 				</HistoryFiltersModal>
 			)}
 		</div>

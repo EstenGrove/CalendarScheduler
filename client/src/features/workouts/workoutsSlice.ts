@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TStatus } from "../types";
 import {
 	Workout,
@@ -7,6 +7,8 @@ import {
 	WorkoutSummary,
 } from "./types";
 import { RootState } from "../../store/store";
+import { createWorkoutWithPlan } from "./operations";
+import { CreateWorkoutResponse } from "../../utils/utils_workouts";
 
 export interface SelectedWorkout {
 	workout: Workout;
@@ -31,6 +33,25 @@ const workoutsSlice = createSlice({
 	name: "workouts",
 	initialState: initialState,
 	reducers: {},
+	extraReducers(builder) {
+		builder
+			.addCase(createWorkoutWithPlan.pending, (state: WorkoutsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				createWorkoutWithPlan.fulfilled,
+				(
+					state: WorkoutsSlice,
+					action: PayloadAction<CreateWorkoutResponse>
+				) => {
+					const { workout, plan } = action.payload;
+
+					state.status = "FULFILLED";
+					state.workouts = [workout, ...state.workouts];
+					state.workoutPlans = [plan, ...state.workoutPlans];
+				}
+			);
+	},
 });
 
 export const selectWorkouts = (state: RootState) => {

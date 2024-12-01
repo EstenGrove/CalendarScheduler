@@ -75,3 +75,25 @@
 		}
 	}
 }
+
+.DeleteEventOptions {
+	width: 100%;
+
+	& > h1 {
+		font-size: 2.5rem;
+		// color: var(--accent-red);
+	}
+
+	&_options {
+		width: 100%;
+		padding: 3rem 1rem;
+
+		& > div {
+			margin: 1rem 0;
+		}
+		& > p {
+			font-size: 1.5rem;
+			color: $text1;
+		}
+	}
+}

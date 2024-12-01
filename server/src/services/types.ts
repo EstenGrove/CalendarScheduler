@@ -218,6 +218,8 @@ export interface NewWorkoutPlanPayload {
 	reps: number;
 	sets: number;
 	mins: number;
+	steps?: number;
+	miles?: number;
 }
 
 export interface CreateLogValues {
@@ -238,6 +240,12 @@ export interface NewEventPayload {
 	newEvent: CreateEventVals;
 }
 
+export interface CreateNewWorkoutPayload {
+	userID: string;
+	newEvent: CreateEventVals;
+	newWorkout: NewWorkoutPlanPayload;
+}
+
 export interface RecurringWorkoutPayload extends NewEventPayload {
 	newWorkout: {
 		planID: number;
@@ -256,3 +264,49 @@ export interface NewUserWorkoutPayload {
 	workout: UserWorkoutPayload;
 	schedule: CreateEventVals;
 }
+
+// Recurring Workout w/ Plan data
+export interface NewWorkoutEventPayload {
+	title: string;
+	desc: string;
+	startDate: string;
+	endDate: string;
+	startTime: string;
+	endTime: string;
+	frequency: EventFrequency;
+	interval: number;
+	byDay: WeekDayToken[];
+	byMonthDay: number;
+	byMonth: number;
+	// optional
+	location: string;
+	url: string;
+	notes: string;
+	// recurrence indicators
+	isRecurring?: boolean;
+	noEndDate?: boolean;
+}
+
+export interface NewWorkoutAndPlanPayload {
+	workoutTypeID: number;
+	planName: string;
+	planDesc: string;
+	notes: string;
+	mins: number; // mins
+	// weighted
+	weight: number;
+	reps: number;
+	sets: number;
+	// distance
+	steps: number;
+	miles: number;
+}
+
+export type RecurringWorkoutAndPlanPayload = {
+	newEvent: NewWorkoutEventPayload;
+	newWorkout: NewWorkoutAndPlanPayload;
+};
+
+export type RecurringWorkoutEventPayload = RecurringWorkoutAndPlanPayload & {
+	userID: string;
+};

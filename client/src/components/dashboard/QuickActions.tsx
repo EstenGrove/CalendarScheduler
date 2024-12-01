@@ -5,12 +5,13 @@ import ActionsBar from "./ActionsBar";
 import LogWorkoutModal from "../history/LogWorkoutModal";
 import Modal from "../shared/Modal";
 import CreateWorkout from "../workouts/CreateWorkout";
+import PomodoroModal from "../pomodoro/PomodoroModal";
 
 type Props = {
 	currentUser: CurrentUser;
 };
 
-type ActionType = "Timer" | "Task" | "LogWorkout" | "CreateWorkout";
+type ActionType = "Timer" | "StartWorkout" | "LogWorkout" | "CreateWorkout";
 
 const QuickActions = ({ currentUser }: Props) => {
 	const [actionType, setActionType] = useState<ActionType | null>(null);
@@ -26,6 +27,13 @@ const QuickActions = ({ currentUser }: Props) => {
 	return (
 		<div className={styles.QuickActions}>
 			<ActionsBar onAction={selectAction} />
+
+			{actionType === "Timer" && (
+				<PomodoroModal
+					currentUser={currentUser}
+					closeModal={closeActionModal}
+				/>
+			)}
 
 			{actionType === "CreateWorkout" && (
 				<Modal title="Create Workout" closeModal={closeActionModal}>

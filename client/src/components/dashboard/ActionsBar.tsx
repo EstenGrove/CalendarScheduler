@@ -44,11 +44,12 @@ const Menu = ({ close, children }: MenuProps) => {
 
 const icons = {
 	// timer: "timelapse",
+	// task: "add_task",
 	timer: "timer",
 	logWorkout: "fact_check",
 	workout: "fitness_center",
 	workoutPlan: "run_circle",
-	task: "add_task",
+	task: "directions_run",
 };
 
 type ActionButtonProps = {
@@ -114,7 +115,7 @@ const ActionsBar = ({ onAction }: Props) => {
 						onAction={() => selectAction("Timer")}
 					/>
 					<ActionButton
-						title="Add a task"
+						title="Start a workout"
 						icon="task"
 						color="var(--bg-foreground)"
 						onAction={() => selectAction("Task")}
