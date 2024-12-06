@@ -1,37 +1,33 @@
 import "./App.scss";
-import React, { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 // components
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import DashboardLayout from "./pages/DashboardLayout";
-import DashboardWorkouts from "./pages/DashboardWorkouts";
 import DashboardWorkoutWeek from "./pages/DashboardWorkoutWeek";
 import DashboardWorkoutPlans from "./pages/DashboardWorkoutPlans";
-import DashboardCalendarEvent from "./pages/DashboardCalendarEvent";
-import DashboardCalendarLayout from "./pages/DashboardCalendarLayout";
-import DashboardWorkoutHistory from "./pages/DashboardWorkoutHistory";
 import Loader from "./components/ui/Loader";
 
-const LazyDashboard = React.lazy(() => import("./pages/Dashboard"));
-const LazyDashboardLayout = React.lazy(() => import("./pages/DashboardLayout"));
-// const LazyDashboardCalendar = React.lazy(
-// 	() => import("./pages/DashboardCalendar")
-// );
-const LazyDashboardCalendarLayout = React.lazy(
-	() => import("./pages/DashboardCalendarLayout")
+const routePaths = {
+	dashboard: "./pages/Dashboard",
+	dashboardLayout: "./pages/DashboardLayout",
+	calendarLayout: "./pages/DashboardCalendarLayout",
+	calendarEvent: "./pages/DashboardCalendarEvent",
+	workouts: "./pages/DashboardWorkouts",
+	history: "./pages/DashboardWorkoutHistory",
+	health: "./pages/DashboardHealthProfile",
+};
+
+const LazyDashboard = lazy(() => import(routePaths.dashboard));
+const LazyDashboardWorkouts = lazy(() => import(routePaths.workouts));
+const LazyDashboardWorkoutHistory = lazy(() => import(routePaths.history));
+const LazyDashboardLayout = lazy(() => import(routePaths.dashboardLayout));
+const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
+const LazyDashboardCalendarLayout = lazy(
+	() => import(routePaths.calendarLayout)
 );
-const LazyDashboardCalendarEvent = React.lazy(
-	() => import("./pages/DashboardCalendarEvent")
-);
-const LazyDashboardWorkouts = React.lazy(
-	() => import("./pages/DashboardWorkouts")
-);
-const LazyDashboardWorkoutHistory = React.lazy(
-	() => import("./pages/DashboardWorkoutHistory")
-);
+const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 
 const Fallback = () => {
 	return (
@@ -95,6 +91,14 @@ function App() {
 								>
 									<Route path=":id" element={<LazyDashboardCalendarEvent />} />
 								</Route>
+								<Route
+									path="health"
+									element={
+										<Suspense>
+											<LazyDashboardHealthProfile />
+										</Suspense>
+									}
+								/>
 							</Route>
 						</Routes>
 					</div>

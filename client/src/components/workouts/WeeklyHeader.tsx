@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "../../css/workouts/WeeklyHeader.module.scss";
 import {
 	eachDayOfInterval,
@@ -11,6 +10,8 @@ import { formatDate } from "../../utils/utils_dates";
 
 type Props = {
 	baseDate?: Date | string;
+	selectedDate: Date | string;
+	onSelect: (date: Date | string) => void;
 };
 
 const weekDays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const;
@@ -74,15 +75,13 @@ const isSelectedDate = (
 	return selected === day;
 };
 
-const WeeklyHeader = ({ baseDate = new Date() }: Props) => {
+const WeeklyHeader = ({
+	baseDate = new Date(),
+	selectedDate,
+	onSelect,
+}: Props) => {
 	const daysInWeek = getDaysInWeek(baseDate);
-	const [selectedDate, setSelectedDate] = useState<Date | string>(baseDate);
 
-	const selectDate = (date: Date | string) => {
-		setSelectedDate(date);
-	};
-
-	console.log("dayInWeek", daysInWeek);
 	return (
 		<div className={styles.WeeklyHeader}>
 			<div className={styles.WeeklyHeader_week}>
@@ -93,7 +92,7 @@ const WeeklyHeader = ({ baseDate = new Date() }: Props) => {
 							weekDate={day}
 							weekDay={weekDays[idx]}
 							isSelected={isSelectedDate(selectedDate, day)}
-							selectDate={() => selectDate(day)}
+							selectDate={() => onSelect(day)}
 						/>
 					))}
 			</div>

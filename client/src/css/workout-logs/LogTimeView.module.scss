@@ -9,7 +9,21 @@
 	margin-bottom: 4rem;
 
 	&_row {
-		width: auto;
-		margin: 4rem;
+		width: max-content;
+		margin-bottom: 4rem;
+
+		& label {
+			font-size: 1.5rem;
+		}
 	}
+	&_desc {
+		width: 100%;
+		height: auto;
+		font-size: 1.5rem;
+		text-align: center;
+	}
+}
+
+label {
+	font-size: 1.5rem;
 }

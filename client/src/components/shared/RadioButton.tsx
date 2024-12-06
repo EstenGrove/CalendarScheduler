@@ -41,7 +41,7 @@ const RadioButton = ({
 				onClick={handleGroupSelection}
 				className="RadioButton"
 			/>
-			<label htmlFor={id} className="RadioButton_label">
+			<label htmlFor={id} className={styles.RadioButton_label}>
 				{label}
 			</label>
 		</div>

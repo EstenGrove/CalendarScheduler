@@ -5,8 +5,8 @@ import { CurrentUser } from "../../features/user/types";
 import { CreateLogValues } from "../workout-logs/types";
 import { useAppDispatch } from "../../store/store";
 import { saveLogEntry } from "../../features/workoutHistory/operations";
-import { formatDate, formatDateTime } from "../../utils/utils_dates";
-import { endOfDay, parse, startOfDay } from "date-fns";
+import { formatDate, formatTime } from "../../utils/utils_dates";
+import { addMinutes } from "date-fns";
 import {
 	getWorkoutTypeIDFromName,
 	isDistanceType,
@@ -14,6 +14,8 @@ import {
 	isWalkingType,
 	isWeightedType,
 	LogStep,
+	prepareLogDates,
+	TimeRange,
 } from "../../utils/utils_workoutLogs";
 // components
 import LogTypeView from "../workout-logs/LogTypeView";
@@ -145,21 +147,31 @@ const CloseButton = ({ close, isDisabled = false }: CloseProps) => {
 // - Find matching workoutTypeID
 // - Adjust start/end times based off 'date' selection
 const prepareWorkoutEntry = (values: CreateLogValues) => {
-	const { date, workoutType } = values;
+	const { workoutType } = values;
 	// must parse the date string, to get the correct day/date of the month
-	const parsed = parse(date, "yyyy-MM-dd", new Date());
-	const typeID = getWorkoutTypeIDFromName(workoutType);
-	const adjustedStart = formatDateTime(startOfDay(parsed), "db");
-	const adjustedEnd = formatDateTime(endOfDay(parsed), "db");
+	const typeID: number = getWorkoutTypeIDFromName(workoutType);
+	const adjustedTimes: TimeRange = prepareLogDates(values);
 
 	const newLog = {
 		...values,
 		workoutTypeID: typeID,
-		startTime: adjustedStart,
-		endTime: adjustedEnd,
+		startTime: adjustedTimes.startTime.toISOString(),
+		endTime: adjustedTimes.endTime.toISOString(),
 	};
 
 	return newLog;
+};
+
+const getInitialStartTime = () => {
+	const start = formatTime(new Date(), "long");
+
+	return start;
+};
+const getInitialEndTime = (mins: number = 30) => {
+	const start = new Date();
+	const end = addMinutes(start, mins);
+	const endTime = formatTime(end, "long");
+	return endTime;
 };
 
 const initialState: CreateLogValues = {
@@ -170,8 +182,8 @@ const initialState: CreateLogValues = {
 	weight: 15,
 	steps: 0,
 	miles: 0,
-	startTime: formatDateTime(new Date(), "db"), // optional start time
-	endTime: formatDateTime(new Date(), "db"), // optional end time
+	startTime: getInitialStartTime(), //  start time
+	endTime: getInitialEndTime(), //  end time
 	date: formatDate(new Date(), "db"), // date of workout
 };
 
@@ -197,10 +209,13 @@ const LogWorkout = ({ currentUser, closeModal }: Props) => {
 
 	const saveNewLog = async () => {
 		const { userID } = currentUser;
+		// prepares dates/times & calculates 'endTime' from start & mins combined
 		const newEntry = prepareWorkoutEntry(newLog);
 		const params = { userID, workoutLog: newEntry };
 
+		console.log("newEntry", newEntry);
 		const result = await dispatch(saveLogEntry(params)).unwrap();
+		// const result = true;
 
 		if (result) {
 			setIsSubmitting(false);
@@ -268,10 +283,14 @@ const LogWorkout = ({ currentUser, closeModal }: Props) => {
 					goToPrev={() => {
 						const secondStep: LogStep = get2ndStepFromType(workoutType);
 						const prevStep: LogStep = getPrevStep(stepsList);
+
+						console.log("secondStep", secondStep);
+						console.log("prevStep", prevStep);
+
 						if (secondStep === activeStep) {
-							changeStep(prevStep);
+							changeStep(secondStep);
 						} else {
-							changeStep(prevStep);
+							changeStep(secondStep);
 						}
 					}}
 				/>

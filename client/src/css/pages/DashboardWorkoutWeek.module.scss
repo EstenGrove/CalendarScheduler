@@ -1,0 +1,23 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DashboardWorkoutWeek {
+	width: 100%;
+
+	&_title {
+		width: 100%;
+
+		font-size: 1.6rem;
+	}
+
+	&_summary {
+		display: block;
+		margin: 0 auto;
+		width: 80%;
+		height: auto;
+		padding: 2rem;
+		border-radius: 1rem;
+		// border: $borderLight;
+	}
+}

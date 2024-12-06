@@ -1,0 +1,28 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.PomodoroModal {
+	position: absolute;
+	display: block;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80vh;
+	width: 80dvw;
+	max-width: 80rem;
+	height: 40rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	background-color: $foreground;
+
+	&_top {
+		width: 100%;
+		height: 5rem;
+		padding: 1rem;
+		font-size: 1.6rem;
+	}
+	&_inner {
+		@include fill_container;
+	}
+}

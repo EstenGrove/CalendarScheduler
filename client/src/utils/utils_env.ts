@@ -52,10 +52,17 @@ const API_ENDPOINTS = {
 		getDetails: "/events/getEventDetails",
 	},
 	plans: {},
-	workouts: {},
+	workouts: {
+		createWorkout: "/workouts/createWorkout",
+		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
+	},
 	workoutHistory: {
 		createLog: "/history/createLog",
 		getLogs: "/history/getWorkoutLogs",
+	},
+	summary: {
+		getDailyMins: "/summary/getDailyMinsSummary",
+		getWeeklyTotals: "/summary/getWeeklyTotals",
 	},
 } as const;
 
@@ -65,6 +72,7 @@ export const {
 	plans: planApis,
 	workouts: workoutApis,
 	workoutHistory: historyApis,
+	summary: summaryApis,
 } = API_ENDPOINTS;
 
 export {

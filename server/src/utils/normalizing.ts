@@ -11,6 +11,10 @@ import type {
 	EventDetailsDB,
 	WorkoutLogClient,
 	WorkoutLogDB,
+	UserWorkoutEventClient,
+	UserWorkoutEventDB,
+	MinsSummaryClient,
+	MinsSummaryDB,
 } from "../services/types";
 
 class MonthlySummaryNormalizer {
@@ -308,11 +312,108 @@ class HistoryNormalizer {
 	}
 }
 
+class WorkoutEventNormalizer {
+	#toDB(record: UserWorkoutEventClient): UserWorkoutEventDB {
+		const dbRecord: UserWorkoutEventDB = {
+			event_id: record.eventID,
+			workout_id: record.workoutID,
+			schedule_id: record.scheduleID,
+			event_name: record.eventName,
+			event_desc: record.eventDesc,
+			event_date: record.eventDate,
+			start_time: record.startTime,
+			end_time: record.endTime,
+			created_date: record.createdDate,
+			tag_color: record.tagColor,
+		};
+
+		return dbRecord;
+	}
+	#toClient(record: UserWorkoutEventDB): UserWorkoutEventClient {
+		const clientRecord: UserWorkoutEventClient = {
+			eventID: record.event_id,
+			workoutID: record.workout_id,
+			scheduleID: record.schedule_id,
+			eventName: record.event_name,
+			eventDesc: record.event_desc,
+			eventDate: record.event_date,
+			startTime: record.start_time,
+			endTime: record.end_time,
+			createdDate: record.created_date,
+			tagColor: record.tag_color,
+		};
+
+		return clientRecord;
+	}
+	toDBOne(record: UserWorkoutEventClient): UserWorkoutEventDB {
+		const dbRecord = this.#toDB(record);
+
+		return dbRecord;
+	}
+	toClientOne(record: UserWorkoutEventDB): UserWorkoutEventClient {
+		const clientRecord = this.#toClient(record);
+
+		return clientRecord;
+	}
+	toDB(records: UserWorkoutEventClient[]): UserWorkoutEventDB[] {
+		const dbRecords = records.map(this.#toDB);
+
+		return dbRecords;
+	}
+	toClient(records: UserWorkoutEventDB[]): UserWorkoutEventClient[] {
+		const clientRecord = records.map(this.#toClient);
+
+		return clientRecord;
+	}
+}
+
+class DailyMinsSummaryNormalizer {
+	#toDB(record: MinsSummaryClient): MinsSummaryDB {
+		const dbRecord: MinsSummaryDB = {
+			date: record.date,
+			total_mins: record.totalMins,
+			week_day: record.weekday.trim(),
+			log_count: record.logCount,
+		};
+
+		return dbRecord;
+	}
+	#toClient(record: MinsSummaryDB): MinsSummaryClient {
+		const clientRecord: MinsSummaryClient = {
+			date: record.date,
+			totalMins: record.total_mins,
+			weekday: record.week_day.trim(),
+			logCount: record.log_count,
+		};
+
+		return clientRecord;
+	}
+	toDBOne(record: MinsSummaryClient): MinsSummaryDB {
+		return this.#toDB(record);
+	}
+	toClientOne(record: MinsSummaryDB): MinsSummaryClient {
+		return this.#toClient(record);
+	}
+
+	toClient(records: MinsSummaryDB[]): MinsSummaryClient[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toClient);
+	}
+	toDB(records: MinsSummaryClient[]): MinsSummaryDB[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toDB);
+	}
+}
+
 const eventsNormalizer = new EventsNormalizer();
 const historyNormalizer = new HistoryNormalizer();
 const schedulesNormalizer = new SchedulesNormalizer();
 const summaryNormalizer = new MonthlySummaryNormalizer();
 const eventDetailsNormalizer = new EventDetailsNormalizer();
+const workoutEventNormalizer = new WorkoutEventNormalizer();
+const minsSummaryNormalizer = new DailyMinsSummaryNormalizer();
 const eventInstancesNormalizer = new EventInstancesNormalizer();
 
 export {
@@ -322,4 +423,6 @@ export {
 	eventInstancesNormalizer,
 	schedulesNormalizer,
 	historyNormalizer,
+	workoutEventNormalizer,
+	minsSummaryNormalizer,
 };

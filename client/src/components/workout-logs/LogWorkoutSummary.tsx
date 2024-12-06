@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/workout-logs/LogWorkoutSummary.module.scss";
 import { CreateLogValues } from "./types";
@@ -9,6 +9,7 @@ import {
 	isWeightedType,
 	LogStep,
 } from "../../utils/utils_workoutLogs";
+import { convertToHrsAndMins } from "../../utils/utils_dates";
 
 type Props = {
 	currentStep: LogStep;
@@ -69,13 +70,6 @@ const DistanceSummary = ({ values }: SummaryProps) => {
 			</div>
 		</div>
 	);
-};
-
-const convertToHrsAndMins = (mins: number) => {
-	return {
-		hours: Math.trunc(mins >= 60 ? mins / 60 : 0),
-		mins: mins >= 60 ? mins % 60 : mins,
-	};
 };
 
 const TimeSummary = ({ values }: SummaryProps) => {

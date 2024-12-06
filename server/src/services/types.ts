@@ -218,6 +218,8 @@ export interface NewWorkoutPlanPayload {
 	reps: number;
 	sets: number;
 	mins: number;
+	steps?: number;
+	miles?: number;
 }
 
 export interface CreateLogValues {
@@ -238,6 +240,12 @@ export interface NewEventPayload {
 	newEvent: CreateEventVals;
 }
 
+export interface CreateNewWorkoutPayload {
+	userID: string;
+	newEvent: CreateEventVals;
+	newWorkout: NewWorkoutPlanPayload;
+}
+
 export interface RecurringWorkoutPayload extends NewEventPayload {
 	newWorkout: {
 		planID: number;
@@ -255,4 +263,90 @@ export interface NewWorkoutPayload {
 export interface NewUserWorkoutPayload {
 	workout: UserWorkoutPayload;
 	schedule: CreateEventVals;
+}
+
+// Recurring Workout w/ Plan data
+export interface NewWorkoutEventPayload {
+	title: string;
+	desc: string;
+	startDate: string;
+	endDate: string;
+	startTime: string;
+	endTime: string;
+	frequency: EventFrequency;
+	interval: number;
+	byDay: WeekDayToken[];
+	byMonthDay: number;
+	byMonth: number;
+	// optional
+	location: string;
+	url: string;
+	notes: string;
+	// recurrence indicators
+	isRecurring?: boolean;
+	noEndDate?: boolean;
+}
+
+export interface NewWorkoutAndPlanPayload {
+	workoutTypeID: number;
+	planName: string;
+	planDesc: string;
+	notes: string;
+	mins: number; // mins
+	// weighted
+	weight: number;
+	reps: number;
+	sets: number;
+	// distance
+	steps: number;
+	miles: number;
+}
+
+export type RecurringWorkoutAndPlanPayload = {
+	newEvent: NewWorkoutEventPayload;
+	newWorkout: NewWorkoutAndPlanPayload;
+};
+
+export type RecurringWorkoutEventPayload = RecurringWorkoutAndPlanPayload & {
+	userID: string;
+};
+
+// 'get_workouts_by_date()'
+export interface UserWorkoutEventDB {
+	event_id: number;
+	workout_id: number;
+	schedule_id: number;
+	event_name: string;
+	event_desc: string;
+	event_date: string;
+	start_time: string;
+	end_time: string;
+	created_date: string;
+	tag_color: string | null;
+}
+
+export interface UserWorkoutEventClient {
+	eventID: number;
+	workoutID: number;
+	scheduleID: number;
+	eventName: string;
+	eventDesc: string;
+	eventDate: string;
+	startTime: string;
+	endTime: string;
+	createdDate: string;
+	tagColor: string | null;
+}
+
+export interface MinsSummaryDB {
+	date: string;
+	total_mins: number;
+	week_day: string;
+	log_count: number;
+}
+export interface MinsSummaryClient {
+	date: string;
+	totalMins: number;
+	weekday: string;
+	logCount: number;
 }

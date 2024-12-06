@@ -1,3 +1,5 @@
+import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
+
 /**
  * Workout History is for workout plans, specifically
  */
@@ -32,7 +34,7 @@ export interface WorkoutLog {
 export interface WorkoutLogEntry {
 	userID: string;
 	logID: number;
-	workoutType: string; // eg. Curls, Situps etc
+	workoutType: WorkoutTypeName; // eg. Curls, Situps etc
 	weight: number;
 	reps: number;
 	sets: number;
@@ -44,4 +46,28 @@ export interface WorkoutLogEntry {
 	endTime: string;
 	isActive?: boolean;
 	createdDate: string;
+}
+
+export interface WorkoutLogSummary {
+	totalMins: number;
+	totalReps: number;
+	totalMiles: number;
+	totalSteps: number;
+	totalNumOfWorkouts: number;
+	totalNumOfWorkoutTypes: number;
+}
+
+// Small summary of workout_logs by workout type
+export interface WorkoutTypeLogSummary {
+	workoutTypeID: number;
+	workoutType: WorkoutTypeName;
+	totalMins: number;
+	totalReps: number;
+	totalMiles: number;
+	totalSteps: number;
+}
+
+export interface LogRangeSummary {
+	details: WorkoutLogSummary;
+	byType: WorkoutTypeLogSummary[];
 }

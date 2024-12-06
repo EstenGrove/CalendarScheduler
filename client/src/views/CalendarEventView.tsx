@@ -10,6 +10,9 @@ import { selectSelectedEvent } from "../features/events/eventsSlice";
 import Button from "../components/shared/Button";
 import ColorTag from "../components/ui/ColorTag";
 import RecurringDesc from "../components/events/RecurringDesc";
+import { useState } from "react";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
+import Checkbox from "../components/shared/Checkbox";
 
 type Props = { calendarEvent: ICalendarEvent };
 
@@ -64,13 +67,80 @@ const DateTimeDetails = ({ calendarEvent }: DetailsProps) => {
 	);
 };
 
+// Prolly need a custom modal that includes options for:
+// - Delete this event only
+// - Delete this event and ALL future events
+// - Delete workout
+// - Delete this workout and ALL future workouts for this event?
+type DeleteProps = {
+	deleteValues: {
+		deleteEventOnly: boolean;
+		deleteAllEvents: boolean;
+		deleteWorkoutOnly: boolean;
+		deleteAllWorkouts: boolean;
+	};
+	handleCheckbox: (name: string, value: boolean) => void;
+};
+const DeleteEventOptions = ({ deleteValues, handleCheckbox }: DeleteProps) => {
+	return (
+		<div className={styles.DeleteEventOptions}>
+			<h1>Delete Event?</h1>
+			<div className={styles.DeleteEventOptions_options}>
+				<p>Events:</p>
+				<Checkbox
+					name="deleteEvent"
+					id="deleteEvent"
+					value={deleteValues.deleteEventOnly}
+					onChange={handleCheckbox}
+					label="Delete this Event Only"
+				/>
+				<Checkbox
+					name="deleteAllEvents"
+					id="deleteAllEvents"
+					value={deleteValues.deleteAllEvents}
+					onChange={handleCheckbox}
+					label="Delete ALL Future Events"
+				/>
+				<br />
+				<br />
+				<p>Workouts for this event:</p>
+				<Checkbox
+					name="deleteWorkoutOnly"
+					id="deleteWorkoutOnly"
+					value={deleteValues.deleteWorkoutOnly}
+					onChange={handleCheckbox}
+					label="Delete this workout only"
+				/>
+				<Checkbox
+					name="deleteAllWorkouts"
+					id="deleteAllWorkouts"
+					value={deleteValues.deleteAllWorkouts}
+					onChange={handleCheckbox}
+					label="Delete ALL Future workouts"
+				/>
+			</div>
+		</div>
+	);
+};
+
 const CalendarEventView = ({ calendarEvent }: Props) => {
 	const selectedEvent = useSelector(selectSelectedEvent);
 	const { upcoming, schedule } = selectedEvent;
+	const [showConfirm, setShowConfirm] = useState<boolean>(false);
 	const tagColor: string = calendarEvent.tagColor || "var(--accent)";
 
 	const initDeleteEvent = () => {
+		setShowConfirm(true);
+	};
+	const closeDeleteDialog = () => {
+		setShowConfirm(false);
+	};
+
+	const confirmDelete = () => {
 		// do stuff
+	};
+	const cancelDelete = () => {
+		closeDeleteDialog();
 	};
 
 	console.log("selectedEvent", selectedEvent);
@@ -97,6 +167,16 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 			<div className={styles.CalendarEventView_scheduled}>
 				<DateTimeDetails calendarEvent={calendarEvent} />
 			</div>
+
+			{showConfirm && (
+				<ConfirmDialog
+					closeDialog={closeDeleteDialog}
+					onCancel={cancelDelete}
+					onConfirm={confirmDelete}
+				>
+					<DeleteEventOptions />
+				</ConfirmDialog>
+			)}
 		</div>
 	);
 };

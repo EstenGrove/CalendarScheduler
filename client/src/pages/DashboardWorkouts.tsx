@@ -59,10 +59,6 @@ const DashboardWorkouts = () => {
 		});
 	};
 
-	const createWorkoutPlan = () => {
-		//
-	};
-
 	return (
 		<div className={styles.DashboardWorkouts}>
 			<PageHeader title={title} />

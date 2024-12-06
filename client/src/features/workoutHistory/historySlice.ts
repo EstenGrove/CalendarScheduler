@@ -16,7 +16,6 @@ const initialState: HistorySlice = {
 	status: "IDLE",
 	workoutTypes: [],
 	workoutHistory: [],
-	// workoutLogs: entries,
 	workoutLogs: [],
 };
 

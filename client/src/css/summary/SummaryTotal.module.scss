@@ -1,0 +1,21 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.SummaryTotal {
+	width: 100%;
+	height: 100%;
+	@include flex_col(flex-start, center);
+
+	&_total {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: $text1;
+		// color: var(--accent);
+	}
+	&_label {
+		font-size: 1.3rem;
+		font-weight: 500;
+		color: $text2;
+	}
+}

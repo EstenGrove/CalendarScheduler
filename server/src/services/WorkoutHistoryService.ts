@@ -25,6 +25,10 @@ class WorkoutHistoryService {
 			startTime,
 			endTime,
 		} = log;
+
+		console.log("startTime", startTime);
+		console.log("endTime", endTime);
+
 		try {
 			const query = `
         INSERT INTO workout_log (

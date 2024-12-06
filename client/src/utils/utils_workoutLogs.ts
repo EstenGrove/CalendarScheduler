@@ -4,6 +4,8 @@ import { WorkoutType, workoutTypes } from "./utils_workoutPlans";
 import { CreateLogValues } from "../components/workout-logs/types";
 import { WorkoutLogEntry } from "../features/workoutHistory/types";
 import { WorkoutLogParams } from "../features/workoutHistory/operations";
+import { applyTimeStrToDate } from "./utils_dates";
+import { addMinutes } from "date-fns";
 
 export type LogStep =
 	| "Type"
@@ -72,6 +74,23 @@ const getWorkoutTypeIDFromName = (type: string): number => {
 
 // SAVING WORKOUT LOGS
 
+export interface TimeRange {
+	startTime: Date;
+	endTime: Date;
+}
+// Convert startTime (eg. '04:35 PM') to a real Date instance
+// - Calculate the endTime from: 'startTime(Date)' + 'mins(number)' = 'endTime(Date)'
+const prepareLogDates = (values: CreateLogValues): TimeRange => {
+	const { startTime, mins, date } = values;
+	const newStart = applyTimeStrToDate(startTime, date);
+	const newEnd = addMinutes(newStart, mins);
+
+	return {
+		startTime: newStart,
+		endTime: newEnd,
+	};
+};
+
 const getWorkoutLogs = async (
 	userID: string,
 	range: WorkoutLogParams["range"]
@@ -115,4 +134,5 @@ export {
 	saveWorkoutLog,
 	// utils
 	getWorkoutTypeIDFromName,
+	prepareLogDates,
 };

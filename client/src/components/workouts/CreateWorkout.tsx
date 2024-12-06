@@ -2,13 +2,18 @@ import { useState } from "react";
 import styles from "../../css/workouts/CreateWorkout.module.scss";
 import { CurrentUser } from "../../features/user/types";
 import { WithNewPlan } from "./CreateWorkoutSteps";
-import { formatDate } from "../../utils/utils_dates";
+import { formatDate, formatTime } from "../../utils/utils_dates";
 import {
 	CreateScheduleValues,
 	CreateWorkoutValues,
 	NewWorkoutValues,
 } from "./types";
 import { WeekDayToken } from "../../utils/utils_options";
+import { getWorkoutTypeIDFromName } from "../../utils/utils_workoutLogs";
+import { prepareNewWorkoutWithPlan } from "../../utils/utils_workouts";
+import { addMinutes } from "date-fns";
+import { useAppDispatch } from "../../store/store";
+import { createWorkoutWithPlan } from "../../features/workouts/operations";
 
 type Props = {
 	currentUser: CurrentUser;
@@ -16,13 +21,7 @@ type Props = {
 };
 
 // Steps for Workout w/ NEW plan
-
 // Steps for Workout w/ EXISTING plan
-
-const flowTypes = {
-	New: [],
-	Existing: [],
-};
 
 const initialWorkoutState: CreateWorkoutValues = {
 	workoutType: "",
@@ -38,16 +37,18 @@ const initialWorkoutState: CreateWorkoutValues = {
 	steps: 0,
 	miles: 0,
 	// scheduled time
-	startTime: "",
-	endTime: "",
-	date: "",
+	startTime: formatTime(new Date(), "long"),
+	endTime: formatTime(addMinutes(new Date(), 30), "long"),
+	date: formatDate(new Date(), "long"),
 	// recurring schedule event
 	isRecurring: false,
+	noEndDate: false,
 };
 
 const initialScheduleState: CreateScheduleValues = {
 	startDate: formatDate(new Date().toString(), "input"),
 	endDate: formatDate(new Date().toString(), "input"),
+
 	interval: 0,
 	frequency: "Never",
 	byDay: [],
@@ -67,6 +68,7 @@ const initialState: NewWorkoutValues = {
 };
 
 const CreateWorkout = ({ currentUser, closeModal }: Props) => {
+	const dispatch = useAppDispatch();
 	const [workoutValues, setWorkoutValues] =
 		useState<NewWorkoutValues>(initialState);
 	// dictates which step's set to use: 'New' or 'Existing' (plan)
@@ -75,7 +77,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 	const choosePlanType = (type: PlanType) => {
 		setPlanType(type);
 	};
-
 	const handleSelect = (name: string, value: string | number) => {
 		// set a default name according to workout type selection
 		if (name === "workoutType") {
@@ -98,7 +99,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 			[name]: value,
 		});
 	};
-
 	const handleCheckbox = (name: string, value: boolean) => {
 		setWorkoutValues({
 			...workoutValues,
@@ -109,7 +109,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 			toggleIsRecurring(value);
 		}
 	};
-
 	const handleDays = (day: WeekDayToken) => {
 		const { byDay } = workoutValues;
 
@@ -126,7 +125,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 			});
 		}
 	};
-
 	const toggleIsRecurring = (isRecurring: boolean) => {
 		if (isRecurring) {
 			setWorkoutValues({
@@ -148,14 +146,37 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 		}
 	};
 
-	// save the workout w/ a newly created workout plan
-	const saveNewWorkoutPlan = () => {
-		// do stuff
+	// creates a new workout w/ a newly created workout plan
+	const saveNewWorkoutPlan = async () => {
+		const { userID } = currentUser;
+		const { workoutType } = workoutValues;
+		const typeID: number = getWorkoutTypeIDFromName(workoutType);
+		const preparedRecords = prepareNewWorkoutWithPlan(typeID, workoutValues);
+		console.log("preparedRecords", preparedRecords);
+
+		const result = await dispatch(
+			createWorkoutWithPlan({
+				userID,
+				workout: preparedRecords.workout,
+				event: preparedRecords.event,
+			})
+		).unwrap();
+
+		if (!result || result instanceof Error) {
+			alert("Whoops! Create workout failed.");
+			return;
+		}
+
+		closeModal();
 	};
 
 	// saves a new workout using an existing workout plan
 	const saveNewWorkout = () => {
-		// do stuff
+		const { userID } = currentUser;
+		const { workoutType } = workoutValues;
+		const typeID: number = getWorkoutTypeIDFromName(workoutType);
+		console.log("userID", userID);
+		console.log("typeID", typeID);
 	};
 
 	return (

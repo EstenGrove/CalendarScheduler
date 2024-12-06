@@ -1,0 +1,34 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+@mixin sectionLabel() {
+	font-size: 1.8rem;
+	font-weight: 600;
+	margin-bottom: 2rem;
+}
+
+.RangeTypes {
+	width: 100%;
+
+	&_label {
+		@include sectionLabel();
+	}
+
+	&_options {
+		width: 100%;
+		@include flex_row(flex-start, flex-start, wrap);
+		gap: 1rem;
+
+		&_type {
+			padding: 0.3rem 0.6rem;
+			border-radius: 0.5rem;
+			border: none;
+			outline: none;
+			background-color: var(--blueGrey600);
+			color: #fff;
+			font-size: 1.4rem;
+			cursor: pointer;
+		}
+	}
+}

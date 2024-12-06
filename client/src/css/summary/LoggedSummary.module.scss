@@ -1,0 +1,14 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.LoggedSummary {
+	@include fill_container;
+	@include flex_row(center, center);
+
+	&_inner {
+		@include fill_container;
+		@include flex_row(center, center);
+		gap: 0 1rem;
+	}
+}
