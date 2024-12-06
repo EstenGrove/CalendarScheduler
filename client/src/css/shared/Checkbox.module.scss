@@ -5,6 +5,7 @@
 $checkbox: 1.8rem;
 
 .Checkbox {
+	width: max-content;
 	@include flex_row(flex-start, center);
 	gap: 0 0.7rem;
 

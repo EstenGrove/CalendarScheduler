@@ -1,30 +1,10 @@
 import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import { historyService } from "../services";
-import type { CreateLogValues, WorkoutLogDB } from "../services/types";
-import { applyTimeStrToDate, formatDate, parseDate } from "../utils/dates";
+import type { WorkoutLogDB } from "../services/types";
 import { historyNormalizer } from "../utils/normalizing";
 
 const app = new Hono();
-
-const prepareLogEntry = (log: CreateLogValues) => {
-	const {
-		startTime = new Date().toString(),
-		endTime = new Date().toString(),
-		date = new Date().toString(),
-	} = log;
-
-	const parsedDate = parseDate(date);
-	const adjustedStart = applyTimeStrToDate(startTime, parsedDate);
-	const adjustedEnd = applyTimeStrToDate(endTime, parsedDate);
-
-	return {
-		...log,
-		startTime: adjustedStart,
-		endTime: adjustedEnd,
-		workoutDate: date,
-	};
-};
 
 app.post("/createLog", async (ctx: Context) => {
 	const { userID, workoutLog } = await ctx.req.json();
@@ -58,7 +38,9 @@ app.get("/getWorkoutLogs", async (ctx: Context) => {
 		endDate,
 	})) as WorkoutLogDB[];
 
-	console.log("logRecords", logRecords);
+	// const test1 = logRecords.find((x) => x.log_id === 30);
+	// console.log("test1", test1);
+
 	if (logRecords instanceof Error) {
 		const errResp = getResponseError(logRecords, {
 			history: [],

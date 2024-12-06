@@ -310,3 +310,43 @@ export type RecurringWorkoutAndPlanPayload = {
 export type RecurringWorkoutEventPayload = RecurringWorkoutAndPlanPayload & {
 	userID: string;
 };
+
+// 'get_workouts_by_date()'
+export interface UserWorkoutEventDB {
+	event_id: number;
+	workout_id: number;
+	schedule_id: number;
+	event_name: string;
+	event_desc: string;
+	event_date: string;
+	start_time: string;
+	end_time: string;
+	created_date: string;
+	tag_color: string | null;
+}
+
+export interface UserWorkoutEventClient {
+	eventID: number;
+	workoutID: number;
+	scheduleID: number;
+	eventName: string;
+	eventDesc: string;
+	eventDate: string;
+	startTime: string;
+	endTime: string;
+	createdDate: string;
+	tagColor: string | null;
+}
+
+export interface MinsSummaryDB {
+	date: string;
+	total_mins: number;
+	week_day: string;
+	log_count: number;
+}
+export interface MinsSummaryClient {
+	date: string;
+	totalMins: number;
+	weekday: string;
+	logCount: number;
+}

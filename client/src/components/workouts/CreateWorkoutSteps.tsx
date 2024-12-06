@@ -19,7 +19,6 @@ import { parse } from "date-fns";
 // components
 import TextArea from "../shared/TextArea";
 import Checkbox from "../shared/Checkbox";
-import TimeInput from "../shared/TimeInput";
 import TextInput from "../shared/TextInput";
 import DateInput from "../shared/DateInput";
 import TimerInput from "../shared/TimerInput";
@@ -27,6 +26,7 @@ import MultiStepForm from "../ui/MultiStepForm";
 import CounterInput from "../shared/CounterInput";
 import MultiStepFormStep from "../ui/MultiStepFormStep";
 import RecurringOptions from "../events/RecurringOptions";
+import TimePicker from "../shared/TimePicker";
 
 type PlanType = "New" | "Existing" | null;
 
@@ -481,7 +481,7 @@ const ScheduleWorkoutStep = ({
 								name="endDate"
 								value={workoutValues.endDate}
 								onChange={handleChange}
-								style={{ minWidth: "25rem" }}
+								style={{ width: "25rem", maxWidth: "100%" }}
 							/>
 						</div>
 					)}
@@ -489,17 +489,15 @@ const ScheduleWorkoutStep = ({
 					<div className={styles.ScheduleWorkoutStep_row}>
 						<label htmlFor="startTime">Start Time - End Time</label>
 						<div className={styles.ScheduleWorkoutStep_time}>
-							<TimeInput
+							<TimePicker
 								name="startTime"
-								id="startTime"
-								value={workoutValues.startTime}
+								initialTime={workoutValues.startTime as string}
 								onChange={handleChange}
 								style={{ minWidth: "12rem", maxWidth: "100%" }}
 							/>
-							<TimeInput
+							<TimePicker
 								name="endTime"
-								id="endTime"
-								value={workoutValues.endTime}
+								initialTime={workoutValues.endTime}
 								onChange={handleChange}
 								style={{ minWidth: "12rem", maxWidth: "100%" }}
 							/>

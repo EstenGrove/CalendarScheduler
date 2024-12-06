@@ -125,6 +125,20 @@ const workoutTypes: WorkoutType[] = [
 	},
 ] as const;
 
+export type WorkoutTypeName =
+	| "Planked Pull-ups"
+	| "Lateral Butterflys"
+	| "Overhead Press"
+	| "Pushups"
+	| "Situps"
+	| "Curls"
+	| "Timed Walk"
+	| "Free Walk"
+	| "Distance Walk"
+	| "Stretch"
+	| "Yoga"
+	| "Other";
+
 const groupTypesByUnit = (workoutTypes: WorkoutType[]) => {
 	const grouped = groupByFn(workoutTypes, (x) => x.units);
 

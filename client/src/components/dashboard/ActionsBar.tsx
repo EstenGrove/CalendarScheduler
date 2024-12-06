@@ -43,7 +43,6 @@ const Menu = ({ close, children }: MenuProps) => {
 };
 
 const icons = {
-	// timer: "timelapse",
 	// task: "add_task",
 	timer: "timer",
 	logWorkout: "fact_check",

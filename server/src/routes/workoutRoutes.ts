@@ -5,17 +5,30 @@ import type {
 	NewEventPayload,
 	RecurringWorkoutEventPayload,
 	RecurringWorkoutPayload,
+	UserWorkoutEventDB,
 } from "../services/types";
-import { eventsService, workoutsService } from "../services";
+import {
+	eventsService,
+	userWorkoutService,
+	workoutsService,
+} from "../services";
+import { workoutEventNormalizer } from "../utils/normalizing";
 
 const app: Hono = new Hono();
 
 app.get("/getWorkoutsByDate", async (ctx: Context) => {
-	const { targetDate } = ctx.req.query();
+	const { userID, targetDate } = ctx.req.query();
+
+	const records = (await userWorkoutService.getWorkoutsByDate(
+		userID,
+		targetDate
+	)) as UserWorkoutEventDB[];
+
+	// process workouts for client format
+	const workoutEvents = workoutEventNormalizer.toClient(records);
 
 	const response = getResponseOk({
-		Message: "Workouts",
-		Date: targetDate,
+		workoutEvents: workoutEvents,
 	});
 
 	return ctx.json(response);

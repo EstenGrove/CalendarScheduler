@@ -1,4 +1,5 @@
 import type { Pool } from "pg";
+import type { UserWorkoutEventDB } from "./types";
 
 export interface UserWorkoutPayload {
 	workoutTypeID: number;
@@ -17,6 +18,24 @@ class UserWorkoutService {
 	#db: Pool;
 	constructor(db: Pool) {
 		this.#db = db;
+	}
+
+	async getWorkoutsByDate(
+		userID: string,
+		date: Date | string
+	): Promise<UserWorkoutEventDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_workouts_by_date(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, date]);
+			const rows = results?.rows as UserWorkoutEventDB[];
+
+			return rows as UserWorkoutEventDB[];
+		} catch (error) {
+			return error;
+		}
 	}
 
 	// Creates workout, plan & user workout records

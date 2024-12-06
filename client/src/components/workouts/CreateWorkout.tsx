@@ -37,9 +37,9 @@ const initialWorkoutState: CreateWorkoutValues = {
 	steps: 0,
 	miles: 0,
 	// scheduled time
-	startTime: formatTime(new Date(), "db"),
-	endTime: formatTime(addMinutes(new Date(), 30), "db"),
-	date: formatDate(new Date(), "db"),
+	startTime: formatTime(new Date(), "long"),
+	endTime: formatTime(addMinutes(new Date(), 30), "long"),
+	date: formatDate(new Date(), "long"),
 	// recurring schedule event
 	isRecurring: false,
 	noEndDate: false,
@@ -48,6 +48,7 @@ const initialWorkoutState: CreateWorkoutValues = {
 const initialScheduleState: CreateScheduleValues = {
 	startDate: formatDate(new Date().toString(), "input"),
 	endDate: formatDate(new Date().toString(), "input"),
+
 	interval: 0,
 	frequency: "Never",
 	byDay: [],

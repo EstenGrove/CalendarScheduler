@@ -1,4 +1,10 @@
-import { ChangeEvent, RefObject, useRef, useState } from "react";
+import {
+	ChangeEvent,
+	ComponentPropsWithoutRef,
+	RefObject,
+	useRef,
+	useState,
+} from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/shared/TimePicker.module.scss";
 import { parseTime } from "../../utils/utils_dates";
@@ -126,13 +132,16 @@ const getInitialState = (initialTime: string): TimeVals => {
 	};
 };
 
-type Props = {
+type TimeProps = {
 	name: string;
 	initialTime: string;
 	onChange: (name: string, value: string) => void;
 };
 
-const TimePicker = ({ name, initialTime, onChange }: Props) => {
+// @ts-expect-error: this is fine
+interface Props extends TimeProps, ComponentPropsWithoutRef<"div"> {}
+
+const TimePicker = ({ name, initialTime, onChange, ...rest }: Props) => {
 	const hoursRef = useRef<HTMLInputElement>(null);
 	const minsRef = useRef<HTMLInputElement>(null);
 	const todRef = useRef<HTMLSelectElement>(null);
@@ -207,7 +216,7 @@ const TimePicker = ({ name, initialTime, onChange }: Props) => {
 	};
 
 	return (
-		<div className={styles.TimePicker}>
+		<div className={styles.TimePicker} {...rest}>
 			<div className={styles.TimePicker_display}>
 				<HoursInput
 					key="Hours"

@@ -8,6 +8,7 @@ import {
 	getDate,
 	isSameDay,
 	startOfMonth,
+	startOfWeek,
 } from "date-fns";
 import { CalendarEvent } from "../features/events/types";
 import { groupByFn, TRecord } from "./utils_misc";
@@ -120,6 +121,16 @@ const getMonthStartAndEnd = (
 	};
 };
 
+const getWeekStartAndEnd = (date: Date = new Date()) => {
+	const startDate = startOfWeek(date);
+	const endDate = endOfWeek(date);
+
+	return {
+		startDate,
+		endDate,
+	};
+};
+
 export {
 	generateWeeksAndDates,
 	isInMonth,
@@ -129,4 +140,5 @@ export {
 	generateYearOptions,
 	generateYearOptions2,
 	getMonthStartAndEnd,
+	getWeekStartAndEnd,
 };

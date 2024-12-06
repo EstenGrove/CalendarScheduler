@@ -15,7 +15,7 @@ import {
 import { CurrentUser } from "../features/user/types";
 import { selectCurrentUser } from "../features/user/userSlice";
 import { FilterSettings } from "../utils/utils_filters";
-import { endOfWeek, isToday, startOfWeek } from "date-fns";
+import { endOfWeek, isToday, startOfMonth, startOfWeek } from "date-fns";
 import { formatDate } from "../utils/utils_dates";
 // components
 import Loader from "../components/ui/Loader";
@@ -25,7 +25,8 @@ import HistoryFiltersModal from "../components/history/HistoryFiltersModal";
 import HistoryFilterOptions from "../components/history/HistoryFilterOptions";
 
 const getLogRange = () => {
-	const start = startOfWeek(new Date());
+	// const start = startOfWeek(new Date());
+	const start = startOfMonth(new Date(2024, 10, 1));
 	const end = endOfWeek(new Date());
 	const startDate = formatDate(start, "db");
 	const endDate = formatDate(end, "db");
@@ -84,15 +85,6 @@ const DashboardWorkoutHistory = () => {
 	});
 	const [searchVal, setSearchVal] = useState<string>("");
 
-	const selectFilter = (logsFilter: string) => {
-		if (filters.includes(logsFilter)) {
-			const newFilters = [...filters.filter((name) => name !== logsFilter)];
-			setFilters(newFilters);
-		} else {
-			setFilters([...filters, logsFilter]);
-		}
-	};
-
 	const handleFilter = (name: string, value: string | number) => {
 		setFilterSettings({
 			...filterSettings,
@@ -119,7 +111,6 @@ const DashboardWorkoutHistory = () => {
 	};
 
 	const clearFilters = () => {
-		//  do stuff
 		setFilters([]);
 		setFilteredLogs(workoutLogs);
 	};

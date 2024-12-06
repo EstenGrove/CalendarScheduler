@@ -16,6 +16,7 @@ const routePaths = {
 	calendarEvent: "./pages/DashboardCalendarEvent",
 	workouts: "./pages/DashboardWorkouts",
 	history: "./pages/DashboardWorkoutHistory",
+	health: "./pages/DashboardHealthProfile",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
@@ -26,6 +27,7 @@ const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
 const LazyDashboardCalendarLayout = lazy(
 	() => import(routePaths.calendarLayout)
 );
+const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 
 const Fallback = () => {
 	return (
@@ -89,6 +91,14 @@ function App() {
 								>
 									<Route path=":id" element={<LazyDashboardCalendarEvent />} />
 								</Route>
+								<Route
+									path="health"
+									element={
+										<Suspense>
+											<LazyDashboardHealthProfile />
+										</Suspense>
+									}
+								/>
 							</Route>
 						</Routes>
 					</div>

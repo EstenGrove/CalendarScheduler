@@ -1,4 +1,15 @@
 import { format, formatDistanceToNow, parse, set } from "date-fns";
+import { WeekDay } from "../features/summary/types";
+
+const WEEK_DAYS: WeekDay[] = [
+	"Sunday",
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+];
 
 const convertToHrsAndMins = (mins: number) => {
 	return {
@@ -179,6 +190,7 @@ const applyTimeStrToDate = (time: string, date: Date | string) => {
 };
 
 export {
+	WEEK_DAYS,
 	FORMAT_TOKENS,
 	DATE_TOKENS,
 	TIME_TOKENS,

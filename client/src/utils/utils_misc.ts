@@ -36,4 +36,9 @@ const groupByFn = <T extends object>(
 	return grouped;
 };
 
-export { groupBy, groupByFn };
+const formatLargeNumber = (value: number) => {
+	if (!value) return 0;
+	return value?.toLocaleString() || 0;
+};
+
+export { groupBy, groupByFn, formatLargeNumber };

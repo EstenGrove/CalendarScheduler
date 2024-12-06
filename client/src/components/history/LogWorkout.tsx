@@ -5,14 +5,8 @@ import { CurrentUser } from "../../features/user/types";
 import { CreateLogValues } from "../workout-logs/types";
 import { useAppDispatch } from "../../store/store";
 import { saveLogEntry } from "../../features/workoutHistory/operations";
-import {
-	applyTimeStrToDate,
-	formatDate,
-	formatDateTime,
-	formatTime,
-	parseTime,
-} from "../../utils/utils_dates";
-import { addMinutes, parse } from "date-fns";
+import { formatDate, formatTime } from "../../utils/utils_dates";
+import { addMinutes } from "date-fns";
 import {
 	getWorkoutTypeIDFromName,
 	isDistanceType,
