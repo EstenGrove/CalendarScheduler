@@ -51,10 +51,15 @@ const API_ENDPOINTS = {
 		getByDate: "/events/getEventsByDate",
 		getDetails: "/events/getEventDetails",
 	},
-	plans: {},
+	plans: {
+		getPlans: "/plans/getWorkoutPlans",
+	},
 	workouts: {
 		createWorkout: "/workouts/createWorkout",
 		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
+		getWorkouts: "/workouts/getWorkouts",
+		getWorkoutsByDate: "/workouts/getWorkoutsByDate",
+		markWorkoutsAsDone: "/workouts/markWorkoutsAsDone",
 	},
 	workoutHistory: {
 		createLog: "/history/createLog",
@@ -63,6 +68,7 @@ const API_ENDPOINTS = {
 	summary: {
 		getDailyMins: "/summary/getDailyMinsSummary",
 		getWeeklyTotals: "/summary/getWeeklyTotals",
+		getRangeSummary: "/summary/getRangeSummary",
 	},
 } as const;
 

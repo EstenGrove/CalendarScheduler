@@ -75,10 +75,7 @@ const DashboardCalendarEvent = () => {
 		let isMounted = true;
 		if (!isMounted) return;
 
-		console.log("EventID:", eventID);
-
 		if (eventID) {
-			console.log("Fetching...");
 			const { userID } = currentUser;
 			dispatch(
 				fetchEventDetails({

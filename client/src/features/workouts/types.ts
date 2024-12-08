@@ -6,6 +6,7 @@ export interface Workout {
 	workoutDesc: string;
 	workoutLength: string; // 25:00 => 25 mins
 	workoutPlans: WorkoutPlan[];
+	isCompleted?: boolean;
 	createdDate: string;
 	isActive: boolean;
 }

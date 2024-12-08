@@ -33,3 +33,12 @@ export interface WeeklyTotals {
 	totalNumOfWorkouts: number;
 	totalNumOfWorkoutTypes: number;
 }
+
+export interface RangeSummary {
+	totalMins: number;
+	totalReps: number;
+	totalMiles: number;
+	totalSteps: number;
+	totalNumOfWorkouts: number;
+	totalNumOfWorkoutTypes: number;
+}

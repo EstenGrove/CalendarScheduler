@@ -15,12 +15,12 @@ import {
 	fetchWeeklyTotals,
 } from "../../features/summary/operations";
 import { CurrentUser } from "../../features/user/types";
+import { formatLargeNumber } from "../../utils/utils_misc";
 // components
 import SummaryCard from "./SummaryCard";
 import Loader from "../ui/Loader";
 import BarSummary from "./BarSummary";
 import ScoreCard from "./ScoreCard";
-import { formatLargeNumber } from "../../utils/utils_misc";
 
 type Props = {
 	currentUser: CurrentUser;

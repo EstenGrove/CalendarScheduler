@@ -1,3 +1,5 @@
+import { CustomDateRange } from "../features/summary/types";
+import { currentEnv, planApis } from "./utils_env";
 import { groupByFn } from "./utils_misc";
 
 export interface CreatePlanValues {
@@ -159,4 +161,28 @@ const getPlanIDFromType = (type: string, planTypes: WorkoutType[]) => {
 	return id;
 };
 
-export { workoutTypes, getPlanIDFromType, groupTypesByUnit, groupedTypes };
+// FETCHING DATA
+
+const getWorkoutPlans = async (userID: string, dateRange: CustomDateRange) => {
+	const { startDate, endDate } = dateRange;
+	let url = currentEnv.base + planApis.getPlans;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate, endDate });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+export {
+	workoutTypes,
+	getPlanIDFromType,
+	groupTypesByUnit,
+	groupedTypes,
+	getWorkoutPlans,
+};

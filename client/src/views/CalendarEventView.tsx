@@ -123,11 +123,33 @@ const DeleteEventOptions = ({ deleteValues, handleCheckbox }: DeleteProps) => {
 	);
 };
 
+interface DeleteEventOpts {
+	deleteEventOnly: boolean;
+	deleteAllEvents: boolean;
+	deleteWorkoutOnly: boolean;
+	deleteAllWorkouts: boolean;
+}
+
 const CalendarEventView = ({ calendarEvent }: Props) => {
 	const selectedEvent = useSelector(selectSelectedEvent);
-	const { upcoming, schedule } = selectedEvent;
+	const { schedule } = selectedEvent;
 	const [showConfirm, setShowConfirm] = useState<boolean>(false);
 	const tagColor: string = calendarEvent.tagColor || "var(--accent)";
+	const [deleteEventOptions, setDeleteEventOptions] = useState<DeleteEventOpts>(
+		{
+			deleteEventOnly: false,
+			deleteAllEvents: true,
+			deleteWorkoutOnly: false,
+			deleteAllWorkouts: false,
+		}
+	);
+
+	const handleDeleteOpts = (name: string, value: boolean) => {
+		setDeleteEventOptions({
+			...deleteEventOptions,
+			[name]: value,
+		});
+	};
 
 	const initDeleteEvent = () => {
 		setShowConfirm(true);
@@ -142,8 +164,6 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 	const cancelDelete = () => {
 		closeDeleteDialog();
 	};
-
-	console.log("selectedEvent", selectedEvent);
 
 	return (
 		<div className={styles.CalendarEventView}>
@@ -174,7 +194,10 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 					onCancel={cancelDelete}
 					onConfirm={confirmDelete}
 				>
-					<DeleteEventOptions />
+					<DeleteEventOptions
+						deleteValues={deleteEventOptions}
+						handleCheckbox={handleDeleteOpts}
+					/>
 				</ConfirmDialog>
 			)}
 		</div>

@@ -61,12 +61,12 @@ app.get("/getWeeklyTotals", async (ctx: Context) => {
 
 	const response = getResponseOk({
 		weeklySummary: {
-			totalMins: summaryRecord.total_mins,
-			totalReps: summaryRecord.total_reps,
-			totalMiles: summaryRecord.total_miles,
-			totalSteps: summaryRecord.total_steps,
-			totalNumOfWorkouts: summaryRecord.total_workouts,
-			totalNumOfWorkoutTypes: summaryRecord.total_workout_types,
+			totalMins: summaryRecord.total_mins || 0,
+			totalReps: summaryRecord.total_reps || 0,
+			totalMiles: summaryRecord.total_miles || 0,
+			totalSteps: summaryRecord.total_steps || 0,
+			totalNumOfWorkouts: summaryRecord.total_workouts || 0,
+			totalNumOfWorkoutTypes: summaryRecord.total_workout_types || 0,
 		},
 	});
 

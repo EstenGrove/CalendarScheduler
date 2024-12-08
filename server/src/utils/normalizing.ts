@@ -15,6 +15,10 @@ import type {
 	UserWorkoutEventDB,
 	MinsSummaryClient,
 	MinsSummaryDB,
+	UserWorkoutPlanDB,
+	UserWorkoutPlanClient,
+	UserWorkoutDB,
+	UserWorkoutClient,
 } from "../services/types";
 
 class MonthlySummaryNormalizer {
@@ -407,6 +411,57 @@ class DailyMinsSummaryNormalizer {
 	}
 }
 
+class UserWorkoutPlanNormalizer {
+	#toClient(record: UserWorkoutPlanDB): UserWorkoutPlanClient {
+		const clientRecord: UserWorkoutPlanClient = {
+			workoutID: record.workout_id,
+			workoutName: record.workout_name,
+			workoutDesc: record.workout_desc,
+			workoutTypeID: record.workout_type_id,
+			planID: record.plan_id,
+			planName: record.plan_name,
+			planDesc: record.plan_desc,
+			planMins: record.target_mins,
+			planWeight: record.target_weight,
+			planReps: record.target_reps,
+			planSets: record.target_sets,
+			createdDate: record.created_date,
+			isActive: record.is_active,
+		};
+
+		return clientRecord;
+	}
+
+	toClientOne(record: UserWorkoutPlanDB): UserWorkoutPlanClient {
+		return this.#toClient(record);
+	}
+	toClient(records: UserWorkoutPlanDB[]): UserWorkoutPlanClient[] {
+		return records.map(this.#toClient);
+	}
+}
+
+class WorkoutNormalizer {
+	#toClient(record: UserWorkoutDB): UserWorkoutClient {
+		const clientRecord: UserWorkoutClient = {
+			userID: record.user_id,
+			workoutID: record.workout_id,
+			planID: record.plan_id,
+			name: record.workout_name,
+			desc: record.workout_desc,
+			createdDate: record.created_date,
+			isActive: record.is_active,
+		};
+
+		return clientRecord;
+	}
+
+	toClient(records: UserWorkoutDB[]): UserWorkoutClient[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toClient);
+	}
+}
+
 const eventsNormalizer = new EventsNormalizer();
 const historyNormalizer = new HistoryNormalizer();
 const schedulesNormalizer = new SchedulesNormalizer();
@@ -415,6 +470,8 @@ const eventDetailsNormalizer = new EventDetailsNormalizer();
 const workoutEventNormalizer = new WorkoutEventNormalizer();
 const minsSummaryNormalizer = new DailyMinsSummaryNormalizer();
 const eventInstancesNormalizer = new EventInstancesNormalizer();
+const workoutPlanNormalizer = new UserWorkoutPlanNormalizer();
+const workoutNormalizer = new WorkoutNormalizer();
 
 export {
 	summaryNormalizer,
@@ -425,4 +482,6 @@ export {
 	historyNormalizer,
 	workoutEventNormalizer,
 	minsSummaryNormalizer,
+	workoutPlanNormalizer,
+	workoutNormalizer,
 };

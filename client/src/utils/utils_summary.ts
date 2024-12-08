@@ -41,4 +41,36 @@ const getWeeklyTotals = async (userID: string, dateRange: CustomDateRange) => {
 	}
 };
 
-export { getDailyMinsSummary, getWeeklyTotals };
+const getRangeSummary = async (userID: string, dateRange: CustomDateRange) => {
+	const { startDate, endDate } = dateRange;
+	let url = currentEnv.base + summaryApis.getRangeSummary;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate, endDate });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+// SUMMARY PARSING/PROCESSING UTILS
+const prepareBarChartData = (summary: DailyMinsSummaryList): number[] => {
+	if (!summary) return [];
+
+	const data = summary.map((record) => {
+		return record.totalMins;
+	});
+
+	return data;
+};
+
+export {
+	getDailyMinsSummary,
+	getWeeklyTotals,
+	getRangeSummary,
+	prepareBarChartData,
+};

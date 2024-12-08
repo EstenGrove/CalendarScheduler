@@ -6,12 +6,18 @@ import LogWorkoutModal from "../history/LogWorkoutModal";
 import Modal from "../shared/Modal";
 import CreateWorkout from "../workouts/CreateWorkout";
 import PomodoroModal from "../pomodoro/PomodoroModal";
+import CreateEventModal from "../events/CreateEventModal";
 
 type Props = {
 	currentUser: CurrentUser;
 };
 
-type ActionType = "Timer" | "StartWorkout" | "LogWorkout" | "CreateWorkout";
+type ActionType =
+	| "Timer"
+	| "StartWorkout"
+	| "LogWorkout"
+	| "CreateWorkout"
+	| "CreateEvent";
 
 const QuickActions = ({ currentUser }: Props) => {
 	const [actionType, setActionType] = useState<ActionType | null>(null);
@@ -28,6 +34,7 @@ const QuickActions = ({ currentUser }: Props) => {
 		<div className={styles.QuickActions}>
 			<ActionsBar onAction={selectAction} />
 
+			{/* Start a Timer/Pomodoro Session */}
 			{actionType === "Timer" && (
 				<PomodoroModal
 					currentUser={currentUser}
@@ -35,6 +42,15 @@ const QuickActions = ({ currentUser }: Props) => {
 				/>
 			)}
 
+			{/* Calendar Event ONLY */}
+			{actionType === "CreateEvent" && (
+				<CreateEventModal
+					currentUser={currentUser}
+					closeModal={closeActionModal}
+				/>
+			)}
+
+			{/* Create Workout w/ Plan */}
 			{actionType === "CreateWorkout" && (
 				<Modal title="Create Workout" closeModal={closeActionModal}>
 					<CreateWorkout
@@ -44,6 +60,7 @@ const QuickActions = ({ currentUser }: Props) => {
 				</Modal>
 			)}
 
+			{/* Log Workout without Plan */}
 			{actionType === "LogWorkout" && (
 				<LogWorkoutModal
 					currentUser={currentUser}

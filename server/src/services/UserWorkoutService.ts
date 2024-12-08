@@ -1,5 +1,9 @@
 import type { Pool } from "pg";
-import type { UserWorkoutEventDB } from "./types";
+import type {
+	UserWorkoutDB,
+	UserWorkoutEventDB,
+	UserWorkoutPlanDB,
+} from "./types";
 
 export interface UserWorkoutPayload {
 	workoutTypeID: number;
@@ -20,6 +24,24 @@ class UserWorkoutService {
 		this.#db = db;
 	}
 
+	async getWorkoutEventsByDate(
+		userID: string,
+		date: Date | string
+	): Promise<UserWorkoutEventDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_workouts_by_date(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, date]);
+			const rows = results?.rows as UserWorkoutEventDB[];
+
+			return rows as UserWorkoutEventDB[];
+		} catch (error) {
+			return error;
+		}
+	}
+
 	async getWorkoutsByDate(
 		userID: string,
 		date: Date | string
@@ -33,6 +55,41 @@ class UserWorkoutService {
 			const rows = results?.rows as UserWorkoutEventDB[];
 
 			return rows as UserWorkoutEventDB[];
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async getUserWorkouts(
+		userID: string,
+		isActive: boolean = true
+	): Promise<UserWorkoutDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_user_workouts(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, isActive]);
+			const rows = results?.rows as UserWorkoutDB[];
+
+			return rows as UserWorkoutDB[];
+		} catch (error) {
+			return error;
+		}
+	}
+	async getUserWorkoutPlans(
+		userID: string,
+		isActive: boolean = true
+	): Promise<UserWorkoutPlanDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_user_workout_plans(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, isActive]);
+			const rows = results?.rows as UserWorkoutPlanDB[];
+
+			return rows as UserWorkoutPlanDB[];
 		} catch (error) {
 			return error;
 		}

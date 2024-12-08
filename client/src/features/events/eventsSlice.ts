@@ -43,8 +43,6 @@ const initialState: CalendarEventsSlice = {
 	status: "IDLE",
 	events: [],
 	eventsByDate: {},
-	// events: fakeEvents,
-	// eventsByDate: eventsByDate,
 	eventsByMonth: {},
 	monthlySummary: {},
 	selectedDateEvents: [],
@@ -129,9 +127,10 @@ const calendarEventsSlice = createSlice({
 						eventDates: string[];
 					}>
 				) => {
-					const { newEvent, eventDates } = action.payload;
-					console.log("newEvent", newEvent);
-					console.log("eventDates", eventDates);
+					const {
+						newEvent,
+						// eventDates
+					} = action.payload;
 
 					state.status = "FULFILLED";
 					state.events = [newEvent, ...state.events];
@@ -181,7 +180,6 @@ const calendarEventsSlice = createSlice({
 					};
 					state.status = "FULFILLED";
 
-					console.log("newEvent", newEvent);
 					state.selectedEvent = {
 						...state.selectedEvent,
 						event: newEvent,

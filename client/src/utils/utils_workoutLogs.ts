@@ -91,6 +91,53 @@ const prepareLogDates = (values: CreateLogValues): TimeRange => {
 	};
 };
 
+const prepareWorkoutLog = (values: CreateLogValues): CreateLogValues => {
+	const type = values.workoutType;
+	const { startTime, endTime } = prepareLogDates(values);
+	const startISO = startTime.toISOString();
+	const endISO = endTime.toISOString();
+
+	switch (true) {
+		// Reset weighted fields
+		case isWalkingType(type):
+		case isDistanceType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+				reps: 0,
+				sets: 0,
+				weight: 0,
+			};
+		}
+		// Reset distance fields
+		case isWeightedType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+				steps: 0,
+				miles: 0,
+			};
+		}
+		// Might need to reset weighted & distance fields???
+		case isOtherType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+			};
+		}
+
+		default:
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+			};
+	}
+};
+
 const getWorkoutLogs = async (
 	userID: string,
 	range: WorkoutLogParams["range"]
@@ -135,4 +182,5 @@ export {
 	// utils
 	getWorkoutTypeIDFromName,
 	prepareLogDates,
+	prepareWorkoutLog,
 };

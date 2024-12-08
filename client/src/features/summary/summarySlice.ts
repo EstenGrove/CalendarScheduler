@@ -1,13 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DailyMinsSummary, DailyMinsSummaryList, WeeklyTotals } from "./types";
 import {
-	DailySummaryResp,
+	DailyMinsSummary,
+	DailyMinsSummaryList,
+	RangeSummary,
+	WeeklyTotals,
+} from "./types";
+import {
 	fetchDailyMinsSummary,
 	fetchWeeklyTotals,
+	fetchRangeSummary,
+	RangeSummaryResp,
 	WeeklyTotalsResp,
+	DailySummaryResp,
 } from "./operations";
 import { TStatus } from "../types";
 import { RootState } from "../../store/store";
+import { endOfWeek, startOfWeek } from "date-fns";
+import { formatDate } from "../../utils/utils_dates";
 
 export interface SummarySlice {
 	status: TStatus;
@@ -25,6 +34,13 @@ export interface SummarySlice {
 		summary: WeeklyTotals;
 		status: TStatus;
 	};
+	rangeSummary: {
+		status: TStatus;
+		startDate: string;
+		endDate: string;
+		perDay: DailyMinsSummaryList;
+		summary: RangeSummary;
+	};
 }
 
 const initialState: SummarySlice = {
@@ -40,6 +56,20 @@ const initialState: SummarySlice = {
 		list: [],
 	},
 	weeklySummary: {
+		summary: {
+			totalMins: 0,
+			totalReps: 0,
+			totalMiles: 0,
+			totalSteps: 0,
+			totalNumOfWorkouts: 0,
+			totalNumOfWorkoutTypes: 0,
+		},
+		status: "IDLE",
+	},
+	rangeSummary: {
+		startDate: formatDate(startOfWeek(new Date()), "db"), // 2024-12-23
+		endDate: formatDate(endOfWeek(new Date()), "db"), // 2024-12-30
+		perDay: [],
 		summary: {
 			totalMins: 0,
 			totalReps: 0,
@@ -82,9 +112,38 @@ const summarySlice = createSlice({
 					state.weeklySummary.summary = action.payload.weeklySummary;
 				}
 			);
+
+		// Get Range Summary (totals & per day mins list)
+		builder
+			.addCase(fetchRangeSummary.pending, (state: SummarySlice) => {
+				state.rangeSummary.status = "PENDING";
+			})
+			.addCase(
+				fetchRangeSummary.fulfilled,
+				(state: SummarySlice, action: PayloadAction<RangeSummaryResp>) => {
+					state.rangeSummary.status = "FULFILLED";
+					state.rangeSummary.summary = action.payload.rangeSummary;
+					state.rangeSummary.perDay = action.payload.perDay;
+				}
+			);
 	},
 });
 
+// RANGE SUMMARY SELECTORS
+export const selectRangeSummary = (state: RootState) => {
+	return state.summary.rangeSummary;
+};
+export const selectRangeSummaryData = (state: RootState) => {
+	return state.summary.rangeSummary.summary;
+};
+export const selectRangeSummaryList = (state: RootState) => {
+	return state.summary.rangeSummary.perDay;
+};
+export const selectIsLoadingRangeSummary = (state: RootState) => {
+	return state.summary.rangeSummary.status === "PENDING";
+};
+
+// DAILY & WEEKLY SUMMARY SELECTORS
 export const selectIsLoadingMins = (state: RootState): boolean => {
 	return state.summary.dailyMins.status === "PENDING";
 };

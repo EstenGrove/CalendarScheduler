@@ -5,6 +5,7 @@ import type {
 	NewEventPayload,
 	RecurringWorkoutEventPayload,
 	RecurringWorkoutPayload,
+	UserWorkoutDB,
 	UserWorkoutEventDB,
 } from "../services/types";
 import {
@@ -12,17 +13,41 @@ import {
 	userWorkoutService,
 	workoutsService,
 } from "../services";
-import { workoutEventNormalizer } from "../utils/normalizing";
+import {
+	workoutEventNormalizer,
+	workoutNormalizer,
+} from "../utils/normalizing";
 
 const app: Hono = new Hono();
 
 app.get("/getWorkoutsByDate", async (ctx: Context) => {
-	const { userID, targetDate } = ctx.req.query();
+	const { userID, targetDate, startDate } = ctx.req.query();
 
 	const records = (await userWorkoutService.getWorkoutsByDate(
 		userID,
+		targetDate || startDate
+	)) as UserWorkoutEventDB[];
+
+	console.log("records", records);
+
+	// process workouts for client format
+	const workoutEvents = workoutEventNormalizer.toClient(records);
+
+	const response = getResponseOk({
+		workoutEvents: workoutEvents,
+	});
+
+	return ctx.json(response);
+});
+app.get("/getWorkoutEventsByDate", async (ctx: Context) => {
+	const { userID, targetDate } = ctx.req.query();
+
+	const records = (await userWorkoutService.getWorkoutEventsByDate(
+		userID,
 		targetDate
 	)) as UserWorkoutEventDB[];
+
+	console.log("records", records);
 
 	// process workouts for client format
 	const workoutEvents = workoutEventNormalizer.toClient(records);
@@ -70,6 +95,31 @@ app.post("/createWorkout", async (ctx: Context) => {
 	const response = getResponseOk({
 		message: "hi",
 	});
+	return ctx.json(response);
+});
+
+app.get("/getWorkouts", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+
+	const records = (await userWorkoutService.getUserWorkouts(
+		userID,
+		true
+	)) as UserWorkoutDB[];
+
+	if (records instanceof Error) {
+		const errResp = getResponseError(records, {
+			workouts: [],
+		});
+
+		return ctx.json(errResp);
+	}
+
+	const workouts = workoutNormalizer.toClient(records);
+
+	const response = getResponseOk({
+		workouts: workouts,
+	});
+
 	return ctx.json(response);
 });
 

@@ -68,6 +68,12 @@ export interface DateFormats {
 		full: string;
 		db: string;
 	};
+	weekday: {
+		full: string; // 'Monday', 'Tuesday' etc
+		abbrev: string; // 'Mon', 'Tue', etc
+		twoLetter: string; // 'Mo', 'Tu' etc
+		letter: string; // 'M', 'T', 'W', 'T' etc
+	};
 }
 
 const FORMAT_TOKENS: DateFormats = {
@@ -93,6 +99,12 @@ const FORMAT_TOKENS: DateFormats = {
 		long: "MM/dd/yyyy hh:mm a",
 		full: "MMMM do, yyyy hh:mm a",
 		db: "yyyy-MM-dd HH:mm",
+	},
+	weekday: {
+		full: "EEEE",
+		abbrev: "E..EEE",
+		twoLetter: "EEEEEE",
+		letter: "EEEEE",
 	},
 };
 const {
@@ -189,6 +201,17 @@ const applyTimeStrToDate = (time: string, date: Date | string) => {
 	return withTime;
 };
 
+// Converts a date (eg '2024-12-18T03:42:000') to the day of week (eg. 'Monday' etc)
+const formatDateAsWeekDay = (
+	date: Date | string,
+	weekdayToken: keyof DateFormats["weekday"] = "full"
+): string => {
+	const token: string = DATETIME_TOKENS[weekdayToken as keyof object];
+	const weekday = format(date, token);
+
+	return weekday;
+};
+
 export {
 	WEEK_DAYS,
 	FORMAT_TOKENS,
@@ -205,4 +228,5 @@ export {
 	parseDate,
 	applyTimeStrToDate,
 	getDistanceToNow,
+	formatDateAsWeekDay,
 };

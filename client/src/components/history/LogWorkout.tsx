@@ -14,8 +14,7 @@ import {
 	isWalkingType,
 	isWeightedType,
 	LogStep,
-	prepareLogDates,
-	TimeRange,
+	prepareWorkoutLog,
 } from "../../utils/utils_workoutLogs";
 // components
 import LogTypeView from "../workout-logs/LogTypeView";
@@ -150,13 +149,15 @@ const prepareWorkoutEntry = (values: CreateLogValues) => {
 	const { workoutType } = values;
 	// must parse the date string, to get the correct day/date of the month
 	const typeID: number = getWorkoutTypeIDFromName(workoutType);
-	const adjustedTimes: TimeRange = prepareLogDates(values);
+	const preparedValues: CreateLogValues = prepareWorkoutLog(values);
 
 	const newLog = {
 		...values,
+		...preparedValues,
 		workoutTypeID: typeID,
-		startTime: adjustedTimes.startTime.toISOString(),
-		endTime: adjustedTimes.endTime.toISOString(),
+		// const adjustedTimes: TimeRange = prepareLogDates(values);
+		// startTime: adjustedTimes.startTime.toISOString(),
+		// endTime: adjustedTimes.endTime.toISOString(),
 	};
 
 	return newLog;

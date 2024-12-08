@@ -64,7 +64,7 @@ const MobileMenu = ({ closeMenu }: MenuProps) => {
 					<NavLink to="upcoming">Upcoming</NavLink>
 				</li>
 				<li onClick={closeMenu} className={styles.MobileMenu_list_item}>
-					<NavLink to="completed">Completed</NavLink>
+					<NavLink to="tracker">Tracker</NavLink>
 				</li>
 			</ul>
 		</div>

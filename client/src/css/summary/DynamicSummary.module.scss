@@ -1,0 +1,17 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DynamicSummary {
+	width: 100%;
+
+	&_week {
+		width: 100%;
+		height: auto;
+	}
+	&_scores {
+		width: 100%;
+		@include flex_row(center, flex-start);
+		gap: 1rem;
+	}
+}

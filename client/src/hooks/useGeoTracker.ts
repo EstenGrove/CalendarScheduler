@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type TProps = {
 	onSuccess: (data: GeolocationPosition) => void;
@@ -29,6 +29,20 @@ const useGeoTracker = ({ onSuccess, onError, onWatch }: TProps) => {
 	const stopWatchingPosition = () => {
 		navigator.geolocation.clearWatch(watchID.current as number);
 	};
+
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) {
+			return;
+		}
+
+		getCurrentPosition();
+
+		return () => {
+			isMounted = false;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return {
 		geoData,

@@ -13,6 +13,7 @@
 	--accent-blue: #007cff;
 	--accent-red: #ff001b;
 	--accent-red2: rgba(255, 0, 27, 0.4);
+	--accent-yellow: #f9f871;
 
 	/* --accent: #ff0066; */
 	--accent: rgb(255, 0, 102);
@@ -129,6 +130,9 @@ body {
 	font-family: var(--font-primary);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	/* Prevent scrolls */
+	overflow-y: hidden;
 }
 
 :root[data-theme="light"] {

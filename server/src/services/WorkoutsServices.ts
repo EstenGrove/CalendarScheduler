@@ -47,7 +47,6 @@ class WorkoutsServices {
 			return error;
 		}
 	}
-
 	// creates, workout, plan & user-workout records
 	async createNewWorkout(userID: string, values: WorkoutAndPlanValues) {
 		const { typeID, name, desc, weight, reps, sets, mins, steps, miles } =

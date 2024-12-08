@@ -207,13 +207,7 @@ const HistoryLogEntry = ({ logEntry }: Props) => {
 				</div>
 				<LogEntryInfo logEntry={logEntry} />
 				<TimeEntry logEntry={logEntry} />
-				{/*  */}
-				{/*  */}
 			</div>
-			{/*  */}
-			{/*  */}
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

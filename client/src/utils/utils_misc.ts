@@ -41,4 +41,10 @@ const formatLargeNumber = (value: number) => {
 	return value?.toLocaleString() || 0;
 };
 
-export { groupBy, groupByFn, formatLargeNumber };
+const addEllipsis = (str: string, maxLength: number = 30) => {
+	if (str.length <= maxLength) return str;
+	const newStr = str.slice(0, maxLength - 3);
+	return newStr + "...";
+};
+
+export { groupBy, groupByFn, formatLargeNumber, addEllipsis };
