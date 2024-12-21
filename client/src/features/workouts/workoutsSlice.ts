@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TStatus } from "../types";
 import {
-	Workout,
+	UserWorkout,
 	WorkoutHistoryEntry,
 	WorkoutPlan,
 	WorkoutSummary,
@@ -17,15 +17,16 @@ import {
 import { CreateWorkoutResponse } from "../../utils/utils_workouts";
 
 export interface SelectedWorkout {
-	workout: Workout;
+	// workout: Workout;
+	workout: UserWorkout;
 	history: WorkoutHistoryEntry[];
 	summary: WorkoutSummary;
 }
 export interface WorkoutsSlice {
 	status: TStatus;
-	// workouts: Workout[];
 	workouts: {
-		list: Workout[];
+		// list: Workout[];
+		list: UserWorkout[];
 		status: TStatus;
 	};
 	workoutPlans: {
@@ -69,7 +70,10 @@ const workoutsSlice = createSlice({
 
 					state.status = "FULFILLED";
 					state.workouts.status = "FULFILLED";
-					state.workouts.list = [workout, ...state.workouts.list];
+					state.workouts.list = [
+						workout as UserWorkout,
+						...state.workouts.list,
+					];
 					state.workoutPlans.plans = [plan, ...state.workoutPlans.plans];
 				}
 			);
@@ -126,6 +130,9 @@ export const selectWorkoutsStatus = (state: RootState) => {
 	return state.workouts.workouts.status;
 };
 
+export const selectSelectedWorkout = (state: RootState) => {
+	return state.workouts.selectedWorkout as SelectedWorkout;
+};
 export const selectWorkouts = (state: RootState) => {
 	return state.workouts.workouts.list;
 };

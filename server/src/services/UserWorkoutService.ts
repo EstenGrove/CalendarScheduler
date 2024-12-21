@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 import type {
+	UserWorkoutByDateDB,
 	UserWorkoutDB,
 	UserWorkoutEventDB,
 	UserWorkoutPlanDB,
@@ -41,7 +42,6 @@ class UserWorkoutService {
 			return error;
 		}
 	}
-
 	async getWorkoutsByDate(
 		userID: string,
 		date: Date | string
@@ -59,7 +59,23 @@ class UserWorkoutService {
 			return error;
 		}
 	}
+	async getUserWorkoutsByDate(
+		userID: string,
+		date: Date | string
+	): Promise<UserWorkoutByDateDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_user_workouts_by_date(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, date]);
+			const rows = results?.rows;
 
+			return rows as UserWorkoutByDateDB[];
+		} catch (error) {
+			return error;
+		}
+	}
 	async getUserWorkouts(
 		userID: string,
 		isActive: boolean = true
@@ -94,7 +110,23 @@ class UserWorkoutService {
 			return error;
 		}
 	}
-
+	// Gets all workout plans for a given workoutID
+	async getUserWorkoutDetailsByEventID(
+		userID: string,
+		eventID: number
+	): Promise<UserWorkoutPlanDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_workout_details_by_id(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, eventID]);
+			const rows = results?.rows || [];
+			return rows as UserWorkoutPlanDB[];
+		} catch (error) {
+			return error;
+		}
+	}
 	// Creates workout, plan & user workout records
 	async createWorkout(userID: string, values: UserWorkoutPayload) {
 		const { workoutTypeID, name, desc, weight, reps, sets, mins } = values;
@@ -126,6 +158,12 @@ class UserWorkoutService {
 		} catch (error) {
 			return error;
 		}
+	}
+	async deleteWorkout(userID: string, workoutID: number) {
+		//
+	}
+	async deleteRecurringWorkout(userID: string, workoutID: number) {
+		//
 	}
 }
 

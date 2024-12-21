@@ -6,6 +6,7 @@ import {
 } from "../../utils/utils_summary";
 import { AwaitedResponse } from "../types";
 import {
+	CustomDateRange,
 	DailyMinsSummary,
 	DailyMinsSummaryList,
 	RangeSummary,
@@ -30,6 +31,7 @@ export interface WeeklyTotalsResp {
 export interface RangeSummaryResp {
 	perDay: DailyMinsSummaryList;
 	rangeSummary: RangeSummary;
+	dateRange: CustomDateRange;
 }
 
 const fetchDailyMinsSummary = createAsyncThunk(

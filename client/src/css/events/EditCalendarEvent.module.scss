@@ -1,0 +1,13 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.EditCalendarEvent {
+	@include fill_container;
+	padding: 0 2rem;
+
+	&_row {
+		width: 100%;
+		margin: 2rem 0;
+	}
+}

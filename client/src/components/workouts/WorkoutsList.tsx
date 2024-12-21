@@ -1,31 +1,30 @@
 import { useSelector } from "react-redux";
 import styles from "../../css/workouts/WorkoutsList.module.scss";
-import { Workout } from "../../features/workouts/types";
+import { type UserWorkout } from "../../features/workouts/types";
 import {
 	selectIsLoadingWorkouts,
 	selectWorkoutsStatus,
 } from "../../features/workouts/workoutsSlice";
 import { TStatus } from "../../features/types";
 import NoData from "../ui/NoData";
-import WorkoutEntry from "./WorkoutEntry";
 import Loader from "../ui/Loader";
-import UserWorkout from "./UserWorkout";
+import UserWorkoutItem from "./UserWorkout";
 
 type Props = {
-	workouts: Workout[];
-	selectWorkout: (workout: Workout) => void;
+	workouts: UserWorkout[];
+	selectWorkout: (workout: UserWorkout) => void;
 };
 
-const hasWorkouts = (workouts: Workout[]) => {
+const hasWorkouts = (workouts: UserWorkout[]) => {
 	return workouts && workouts.length > 0;
 };
 
 const WorkoutsList = ({ workouts, selectWorkout }: Props) => {
 	const isLoading: boolean = useSelector(selectIsLoadingWorkouts);
 	const status: TStatus = useSelector(selectWorkoutsStatus);
-	const isEmpty: boolean = status === "FULFILLED" && !hasWorkouts(workouts);
+	const isEmpty: boolean = status !== "PENDING" && !hasWorkouts(workouts);
 
-	const markAsCompleted = (workout: Workout) => {
+	const markAsCompleted = (workout: UserWorkout) => {
 		// do stuff
 		console.log("workout", workout);
 	};
@@ -41,18 +40,12 @@ const WorkoutsList = ({ workouts, selectWorkout }: Props) => {
 				)}
 				{hasWorkouts(workouts) &&
 					workouts.map((workout, idx) => (
-						<UserWorkout
+						<UserWorkoutItem
 							key={workout.workoutID + "-" + idx}
 							workout={workout}
 							selectWorkout={() => selectWorkout(workout)}
 							markAsCompleted={() => markAsCompleted(workout)}
 						/>
-						// <WorkoutEntry
-						// 	key={workout.workoutID + "-" + idx}
-						// 	workout={workout}
-						// 	selectWorkout={() => selectWorkout(workout)}
-						// 	markAsCompleted={() => markAsCompleted(workout)}
-						// />
 					))}
 			</div>
 		</div>

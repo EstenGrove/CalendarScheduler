@@ -19,6 +19,7 @@ export interface LogRange {
 export interface WorkoutLogParams {
 	userID: string;
 	range: LogRange;
+	workoutTypeID?: number;
 }
 
 // Saves a new log entry

@@ -6,6 +6,7 @@ import { WorkoutLogEntry } from "../features/workoutHistory/types";
 import { WorkoutLogParams } from "../features/workoutHistory/operations";
 import { applyTimeStrToDate } from "./utils_dates";
 import { addMinutes } from "date-fns";
+import { sortObjByDateAsc, sortObjByDateDesc } from "./utils_misc";
 
 export type LogStep =
 	| "Type"
@@ -171,6 +172,32 @@ const saveWorkoutLog = async (userID: string, workoutLog: CreateLogValues) => {
 	}
 };
 
+// SORTING UTILS
+export type LogSortBy =
+	| "workoutDate:ASC"
+	| "workoutDate:DESC"
+	| "workoutDate:ASC"
+	| "workoutDate:DESC"
+	| "createdDate:ASC"
+	| "createdDate:DESC"
+	| "name:ASC"
+	| "name:DESC";
+const sortWorkoutLogsBy = (logs: WorkoutLogEntry[], sortBy: LogSortBy) => {
+	switch (sortBy) {
+		case "workoutDate:ASC": {
+			const sorted = sortObjByDateAsc("date", logs);
+			return sorted;
+		}
+		case "workoutDate:DESC": {
+			const sorted = sortObjByDateDesc("date", logs);
+			return sorted;
+		}
+
+		default:
+			return logs;
+	}
+};
+
 export {
 	isWeightedType,
 	isWalkingType,
@@ -183,4 +210,5 @@ export {
 	getWorkoutTypeIDFromName,
 	prepareLogDates,
 	prepareWorkoutLog,
+	sortWorkoutLogsBy,
 };

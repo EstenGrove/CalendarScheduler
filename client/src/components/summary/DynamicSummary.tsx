@@ -27,6 +27,8 @@ const DynamicSummary = ({ isLoading, rangeSummary, dateRange }: Props) => {
 	const barChartData = prepareBarChartData(perDay);
 	const { totalMins, totalReps, totalSteps, totalNumOfWorkouts } = summary;
 
+	console.log("barChartData", barChartData);
+
 	return (
 		<div className={styles.DynamicSummary}>
 			<div className={styles.DynamicSummary_week}>

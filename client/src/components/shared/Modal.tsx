@@ -15,7 +15,6 @@ const Modal = ({ title, children, closeModal }: Props) => {
 
 	return (
 		<>
-			{/* <div className={styles.Overlay}></div> */}
 			<div ref={modalRef} className={styles.Modal}>
 				<div className={styles.Modal_top}>
 					<h2 className={styles.Modal_top_title}>{title}</h2>

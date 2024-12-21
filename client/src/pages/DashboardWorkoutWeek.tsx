@@ -66,12 +66,18 @@ const DashboardWorkoutWeek = () => {
 
 			Promise.all([
 				dispatch(
-					fetchWorkouts({
+					fetchWorkoutsByDate({
 						userID,
 						startDate,
 						endDate,
 					})
 				),
+				// 	fetchWorkouts({
+				// 		userID,
+				// 		startDate,
+				// 		endDate,
+				// 	})
+				// ),
 				dispatch(
 					fetchWorkoutPlans({
 						userID,

@@ -1,0 +1,19 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.SummaryFilters {
+	display: block;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 80dvw;
+	max-width: 80rem;
+	height: 60rem;
+	max-height: 60dvh;
+	border-radius: 1rem;
+	border: $borderLight;
+	background-color: $foreground;
+	z-index: 9999;
+}

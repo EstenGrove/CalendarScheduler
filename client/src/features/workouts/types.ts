@@ -1,3 +1,5 @@
+import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
+
 // This is a custom interface that combines the workout_plan & workout records
 export interface Workout {
 	workoutID: number;
@@ -9,6 +11,75 @@ export interface Workout {
 	isCompleted?: boolean;
 	createdDate: string;
 	isActive: boolean;
+}
+
+export interface UserWorkoutEntry {
+	workoutID: number;
+	planID: number;
+	activityType: string; // WALK, RUN, LIFT, TIMED etc
+	name: string;
+	desc: string;
+	mins: number; // 25:00 => 25 mins
+	weight: number;
+	steps: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	isCompleted: boolean;
+	isRecurring: boolean;
+	createdDate: string;
+	isActive: boolean;
+}
+export interface UserWorkout {
+	workoutID: number;
+	planID: number;
+	workoutTypeID: number;
+	activityType?: string; // WALK, RUN, LIFT, TIMED etc
+	name: string;
+	desc: string;
+	mins: number; // 25:00 => 25 mins
+	weight: number;
+	steps: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	isCompleted: boolean;
+	isRecurring: boolean;
+	createdDate: string;
+	isActive: boolean;
+}
+
+export interface UserEventWorkout {
+	workoutID: number;
+	workoutTypeID: number;
+	planID: number;
+	name: string;
+	desc: string;
+	mins: number;
+	weight: number;
+	steps: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	isCompleted: boolean;
+	isRecurring: boolean;
+	createdDate: string;
+	isActive: boolean;
+}
+
+export interface WorkoutDateEntry {
+	eventID: number;
+	workoutID: number;
+	workoutType: WorkoutTypeName;
+	name: string;
+	mins: number;
+	weight: number;
+	miles: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	isCompleted: boolean;
+	isRecurring: boolean;
 }
 
 // This is a recorded historical entry for a given workout OR workout plan

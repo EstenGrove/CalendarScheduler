@@ -157,6 +157,8 @@ export interface WorkoutPlanDB {
 	target_reps: number;
 	target_sets: number;
 	target_mins: number;
+	target_steps: number;
+	target_miles: number;
 	is_active: boolean;
 	created_date: string;
 }
@@ -379,4 +381,40 @@ export interface UserWorkoutPlanClient extends WorkoutPlanClient {
 	workoutID: number;
 	workoutName: string;
 	workoutDesc: string;
+}
+
+export interface UserWorkoutByDateDB {
+	workout_id: number;
+	schedule_id: number;
+	event_id: number;
+	start_time: string;
+	end_time: string;
+	tag_color: string | null;
+	workout_type_name: string;
+	workout_name: string;
+	workout_desc: string;
+	weight: number;
+	mins: number;
+	miles: number;
+	steps: number;
+	reps: number;
+	created_date: string;
+}
+
+export interface UserWorkoutByDateClient {
+	workoutID: number;
+	scheduleID: number;
+	eventID: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	workoutType: string;
+	name: string;
+	desc: string;
+	weight: number;
+	mins: number;
+	reps: number;
+	miles: number;
+	steps: number;
+	createdDate: string;
 }

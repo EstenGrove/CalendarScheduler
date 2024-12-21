@@ -4,6 +4,7 @@ import { TStatus } from "../types";
 import { WorkoutType } from "../../utils/utils_workoutPlans";
 import { WorkoutHistoryEntry, WorkoutLogEntry } from "./types";
 import { RootState } from "../../store/store";
+import { sortWorkoutLogsBy } from "../../utils/utils_workoutLogs";
 
 export interface HistorySlice {
 	status: TStatus;
@@ -44,8 +45,10 @@ const historySlice = createSlice({
 					state: HistorySlice,
 					action: PayloadAction<{ history: object[]; logs: WorkoutLogEntry[] }>
 				) => {
+					const { logs } = action.payload;
+					const sortedByDate = sortWorkoutLogsBy(logs, "workoutDate:DESC");
 					state.status = "FULFILLED";
-					state.workoutLogs = action.payload.logs;
+					state.workoutLogs = sortedByDate;
 				}
 			);
 	},

@@ -1,12 +1,12 @@
 import styles from "../../css/workouts/WorkoutEntry.module.scss";
-import type { Workout, WorkoutPlan } from "../../features/workouts/types";
+import type { UserWorkout } from "../../features/workouts/types";
 import sprite from "../../assets/icons/calendar.svg";
 import { ReactNode, useRef, useState } from "react";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
+import { addEllipsis } from "../../utils/utils_misc";
 
 type Props = {
-	workout: Workout;
-	selectWorkout: () => void;
+	workout: UserWorkout;
 	markAsCompleted: () => void;
 };
 
@@ -14,18 +14,6 @@ type Props = {
 // - Play Button to start workout
 // - Checkbox to mark as done/completed
 // - Should look similar to the Calendar List item's but with some added details.
-type WasCompletedProps = {
-	isCompleted: boolean;
-};
-const WasCompleted = ({ isCompleted = true }: WasCompletedProps) => {
-	return (
-		<div className={styles.WasCompleted} data-iscompleted={isCompleted}>
-			<svg className={styles.WasCompleted_icon}>
-				<use xlinkHref={`${sprite}#icon-done_all`}></use>
-			</svg>
-		</div>
-	);
-};
 
 type MoreOptionsProps = {
 	onClick: () => void;
@@ -45,23 +33,49 @@ const MoreOptions = ({ onClick, children }: MoreOptionsProps) => {
 
 type MoreOptionsMenuProps = {
 	closeMenu: () => void;
+	onMarkAsDone: () => void;
+	onView: () => void;
+	onEdit: () => void;
+	onDelete: () => void;
 };
-const MoreOptionsMenu = ({ closeMenu }: MoreOptionsMenuProps) => {
+const MoreOptionsMenu = ({
+	closeMenu,
+	onMarkAsDone,
+	onView,
+	onEdit,
+	onDelete,
+}: MoreOptionsMenuProps) => {
 	const menuRef = useRef<HTMLDivElement>(null);
 	useOutsideClick(menuRef, closeMenu);
 	return (
 		<div ref={menuRef} className={styles.MoreOptionsMenu}>
 			<ul className={styles.MoreOptionsMenu_list}>
-				<li className={styles.MoreOptionsMenu_list_item} data-marker="view">
+				<li
+					onClick={onView}
+					className={styles.MoreOptionsMenu_list_item}
+					data-marker="view"
+				>
 					View
 				</li>
-				<li className={styles.MoreOptionsMenu_list_item} data-marker="edit">
+				<li
+					onClick={onEdit}
+					className={styles.MoreOptionsMenu_list_item}
+					data-marker="edit"
+				>
 					Edit
 				</li>
-				<li className={styles.MoreOptionsMenu_list_item} data-marker="complete">
+				<li
+					onClick={onMarkAsDone}
+					className={styles.MoreOptionsMenu_list_item}
+					data-marker="complete"
+				>
 					Mark as Done
 				</li>
-				<li className={styles.MoreOptionsMenu_list_item} data-marker="delete">
+				<li
+					onClick={onDelete}
+					className={styles.MoreOptionsMenu_list_item}
+					data-marker="delete"
+				>
 					Delete
 				</li>
 			</ul>
@@ -76,10 +90,11 @@ type InfoProps = {
 	// plans: WorkoutPlan[];
 };
 const WorkoutInfo = ({ name, desc }: InfoProps) => {
+	const newDesc = addEllipsis(desc, 30);
 	return (
 		<div className={styles.WorkoutInfo}>
 			<div className={styles.WorkoutInfo_name}>{name}</div>
-			<div className={styles.WorkoutInfo_desc}>{desc}</div>
+			<div className={styles.WorkoutInfo_desc}>{newDesc}</div>
 		</div>
 	);
 };
@@ -138,12 +153,19 @@ const StartWorkout = ({
 	);
 };
 
-const WorkoutEntry = ({ workout, selectWorkout, markAsCompleted }: Props) => {
+const WorkoutEntry = ({ workout, markAsCompleted }: Props) => {
+	console.log("workout", workout);
 	const wasCompleted: boolean = workout?.isCompleted || false;
-	const name = workout?.workoutName || workout?.name;
-	const desc = workout?.workoutName || workout?.desc;
-	const numOfPlans: number = "plans" in workout ? workout?.plans?.length : 0;
+	const name = workout.name;
+	const desc = workout?.desc;
 	const [showMore, setShowMore] = useState<boolean>(false);
+
+	const startWorkout = () => {
+		// do stuff
+	};
+	const stopWorkout = () => {
+		// do stuff
+	};
 
 	const openMoreOptions = () => {
 		setShowMore(true);
@@ -151,13 +173,33 @@ const WorkoutEntry = ({ workout, selectWorkout, markAsCompleted }: Props) => {
 	const closeMoreOptions = () => {
 		setShowMore(false);
 	};
+	const markAsDone = () => {
+		return markAsCompleted && markAsCompleted();
+	};
+	const viewDetails = () => {
+		// do stuff
+	};
+	const editEntry = () => {
+		//
+	};
+	const deleteEntry = () => {
+		// do stuff
+	};
 
 	return (
 		<div className={styles.WorkoutEntry}>
 			<div className={styles.WorkoutEntry_top}>
 				<WorkoutInfo name={name} desc={desc} />
 				<MoreOptions onClick={openMoreOptions}>
-					{showMore && <MoreOptionsMenu closeMenu={closeMoreOptions} />}
+					{showMore && (
+						<MoreOptionsMenu
+							onEdit={editEntry}
+							onView={viewDetails}
+							onDelete={deleteEntry}
+							onMarkAsDone={markAsDone}
+							closeMenu={closeMoreOptions}
+						/>
+					)}
 				</MoreOptions>
 			</div>
 			{/* Main Section  */}
@@ -165,8 +207,12 @@ const WorkoutEntry = ({ workout, selectWorkout, markAsCompleted }: Props) => {
 				{/* BOTTOM section */}
 				<div className={styles.WorkoutEntry_main_bottom}>
 					<Details mins={36} />
-					{wasCompleted && <WasCompleted isCompleted />}
-					{!wasCompleted && <StartWorkout />}
+					{!wasCompleted && (
+						<StartWorkout
+							startWorkout={startWorkout}
+							stopWorkout={stopWorkout}
+						/>
+					)}
 				</div>
 			</div>
 		</div>

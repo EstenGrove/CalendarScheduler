@@ -153,6 +153,21 @@ const groupedTypes = (workoutTypes: WorkoutType[]) => {
 	return byUnit;
 };
 
+const getActivityTypeFromWorkoutTypeID = (typeID: number) => {
+	const record = workoutTypes.find((type) => type.workoutTypeID === typeID);
+
+	const activityTypes = {
+		"lbs.": "weight",
+		steps: "walk",
+		miles: "distance",
+		null: "timed",
+	};
+
+	const type = activityTypes[record?.units as keyof object];
+
+	return type;
+};
+
 const getPlanIDFromType = (type: string, planTypes: WorkoutType[]) => {
 	const planRecord = planTypes.find((plan) => plan.workoutType === type);
 
@@ -185,4 +200,5 @@ export {
 	groupTypesByUnit,
 	groupedTypes,
 	getWorkoutPlans,
+	getActivityTypeFromWorkoutTypeID,
 };

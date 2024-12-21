@@ -123,6 +123,7 @@ const CreateEventModal = ({ currentUser, closeModal }: Props) => {
 		console.log("Values:", eventValues);
 
 		dispatch(createNewEvent(eventValues));
+		closeModal();
 	};
 	const cancelNewEvent = () => {
 		closeModal();

@@ -7,14 +7,25 @@ import {
 import { formatDate } from "../utils/utils_dates";
 import { useSelector } from "react-redux";
 import { selectSelectedEvent } from "../features/events/eventsSlice";
+import { useState, useEffect } from "react";
+import { useAppDispatch } from "../store/store";
+import { CurrentUser } from "../features/user/types";
+import { UserWorkout } from "../features/workouts/types";
+import { deleteEvent } from "../features/events/operations";
+import { sleep } from "../utils/utils_misc";
+import { useNavigate } from "react-router-dom";
+// components
+import Modal from "../components/shared/Modal";
 import Button from "../components/shared/Button";
 import ColorTag from "../components/ui/ColorTag";
-import RecurringDesc from "../components/events/RecurringDesc";
-import { useState } from "react";
-import ConfirmDialog from "../components/ui/ConfirmDialog";
+import DeletedEventView from "./DeletedEventView";
 import Checkbox from "../components/shared/Checkbox";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
+import RecurringDesc from "../components/events/RecurringDesc";
+import WorkoutEntry from "../components/workouts/WorkoutEntry";
+import EditCalendarEvent from "../components/events/EditCalendarEvent";
 
-type Props = { calendarEvent: ICalendarEvent };
+type Props = { calendarEvent: ICalendarEvent; currentUser: CurrentUser };
 
 type DetailsProps = {
 	calendarEvent: ICalendarEvent;
@@ -130,11 +141,115 @@ interface DeleteEventOpts {
 	deleteAllWorkouts: boolean;
 }
 
-const CalendarEventView = ({ calendarEvent }: Props) => {
+const customCSS = {
+	edit: {
+		backgroundColor: "var(--blueGrey900)",
+		color: "#fff",
+		marginRight: ".5rem",
+	},
+	markAsDone: {
+		color: "var(--accent-green)",
+	},
+};
+
+type WorkoutRowProps = {
+	workout: UserWorkout;
+	markAsDone: (isDone: boolean) => void;
+};
+
+const IsDone = () => {
+	return (
+		<div className={styles.IsDone}>
+			<div className={styles.IsDone_done}>Done</div>
+		</div>
+	);
+};
+const IsNotDone = () => {
+	return (
+		<div className={styles.IsNotDone}>
+			<div className={styles.IsNotDone_notDone}>Tap/Click</div>
+		</div>
+	);
+};
+
+const doneBorder = "var(--accent-green)";
+const notDoneBorder = "var(--accent-bright-red)";
+const mainBorder = "var(--blueGrey800)";
+
+const getBorder = (isDone: boolean = false, wasClicked: boolean = false) => {
+	if (!wasClicked) return mainBorder;
+
+	if (isDone) {
+		return doneBorder;
+	} else {
+		return notDoneBorder;
+	}
+};
+
+const WorkoutRow = ({ workout, markAsDone }: WorkoutRowProps) => {
+	const [isDone, setIsDone] = useState(workout?.isCompleted);
+	const [wasClicked, setWasClicked] = useState(false);
+	const tempBorder = getBorder(isDone, wasClicked);
+
+	const toggleComplete = () => {
+		const asCompleted = !isDone;
+		setIsDone(!isDone);
+		setWasClicked(true);
+		markAsDone(asCompleted);
+	};
+
+	// Shows a brief flash of the action color (eg. green for done, red for not-done)
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) return;
+
+		let timer: ReturnType<typeof setTimeout>;
+
+		if (wasClicked) {
+			timer = setTimeout(() => {
+				setWasClicked(false);
+			}, 300);
+		}
+
+		return () => {
+			isMounted = false;
+			clearTimeout(timer);
+		};
+	}, [wasClicked]);
+
+	return (
+		<div
+			className={styles.WorkoutRow}
+			style={{ borderColor: wasClicked ? tempBorder : mainBorder }}
+		>
+			<div className={styles.WorkoutRow_select} onClick={toggleComplete}>
+				{isDone ? <IsDone /> : <IsNotDone />}
+			</div>
+			<WorkoutEntry
+				key={workout.workoutID}
+				workout={workout}
+				markAsCompleted={markAsDone}
+			/>
+		</div>
+	);
+};
+
+const CalendarEventView = ({ currentUser, calendarEvent }: Props) => {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const selectedEvent = useSelector(selectSelectedEvent);
+	const eventWorkouts: UserWorkout[] = selectedEvent?.workouts;
 	const { schedule } = selectedEvent;
 	const [showConfirm, setShowConfirm] = useState<boolean>(false);
+	const [showEditModal, setShowEditModal] = useState<boolean>(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [wasDeleted, setWasDeleted] = useState<boolean>(false);
 	const tagColor: string = calendarEvent.tagColor || "var(--accent)";
+
+	const [editValues, setEditValues] = useState({
+		title: selectedEvent.event.title,
+		desc: selectedEvent.event.desc,
+	});
 	const [deleteEventOptions, setDeleteEventOptions] = useState<DeleteEventOpts>(
 		{
 			deleteEventOnly: false,
@@ -151,6 +266,18 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 		});
 	};
 
+	const markAsDone = (workout: UserWorkout) => {
+		// dispatch(markWorkoutAsCompleted())
+		console.log("workout", workout);
+	};
+
+	const startEditing = () => {
+		setShowEditModal(true);
+	};
+	const stopEditing = () => {
+		setShowEditModal(false);
+	};
+
 	const initDeleteEvent = () => {
 		setShowConfirm(true);
 	};
@@ -158,16 +285,45 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 		setShowConfirm(false);
 	};
 
-	const confirmDelete = () => {
-		// do stuff
+	const confirmDelete = async () => {
+		const { userID } = currentUser;
+		const { eventID, eventDate } = selectedEvent.event;
+		const { deleteAllEvents } = deleteEventOptions;
+		await dispatch(
+			deleteEvent({
+				userID: userID,
+				eventID: eventID,
+				dateToDelete: eventDate,
+				deleteSeries: deleteAllEvents,
+			})
+		);
+		await sleep(800);
+
+		setIsSaving(false);
+		setWasDeleted(true);
 	};
+
 	const cancelDelete = () => {
 		closeDeleteDialog();
 	};
 
+	const goBack = () => {
+		navigate("/dashboard/calendar");
+	};
+
+	if (wasDeleted) {
+		return (
+			<DeletedEventView>
+				<Button onClick={goBack}>Back to calendar</Button>
+			</DeletedEventView>
+		);
+	}
 	return (
 		<div className={styles.CalendarEventView}>
 			<div className={styles.CalendarEventView_actions}>
+				<Button onClick={startEditing} style={customCSS.edit}>
+					Edit
+				</Button>
 				<Button onClick={initDeleteEvent}>Delete Event</Button>
 			</div>
 			<div className={styles.CalendarEventView_header}>
@@ -187,18 +343,48 @@ const CalendarEventView = ({ calendarEvent }: Props) => {
 			<div className={styles.CalendarEventView_scheduled}>
 				<DateTimeDetails calendarEvent={calendarEvent} />
 			</div>
+			<div className={styles.CalendarEventView_record}>
+				<Button onClick={() => {}} style={customCSS.markAsDone}>
+					Mark All as Done
+				</Button>
+			</div>
+			<div className={styles.CalendarEventView_section}>
+				<h2>Workouts for this event</h2>
+			</div>
+			<div className={styles.CalendarEventView_workouts}>
+				{eventWorkouts &&
+					[...eventWorkouts, ...eventWorkouts].map((workout, idx) => {
+						return (
+							<WorkoutRow
+								key={idx + "" + workout.workoutID}
+								workout={workout}
+								markAsDone={() => markAsDone(workout)}
+							/>
+						);
+					})}
+			</div>
 
 			{showConfirm && (
 				<ConfirmDialog
 					closeDialog={closeDeleteDialog}
 					onCancel={cancelDelete}
-					onConfirm={confirmDelete}
+					onConfirm={() => {
+						setIsSaving(true);
+						confirmDelete();
+					}}
+					isConfirming={isSaving}
 				>
 					<DeleteEventOptions
 						deleteValues={deleteEventOptions}
 						handleCheckbox={handleDeleteOpts}
 					/>
 				</ConfirmDialog>
+			)}
+
+			{showEditModal && (
+				<Modal title="Edit Event" closeModal={stopEditing}>
+					<EditCalendarEvent values={editValues} />
+				</Modal>
 			)}
 		</div>
 	);

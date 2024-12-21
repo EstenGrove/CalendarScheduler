@@ -50,6 +50,7 @@ const API_ENDPOINTS = {
 		getMonthlySummary: "/events/getMonthlySummary",
 		getByDate: "/events/getEventsByDate",
 		getDetails: "/events/getEventDetails",
+		deleteEvent: "/events/deleteEvent",
 	},
 	plans: {
 		getPlans: "/plans/getWorkoutPlans",

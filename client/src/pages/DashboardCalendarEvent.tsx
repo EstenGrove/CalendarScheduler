@@ -13,8 +13,9 @@ import {
 import { selectCurrentUser } from "../features/user/userSlice";
 import NoDataFound from "../components/layout/NoDataFound";
 import CalendarEventView from "../views/CalendarEventView";
-import { endOfMonth, startOfMonth } from "date-fns";
+import { endOfDay, endOfMonth, startOfDay, startOfMonth } from "date-fns";
 import { formatDate } from "../utils/utils_dates";
+import { fetchWorkoutsByDate } from "../features/workouts/operations";
 
 type BackProps = {
 	goBack: () => void;
@@ -75,6 +76,28 @@ const DashboardCalendarEvent = () => {
 		let isMounted = true;
 		if (!isMounted) return;
 
+		const getEventsAndWorkouts = async (userID: string) => {
+			const eventDate = calendarEvent?.eventDate as string;
+			const startDate = formatDate(startOfDay(eventDate), "db");
+			const endDate = formatDate(endOfDay(eventDate), "db");
+
+			Promise.all([
+				dispatch(
+					fetchEventDetails({
+						userID,
+						eventID,
+					})
+				),
+				dispatch(
+					fetchWorkoutsByDate({
+						userID,
+						startDate,
+						endDate,
+					})
+				),
+			]);
+		};
+
 		if (eventID) {
 			const { userID } = currentUser;
 			dispatch(
@@ -88,7 +111,8 @@ const DashboardCalendarEvent = () => {
 		return () => {
 			isMounted = false;
 		};
-	}, [currentUser, dispatch, eventID]);
+	}, [calendarEvent?.eventDate, currentUser, dispatch, eventID]);
+	// }, [currentUser, dispatch, eventID]);
 
 	return (
 		<div className={styles.DashboardCalendarEvent}>
@@ -98,7 +122,10 @@ const DashboardCalendarEvent = () => {
 			<div className={styles.DashboardCalendarEvent_main}>
 				{!calendarEvent?.eventID && <NoDataFound />}
 				{calendarEvent?.eventID && (
-					<CalendarEventView calendarEvent={calendarEvent as CalendarEvent} />
+					<CalendarEventView
+						currentUser={currentUser}
+						calendarEvent={calendarEvent as CalendarEvent}
+					/>
 				)}
 			</div>
 		</div>

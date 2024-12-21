@@ -11,7 +11,7 @@ import {
 } from "../../components/workouts/types";
 import { AwaitedResponse } from "../types";
 import { getWorkoutPlans } from "../../utils/utils_workoutPlans";
-import { Workout, WorkoutPlan } from "./types";
+import { UserWorkout, Workout, WorkoutPlan } from "./types";
 
 export interface NewWorkoutPlanParams {
 	userID: string;
@@ -24,9 +24,31 @@ export interface UserRangeParams {
 	startDate: string;
 	endDate: string;
 }
+export interface UserDateParams {
+	userID: string;
+	targetDate: string;
+}
 
+export interface UserWorkoutEntry {
+	workoutID: number;
+	scheduleID: number;
+	eventID: number;
+	startTime: string;
+	endTime: string;
+	tag_color: string | null;
+	workoutType: string;
+	name: string;
+	desc: string;
+	weight: number;
+	mins: number;
+	reps: number;
+	sets: number;
+	miles: number;
+	steps: number;
+	createdDate: string;
+}
 export interface UserWorkoutsResp {
-	workouts: Workout[];
+	workouts: UserWorkout[];
 }
 
 export interface MarkAsDoneParams {
@@ -94,8 +116,9 @@ const fetchWorkoutPlans = createAsyncThunk(
 const markWorkoutAsComplete = createAsyncThunk(
 	"workouts/markWorkoutAsComplete",
 	async (params) => {
-		const { userID, workoutIDs, targetDate } = params;
+		// const { userID, workoutIDs, targetDate } = params;
 		//
+		console.log("params", params);
 	}
 );
 

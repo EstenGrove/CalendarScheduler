@@ -11,6 +11,7 @@ import { RootState } from "../../store/store";
 import { TRecord } from "../../utils/utils_misc";
 import {
 	createNewEvent,
+	deleteEvent,
 	EventDetails,
 	fetchEventDetails,
 	fetchEventsByDate,
@@ -21,6 +22,7 @@ import {
 	filterEventsByDate,
 	groupEventsByDate,
 } from "../../utils/utils_calendar";
+import { UserWorkout } from "../workouts/types";
 
 export type EventsByMonth = TRecord<CalendarEvent[]>;
 
@@ -36,6 +38,7 @@ export interface CalendarEventsSlice {
 		details: CalendarEventDetails | null;
 		schedule: CalendarEventSchedule | null;
 		upcoming: string[];
+		workouts: UserWorkout[];
 	};
 }
 
@@ -51,6 +54,7 @@ const initialState: CalendarEventsSlice = {
 		details: null,
 		schedule: null,
 		upcoming: [],
+		workouts: [],
 	},
 };
 
@@ -88,6 +92,7 @@ const calendarEventsSlice = createSlice({
 				details: null,
 				schedule: null,
 				upcoming: [],
+				workouts: [],
 			};
 		},
 	},
@@ -185,9 +190,20 @@ const calendarEventsSlice = createSlice({
 						event: newEvent,
 						schedule: action.payload.schedule,
 						upcoming: action.payload.futureEvents,
+						workouts: action.payload.workouts,
 					};
 				}
 			);
+
+		// Delete Event
+		builder
+			.addCase(deleteEvent.pending, (state: CalendarEventsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(deleteEvent.fulfilled, (state: CalendarEventsSlice) => {
+				state.status = "FULFILLED";
+				// REMOVE THE EVENT FROM THE STORE OR RE-FETCH EVENTS
+			});
 	},
 });
 
@@ -222,7 +238,13 @@ export const selectSelectedDateEvents = (state: RootState) => {
 	return state.events.selectedDateEvents;
 };
 export const selectSelectedEvent = (state: RootState) => {
-	return state.events.selectedEvent;
+	return state.events.selectedEvent as {
+		event: CalendarEvent;
+		details: CalendarEventDetails;
+		schedule: CalendarEventSchedule;
+		upcoming: string[];
+		workouts: UserWorkout[];
+	};
 };
 // gets all events for the selected date
 export const selectEventsForDate =

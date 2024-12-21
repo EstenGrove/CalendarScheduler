@@ -54,3 +54,38 @@
 		color: var(--blue500);
 	}
 }
+.YearlyOptions {
+	display: block;
+	// padding: 0 2rem;
+
+	&_months {
+		width: 100%;
+		@include flex_row(flex-start, baseline, wrap);
+		font-size: 1.6rem;
+		gap: 1rem;
+		margin-bottom: 1rem;
+
+		& > span {
+			@include flex_row(flex-start, center);
+			gap: 0 0.5rem;
+		}
+
+		&_month {
+			padding: 0.2rem 0.5rem;
+			border: $borderLight;
+			font-size: 1.3rem;
+			border-radius: 0.5rem;
+		}
+	}
+
+	&_row {
+		width: max-content;
+		font-size: 1.6rem;
+		@include flex_row(flex-start, center);
+		gap: 0 0.5rem;
+	}
+
+	& > b {
+		color: var(--blue500);
+	}
+}

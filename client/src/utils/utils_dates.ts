@@ -11,6 +11,30 @@ const WEEK_DAYS: WeekDay[] = [
 	"Saturday",
 ];
 
+const MONTHS: string[] = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
+const QUARTERS: string[] = ["Q1", "Q2", "Q3", "Q4"];
+
+const MONTHS_BY_QUARTER: Record<string, number[]> = {
+	Q1: [0, 1, 2],
+	Q2: [3, 4, 5],
+	Q3: [6, 7, 8],
+	Q4: [9, 10, 11],
+};
+
 const convertToHrsAndMins = (mins: number) => {
 	return {
 		hours: Math.trunc(mins >= 60 ? mins / 60 : 0),
@@ -102,7 +126,7 @@ const FORMAT_TOKENS: DateFormats = {
 	},
 	weekday: {
 		full: "EEEE",
-		abbrev: "E..EEE",
+		abbrev: "EEE",
 		twoLetter: "EEEEEE",
 		letter: "EEEEE",
 	},
@@ -111,6 +135,7 @@ const {
 	date: DATE_TOKENS,
 	time: TIME_TOKENS,
 	datetime: DATETIME_TOKENS,
+	weekday: WEEKDAY_TOKENS,
 } = FORMAT_TOKENS;
 
 const formatDate = (
@@ -177,7 +202,7 @@ export interface TimeParseDeps {
 const parseTime = (
 	timeStr: string,
 	formatToken: keyof DateFormats["time"] = "long"
-) => {
+): Date => {
 	const baseDate: Date = new Date();
 	const token = TIME_TOKENS[formatToken as keyof object] || "hh:mm a";
 	const parsed = parse(timeStr, token, baseDate);
@@ -191,7 +216,7 @@ const getDistanceToNow = (date: Date | string) => {
 	return distance;
 };
 
-const applyTimeStrToDate = (time: string, date: Date | string) => {
+const applyTimeStrToDate = (time: string, date: Date | string): Date => {
 	const parsedTime = parseTime(time, "long");
 	const withTime = set(date, {
 		hours: parsedTime.getHours(),
@@ -206,14 +231,17 @@ const formatDateAsWeekDay = (
 	date: Date | string,
 	weekdayToken: keyof DateFormats["weekday"] = "full"
 ): string => {
-	const token: string = DATETIME_TOKENS[weekdayToken as keyof object];
+	const token: string = WEEKDAY_TOKENS[weekdayToken as keyof object];
 	const weekday = format(date, token);
 
 	return weekday;
 };
 
 export {
+	MONTHS,
 	WEEK_DAYS,
+	QUARTERS,
+	MONTHS_BY_QUARTER,
 	FORMAT_TOKENS,
 	DATE_TOKENS,
 	TIME_TOKENS,

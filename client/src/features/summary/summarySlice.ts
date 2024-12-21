@@ -124,12 +124,20 @@ const summarySlice = createSlice({
 					state.rangeSummary.status = "FULFILLED";
 					state.rangeSummary.summary = action.payload.rangeSummary;
 					state.rangeSummary.perDay = action.payload.perDay;
+					state.rangeSummary.startDate = action.payload.dateRange.startDate;
+					state.rangeSummary.endDate = action.payload.dateRange.endDate;
 				}
 			);
 	},
 });
 
 // RANGE SUMMARY SELECTORS
+export const selectRangeSummaryDateRange = (state: RootState) => {
+	return {
+		startDate: state.summary.rangeSummary.startDate,
+		endDate: state.summary.rangeSummary.endDate,
+	};
+};
 export const selectRangeSummary = (state: RootState) => {
 	return state.summary.rangeSummary;
 };

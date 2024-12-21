@@ -9,7 +9,7 @@ import { CalendarEvent, CalendarEventSchedule } from "../features/events/types";
 import { CustomDateRange } from "../features/summary/types";
 import { AsyncResponse } from "../features/types";
 import { MarkAsDoneParams } from "../features/workouts/operations";
-import { Workout, WorkoutPlan } from "../features/workouts/types";
+import { UserWorkout, Workout, WorkoutPlan } from "../features/workouts/types";
 import { formatTime, parseTime } from "./utils_dates";
 import { currentEnv, workoutApis } from "./utils_env";
 
@@ -18,7 +18,7 @@ import { currentEnv, workoutApis } from "./utils_env";
 export interface CreateWorkoutResponse {
 	event: CalendarEvent;
 	schedule: CalendarEventSchedule;
-	workout: Workout;
+	workout: Workout | UserWorkout;
 	plan: WorkoutPlan;
 }
 
