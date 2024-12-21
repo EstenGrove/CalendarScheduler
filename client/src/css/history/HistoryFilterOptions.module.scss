@@ -8,6 +8,20 @@
 	margin-bottom: 2rem;
 }
 
+.HistoryFilterOptions {
+	width: 100%;
+
+	&_quickAccess {
+		width: 100%;
+		margin-bottom: 2rem;
+	}
+	&_types {
+		width: 100%;
+		margin-top: 2rem;
+		margin-bottom: 4rem;
+	}
+}
+
 .RangeTypes {
 	width: 100%;
 
@@ -31,4 +45,47 @@
 			cursor: pointer;
 		}
 	}
+}
+
+.QuickAccessRanges {
+	width: 100%;
+	font-family: $fontPrimary;
+
+	&_label {
+		@include sectionLabel();
+	}
+
+	&_options {
+		width: 100%;
+		@include flex_row(flex-start, flex-start, wrap);
+		gap: 1rem;
+
+		&_type {
+			padding: 0.3rem 0.6rem;
+			border-radius: 0.5rem;
+			border: none;
+			outline: none;
+			background-color: var(--blueGrey900);
+			color: $accentPurple;
+			color: var(--blueGrey300);
+			font-size: 1.4rem;
+			cursor: pointer;
+
+			&_isSelected {
+				background-color: $accentPurple;
+				color: #fff;
+			}
+		}
+	}
+}
+
+[data-selected-filter="true"] {
+	background-color: $accentPurple;
+	color: #fff;
+}
+.splitter {
+	display: block;
+	margin: 2rem 0;
+	font-size: 1.8rem;
+	color: var(--blueGrey500);
 }

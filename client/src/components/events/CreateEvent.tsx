@@ -133,9 +133,6 @@ const CreateEvent = ({
 					Create
 				</Button>
 			</div>
-
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

@@ -41,4 +41,47 @@ const formatLargeNumber = (value: number) => {
 	return value?.toLocaleString() || 0;
 };
 
-export { groupBy, groupByFn, formatLargeNumber };
+const sleep = (ms: number = 500) => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve(ms);
+		}, ms);
+	});
+};
+
+const addEllipsis = (str: string, maxLength: number = 30) => {
+	if (str.length <= maxLength) return str;
+	const newStr = str.slice(0, maxLength - 3);
+	return newStr + "...";
+};
+
+const sortObjByDateAsc = <T extends object>(key: keyof T, list: T[]): T[] => {
+	if (!list || !list.length) return [];
+
+	return [...list].sort((a, b) => {
+		const dateA: Date = new Date(a[key as keyof object]);
+		const dateB: Date = new Date(b[key as keyof object]);
+
+		return dateA.getTime() - dateB.getTime();
+	});
+};
+const sortObjByDateDesc = <T extends object>(key: keyof T, list: T[]): T[] => {
+	if (!list || !list.length) return [];
+
+	return [...list].sort((a, b) => {
+		const dateA: Date = new Date(a[key as keyof object]);
+		const dateB: Date = new Date(b[key as keyof object]);
+
+		return dateB.getTime() - dateA.getTime();
+	});
+};
+
+export {
+	sleep,
+	groupBy,
+	groupByFn,
+	formatLargeNumber,
+	addEllipsis,
+	sortObjByDateAsc,
+	sortObjByDateDesc,
+};

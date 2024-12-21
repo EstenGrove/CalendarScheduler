@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/dashboard/ActionsBar.module.scss";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
@@ -17,6 +17,14 @@ type Props = {
 type MainActionProps = {
 	onClick: () => void;
 };
+
+type ActionType =
+	| "Timer"
+	| "StartWorkout"
+	| "LogWorkout"
+	| "CreateWorkout"
+	| "CreateEvent"
+	| "CreateTask";
 
 const MainAction = ({ onClick }: MainActionProps) => {
 	return (
@@ -43,12 +51,12 @@ const Menu = ({ close, children }: MenuProps) => {
 };
 
 const icons = {
-	// task: "add_task",
 	timer: "timer",
 	logWorkout: "fact_check",
 	workout: "fitness_center",
 	workoutPlan: "run_circle",
 	task: "directions_run",
+	createEvent: "add_task",
 };
 
 type ActionButtonProps = {
@@ -95,7 +103,7 @@ const ActionsBar = ({ onAction }: Props) => {
 		}
 	};
 
-	const selectAction = (action: string) => {
+	const selectAction = (action: ActionType) => {
 		return onAction && onAction(action);
 	};
 
@@ -114,10 +122,16 @@ const ActionsBar = ({ onAction }: Props) => {
 						onAction={() => selectAction("Timer")}
 					/>
 					<ActionButton
+						title="Create event"
+						icon="createEvent"
+						color="var(--bg-foreground)"
+						onAction={() => selectAction("CreateEvent")}
+					/>
+					<ActionButton
 						title="Start a workout"
 						icon="task"
 						color="var(--bg-foreground)"
-						onAction={() => selectAction("Task")}
+						onAction={() => selectAction("CreateTask")}
 					/>
 					<ActionButton
 						title="Log a workout"

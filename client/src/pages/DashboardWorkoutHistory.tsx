@@ -14,20 +14,38 @@ import {
 } from "../features/workoutHistory/operations";
 import { CurrentUser } from "../features/user/types";
 import { selectCurrentUser } from "../features/user/userSlice";
-import { FilterSettings } from "../utils/utils_filters";
-import { endOfWeek, isToday, startOfMonth, startOfWeek } from "date-fns";
+import { FilterSettings, RangeType } from "../utils/utils_filters";
+import {
+	endOfDay,
+	endOfMonth,
+	endOfQuarter,
+	endOfWeek,
+	endOfYear,
+	isToday,
+	startOfDay,
+	startOfMonth,
+	startOfQuarter,
+	startOfWeek,
+	startOfYear,
+	subDays,
+	subMonths,
+	subWeeks,
+} from "date-fns";
 import { formatDate } from "../utils/utils_dates";
+import { sortWorkoutLogsBy } from "../utils/utils_workoutLogs";
+import { useToast } from "../hooks/useToast";
 // components
+import Toast from "../components/ui/Toast";
 import Loader from "../components/ui/Loader";
-import HistoryFilters from "../components/history/HistoryFilters";
+import ModalFooter from "../components/shared/ModalFooter";
 import HistoryLogList from "../components/history/HistoryLogList";
+import HistoryFilters from "../components/history/HistoryFilters";
 import HistoryFiltersModal from "../components/history/HistoryFiltersModal";
 import HistoryFilterOptions from "../components/history/HistoryFilterOptions";
 
 const getLogRange = () => {
-	// const start = startOfWeek(new Date());
-	const start = startOfMonth(new Date(2024, 10, 1));
-	const end = endOfWeek(new Date());
+	const start = startOfMonth(new Date());
+	const end = endOfMonth(new Date());
 	const startDate = formatDate(start, "db");
 	const endDate = formatDate(end, "db");
 
@@ -67,6 +85,229 @@ const getTodaysLogs = (logs: WorkoutLogEntry[]): WorkoutLogEntry[] => {
 	});
 };
 
+const formatRange = (start: Date, end: Date) => {
+	return {
+		start: formatDate(start, "db"),
+		end: formatDate(end, "db"),
+	};
+};
+
+const getDateRangeByType = (rangeType: RangeType) => {
+	switch (rangeType) {
+		case "Today": {
+			const newRange = formatRange(
+				startOfDay(new Date()),
+				endOfDay(new Date())
+			);
+			return newRange;
+		}
+		case "Yesterday": {
+			const newRange = formatRange(
+				startOfDay(subDays(new Date(), 1)),
+				endOfDay(subDays(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Week": {
+			const newRange = formatRange(
+				startOfWeek(new Date()),
+				endOfWeek(new Date())
+			);
+			return newRange;
+		}
+		case "Last Week": {
+			const newRange = formatRange(
+				startOfWeek(subWeeks(new Date(), 1)),
+				endOfWeek(subWeeks(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Month": {
+			const newRange = formatRange(
+				startOfMonth(new Date()),
+				endOfMonth(new Date())
+			);
+			return newRange;
+		}
+		case "Last Month": {
+			const newRange = formatRange(
+				startOfMonth(subMonths(new Date(), 1)),
+				endOfMonth(subMonths(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Year": {
+			const newRange = formatRange(
+				startOfYear(new Date()),
+				endOfYear(new Date())
+			);
+			return newRange;
+		}
+
+		// Default: this month to-date
+		default: {
+			const start = startOfMonth(new Date());
+			const end = endOfMonth(new Date());
+			const startDate = formatDate(start, "db");
+			const endDate = formatDate(end, "db");
+			return { start: startDate, end: endDate };
+		}
+	}
+};
+
+const getDateRangeByFilters = (values: FilterSettings) => {
+	const { rangeType } = values;
+
+	switch (rangeType) {
+		case "Day": {
+			const { rangeDate: startDate } = values;
+			const start = startOfDay(startDate);
+			const end = endOfDay(startDate);
+
+			return {
+				start: formatDate(start, "long"),
+				end: formatDate(end, "long"),
+			};
+		}
+		case "Week": {
+			const { rangeDate: startDate } = values;
+			const start = startOfWeek(startDate);
+			const end = endOfWeek(startDate);
+
+			return {
+				start: formatDate(start, "long"),
+				end: formatDate(end, "long"),
+			};
+		}
+		case "Month": {
+			const { rangeMonth: startDate } = values;
+			const start = startOfMonth(startDate);
+			const end = endOfMonth(startDate);
+
+			return {
+				start: formatDate(start, "long"),
+				end: formatDate(end, "long"),
+			};
+		}
+		case "Quarter": {
+			const { rangeQuarter: startDate } = values;
+			const start = startOfQuarter(startDate);
+			const end = endOfQuarter(startDate);
+
+			return {
+				start: formatDate(start, "long"),
+				end: formatDate(end, "long"),
+			};
+		}
+		case "Year": {
+			const { rangeYear: startDate } = values;
+			const start = startOfYear(startDate);
+			const end = endOfYear(startDate);
+
+			return {
+				start: formatDate(start, "long"),
+				end: formatDate(end, "long"),
+			};
+		}
+		// Quick Access Ranges
+		case "Today": {
+			const newRange = formatRange(
+				startOfDay(new Date()),
+				endOfDay(new Date())
+			);
+			return newRange;
+		}
+		case "Yesterday": {
+			const newRange = formatRange(
+				startOfDay(subDays(new Date(), 1)),
+				endOfDay(subDays(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Week": {
+			const newRange = formatRange(
+				startOfWeek(new Date()),
+				endOfWeek(new Date())
+			);
+			return newRange;
+		}
+		case "Last Week": {
+			const newRange = formatRange(
+				startOfWeek(subWeeks(new Date(), 1)),
+				endOfWeek(subWeeks(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Month": {
+			const newRange = formatRange(
+				startOfMonth(new Date()),
+				endOfMonth(new Date())
+			);
+			return newRange;
+		}
+		case "Last Month": {
+			const newRange = formatRange(
+				startOfMonth(subMonths(new Date(), 1)),
+				endOfMonth(subMonths(new Date(), 1))
+			);
+			return newRange;
+		}
+		case "This Year": {
+			const newRange = formatRange(
+				startOfYear(new Date()),
+				endOfYear(new Date())
+			);
+			return newRange;
+		}
+
+		default:
+			throw new Error("Invalid range");
+	}
+};
+
+// REQUIREMENTS:
+// - Store filters in query params
+// - Quick access filters NEED to be included in 'FilterSettings'
+
+// Returns start of month as date
+const getInitialMonth = (): Date => {
+	return startOfMonth(new Date());
+};
+// Returns start of quarter as date
+const getInitialQuarter = () => {
+	return startOfQuarter(new Date());
+};
+const getInitialYear = (): number => {
+	return new Date().getFullYear();
+};
+const getInitialLogState = () => {
+	const initialState: FilterSettings = {
+		// rangeType: "Week",
+		rangeType: "None",
+		rangeDate: new Date(),
+		rangeMonth: getInitialMonth(),
+		rangeYear: getInitialYear(),
+		rangeQuarter: getInitialQuarter(),
+		customStart: "",
+		customEnd: "",
+		workoutType: null,
+		workoutLength: 0,
+	};
+	return initialState;
+};
+
+const initialState: FilterSettings = {
+	rangeType: "None",
+	rangeDate: new Date(),
+	rangeMonth: getInitialMonth(),
+	rangeYear: getInitialYear(),
+	rangeQuarter: getInitialQuarter(),
+	customStart: "",
+	customEnd: "",
+	workoutType: null,
+	workoutLength: 0,
+};
+
 const DashboardWorkoutHistory = () => {
 	const dispatch = useAppDispatch();
 	const isLoading: boolean = useSelector(selectIsHistoryLoading);
@@ -76,16 +317,42 @@ const DashboardWorkoutHistory = () => {
 	const [showFiltersModal, setShowFiltersModal] = useState<boolean>(false);
 	const [filteredLogs, setFilteredLogs] = useState<WorkoutLogEntry[]>([]);
 	const [filters, setFilters] = useState<string[]>([]);
-	const [filterSettings, setFilterSettings] = useState<FilterSettings>({
-		rangeType: "Week",
-		startDate: startOfWeek(new Date()).toString(),
-		endDate: endOfWeek(new Date()).toString(),
-		workoutType: null,
-		workoutLength: 0,
-	});
+	const [filterSettings, setFilterSettings] =
+		useState<FilterSettings>(initialState);
 	const [searchVal, setSearchVal] = useState<string>("");
+	const toaster = useToast();
+	const [toastMsg, setToastMsg] = useState("Showing data for this week");
 
+	// quick access filters handler (closes modal & fires off request)
+	const handleQuickFilter = (name: string, value: string | number) => {
+		const newSettings = {
+			...filterSettings,
+			[name]: value,
+		};
+		setFilterSettings(newSettings);
+		getQuickAccessRange(newSettings);
+		setToastMsg("Showing data for " + newSettings.rangeType);
+		toaster.showToast();
+	};
 	const handleFilter = (name: string, value: string | number) => {
+		setFilterSettings({
+			...filterSettings,
+			[name]: value,
+		});
+	};
+	const handleDate = (name: string, value: Date) => {
+		setFilterSettings({
+			...filterSettings,
+			[name]: value,
+		});
+	};
+	const handleMonth = (name: string, value: Date) => {
+		setFilterSettings({
+			...filterSettings,
+			[name]: value,
+		});
+	};
+	const handleQuarter = (name: string, value: Date) => {
 		setFilterSettings({
 			...filterSettings,
 			[name]: value,
@@ -101,7 +368,34 @@ const DashboardWorkoutHistory = () => {
 			const todaysLogs = getTodaysLogs(workoutLogs);
 			setFilters([...filters, "Today"]);
 			setFilteredLogs(todaysLogs);
+			setFilterSettings({
+				...filterSettings,
+				rangeType: "Today",
+			});
 		}
+	};
+
+	const getQuickAccessRange = async (newSettings: FilterSettings) => {
+		const { userID } = currentUser;
+		const { rangeType } = newSettings;
+		const newRange = getDateRangeByType(rangeType);
+		// fire off request for data
+		const result = await dispatch(
+			getWorkoutHistory({ userID, range: newRange })
+		).unwrap();
+		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
+		setFilteredLogs(sorted);
+	};
+
+	const getFilteredRange = async (newSettings: FilterSettings) => {
+		const { userID } = currentUser;
+		const newRange = getDateRangeByFilters(newSettings);
+		// fire off request for data
+		const result = await dispatch(
+			getWorkoutHistory({ userID, range: newRange })
+		).unwrap();
+		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
+		setFilteredLogs(sorted);
 	};
 
 	const handleSearch = (_: string, value: string) => {
@@ -113,10 +407,33 @@ const DashboardWorkoutHistory = () => {
 	const clearFilters = () => {
 		setFilters([]);
 		setFilteredLogs(workoutLogs);
+		const newState = getInitialLogState();
+		setFilterSettings(newState);
+		resetLogData();
+	};
+
+	const resetLogData = async () => {
+		const { userID } = currentUser;
+		const range = getLogRange();
+		const result = await dispatch(
+			getWorkoutHistory({ userID, range })
+		).unwrap();
+		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
+		setFilteredLogs(sorted);
 	};
 
 	const clearSearch = () => {
 		handleSearch("searchVal", "");
+	};
+
+	const saveFilters = () => {
+		// - Get new range
+		// - Get workout type, if selected, otherwise default to 'ALL'
+		getFilteredRange(filterSettings);
+		closeFiltersModal();
+	};
+	const cancelFilters = () => {
+		closeFiltersModal();
 	};
 
 	const openFiltersModal = () => {
@@ -134,8 +451,8 @@ const DashboardWorkoutHistory = () => {
 			const result = await dispatch(
 				getWorkoutHistory({ userID, range })
 			).unwrap();
-			// const sorted =
-			setFilteredLogs(result.logs);
+			const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
+			setFilteredLogs(sorted);
 		};
 
 		const { userID } = currentUser;
@@ -152,6 +469,7 @@ const DashboardWorkoutHistory = () => {
 		<div className={styles.DashboardWorkoutHistory}>
 			<div className={styles.DashboardWorkoutHistory_filters}>
 				<HistoryFilters
+					filterSettings={filterSettings}
 					filters={filters}
 					workoutLogs={workoutLogs}
 					filteredLogs={filteredLogs}
@@ -200,9 +518,19 @@ const DashboardWorkoutHistory = () => {
 				<HistoryFiltersModal closeModal={closeFiltersModal}>
 					<HistoryFilterOptions
 						values={filterSettings}
+						handleQuickFilter={handleQuickFilter}
 						handleFilter={handleFilter}
+						handleDate={handleDate}
+						handleMonth={handleMonth}
+						handleQuarter={handleQuarter}
+						closeModal={closeFiltersModal}
 					/>
+					<ModalFooter onConfirm={saveFilters} onCancel={cancelFilters} />
 				</HistoryFiltersModal>
+			)}
+
+			{toaster.isShowing && (
+				<Toast desc={toastMsg as string} position="bottom-right" type="info" />
 			)}
 		</div>
 	);

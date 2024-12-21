@@ -4,6 +4,11 @@
 
 **Component Fixes & Creations:**
 
+- Various Feature Ideas/Concepts:
+
+  - Floating "In-Progress" island at the bottom of the screen.
+    - When starting a workout or timer a floating island will appear at the bottom of the screen to denote an on-going or in-progress workout or timer is active, so that users can still use the page while not losing their states
+
 - Create various components:
 
   - `<RadioButton/>`
@@ -11,11 +16,21 @@
   - `<WorkoutSummary/>` (cards w/ workout totals: weekly mins, weekly reps etc, today etc)
 
 - Create date & time components:
+
   - `<DatePicker/>`
   - `<TimePicker/>`
   - `<DateRangePicker/>`
   - `<MonthPicker/>`
   - `<YearPicker/>`
+
+- Styles Related Fixes/Improvements:
+  - Add blurred background overlay to `<ActionsBar/>` when open for readability
+  - Add better color-degree separation for UI components
+    - eg. Cards for workouts & history should stand out more from their backgrounds
+  - Add gestures for various actions:
+    - Swipe right on workouts in `/dashboard/workouts/week` list to mark as completed (or use menu dots)
+    - Swipe left on workouts in `/dashboard/workouts/week` list to a delete a given workout instance or series of instances
+  - Build reusable custom hook for gestures, if possible.
 
 **Consider Route-Based Fetching:**
 

@@ -156,7 +156,9 @@ export interface WorkoutPlanDB {
 	target_weight: number;
 	target_reps: number;
 	target_sets: number;
-	target_length: number;
+	target_mins: number;
+	target_steps: number;
+	target_miles: number;
 	is_active: boolean;
 	created_date: string;
 }
@@ -169,7 +171,7 @@ export interface WorkoutPlanClient {
 	planWeight: number;
 	planReps: number;
 	planSets: number;
-	planLength: number;
+	planMins: number;
 	isActive: boolean;
 	createdDate: string;
 }
@@ -349,4 +351,70 @@ export interface MinsSummaryClient {
 	totalMins: number;
 	weekday: string;
 	logCount: number;
+}
+
+export interface UserWorkoutDB {
+	user_id: string;
+	workout_id: number;
+	workout_name: string;
+	workout_desc: string;
+	plan_id: number;
+	created_date: string;
+	is_active: boolean;
+}
+export interface UserWorkoutClient {
+	userID: string;
+	workoutID: number;
+	name: string;
+	desc: string;
+	planID: number;
+	createdDate: string;
+	isActive: boolean;
+}
+
+export interface UserWorkoutPlanDB extends WorkoutPlanDB {
+	workout_id: number;
+	workout_name: string;
+	workout_desc: string;
+}
+export interface UserWorkoutPlanClient extends WorkoutPlanClient {
+	workoutID: number;
+	workoutName: string;
+	workoutDesc: string;
+}
+
+export interface UserWorkoutByDateDB {
+	workout_id: number;
+	schedule_id: number;
+	event_id: number;
+	start_time: string;
+	end_time: string;
+	tag_color: string | null;
+	workout_type_name: string;
+	workout_name: string;
+	workout_desc: string;
+	weight: number;
+	mins: number;
+	miles: number;
+	steps: number;
+	reps: number;
+	created_date: string;
+}
+
+export interface UserWorkoutByDateClient {
+	workoutID: number;
+	scheduleID: number;
+	eventID: number;
+	startTime: string;
+	endTime: string;
+	tagColor: string | null;
+	workoutType: string;
+	name: string;
+	desc: string;
+	weight: number;
+	mins: number;
+	reps: number;
+	miles: number;
+	steps: number;
+	createdDate: string;
 }

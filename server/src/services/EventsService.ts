@@ -15,6 +15,11 @@ export interface NewTagVals {
 
 export type EventSvcResp = Promise<EventInstanceDB[] | unknown>;
 
+export type DeleteEventArgs = {
+	eventID: number;
+	dateToDelete: Date | string;
+};
+
 class EventsService {
 	#db: Pool;
 	constructor(db: Pool) {
@@ -227,6 +232,44 @@ class EventsService {
 			const row = results?.rows?.[0];
 			return row;
 		} catch (error) {}
+	}
+	// Deletes a single event instance, not a recurring series
+	async deleteEvent(userID: string, eventInfo: DeleteEventArgs) {
+		const { eventID, dateToDelete } = eventInfo;
+
+		try {
+			const query = `SELECT * FROM delete_calendar_event(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [
+				userID,
+				eventID,
+				dateToDelete,
+			]);
+			const rows = results?.rows;
+
+			return rows;
+		} catch (error) {
+			return error;
+		}
+	}
+	async deleteEventSeries(userID: string, eventInfo: DeleteEventArgs) {
+		const { eventID } = eventInfo;
+
+		try {
+			const query = `SELECT * FROM delete_calendar_event_series(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, eventID]);
+			const rows = results?.rows;
+			console.log("results", results);
+			console.log("rows", rows);
+			return rows;
+		} catch (error) {
+			return error;
+		}
 	}
 }
 

@@ -1,0 +1,140 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+@import "../../sass/animations";
+
+$toastWidth: 35rem;
+$toastHeight: 8rem;
+
+.Toast {
+	min-width: $toastWidth;
+	width: $toastWidth;
+	min-height: $toastHeight;
+	height: $toastHeight;
+	max-height: max-content;
+	border-radius: 1rem;
+	position: absolute;
+	display: block;
+	border-radius: 1rem;
+	border: $borderLight;
+	top: 1rem;
+	right: 1rem;
+	z-index: 9999;
+	box-shadow: -3px 7px 22px 0px rgba(0, 0, 0, 0.75);
+
+	&_inner {
+		min-width: $toastWidth;
+		width: $toastWidth;
+		min-height: $toastHeight;
+		max-width: 100%;
+		max-height: 100%;
+		border-radius: 1rem;
+	}
+	&_close {
+		position: absolute;
+		top: 0.3rem;
+		right: 0.3rem;
+		width: 3rem;
+		height: 3rem;
+		@include rowCenter();
+
+		&_icon {
+			width: 1.8rem;
+			height: 1.8rem;
+			fill: $accentRed;
+			cursor: pointer;
+		}
+	}
+}
+
+@mixin toastType($iconColor: $accentPurple) {
+	min-width: 100%;
+	min-height: 100%;
+	@include fill_container;
+	@include flex_row(flex-start, flex-start);
+	background-color: var(--bg400);
+	color: $text1;
+	border-radius: 1rem;
+	padding: 1rem 0;
+
+	&_left {
+		width: 4rem;
+		height: 100%;
+		padding: 1rem 0.2rem;
+		@include flex_row(center, flex-start);
+
+		&_icon {
+			width: 2.5rem;
+			height: 2.5rem;
+			fill: $iconColor;
+		}
+	}
+	&_main {
+		width: calc(100% - 7rem);
+		height: 100%;
+		padding: 0.3rem 0.5rem;
+
+		&_title {
+			font-size: 1.6rem;
+			color: $iconColor;
+		}
+		&_desc {
+			font-size: 1.2rem;
+			color: $text3;
+		}
+	}
+}
+
+.Info {
+	@include toastType($accentPurple);
+}
+.Error {
+	@include toastType($accentRed);
+}
+.Warning {
+	@include toastType(#ffca80);
+}
+.Success {
+	@include toastType($accentGreen);
+}
+
+.top-left {
+	bottom: unset;
+	right: unset;
+	top: 1rem;
+	left: 1rem;
+}
+.top-right {
+	bottom: unset;
+	left: unset;
+	top: 1rem;
+	right: 1rem;
+	@include slideFromRight();
+}
+.bottom-left {
+	top: unset;
+	left: unset;
+	bottom: 1rem;
+	left: 1rem;
+}
+.bottom-right {
+	top: unset;
+	left: unset;
+	bottom: 1rem;
+	right: 1rem;
+	@include slideFromRight();
+}
+.top-middle {
+	bottom: unset;
+	right: unset;
+	top: 2rem;
+	left: 50%;
+	transform: translate(-50%, -1rem);
+}
+.bottom-middle {
+	top: unset;
+	right: unset;
+	bottom: 1rem;
+	left: 50%;
+	transform: translate(-50%, -1rem);
+}

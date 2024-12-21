@@ -37,9 +37,11 @@
 		}
 	}
 	&_inner {
-		@include fill_container;
+		width: 100%;
+		height: 92%;
 		padding: 2rem 4rem;
 		padding-top: 6rem;
+		overflow-y: auto;
 
 		&_row {
 			width: 100%;

@@ -6,8 +6,10 @@ import {
 	RecurringWorkoutAndPlan,
 } from "../components/workouts/types";
 import { CalendarEvent, CalendarEventSchedule } from "../features/events/types";
+import { CustomDateRange } from "../features/summary/types";
 import { AsyncResponse } from "../features/types";
-import { Workout, WorkoutPlan } from "../features/workouts/types";
+import { MarkAsDoneParams } from "../features/workouts/operations";
+import { UserWorkout, Workout, WorkoutPlan } from "../features/workouts/types";
 import { formatTime, parseTime } from "./utils_dates";
 import { currentEnv, workoutApis } from "./utils_env";
 
@@ -16,11 +18,13 @@ import { currentEnv, workoutApis } from "./utils_env";
 export interface CreateWorkoutResponse {
 	event: CalendarEvent;
 	schedule: CalendarEventSchedule;
-	workout: Workout;
+	workout: Workout | UserWorkout;
 	plan: WorkoutPlan;
 }
 
 export type CreateNewWorkoutResp = AsyncResponse<CreateWorkoutResponse>;
+
+// REQUESTS
 
 const createNewWorkout = async (
 	userID: string,
@@ -44,6 +48,60 @@ const createNewWorkout = async (
 		return error;
 	}
 };
+
+const getWorkouts = async (userID: string, dateRange: CustomDateRange) => {
+	const { startDate, endDate } = dateRange;
+	let url = currentEnv.base + workoutApis.getWorkouts;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate, endDate });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+const getWorkoutsByDate = async (
+	userID: string,
+	dateRange: CustomDateRange
+) => {
+	const { startDate, endDate } = dateRange;
+	let url = currentEnv.base + workoutApis.getWorkoutsByDate;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate, endDate });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+const markWorkoutsAsDone = async (userID: string, params: MarkAsDoneParams) => {
+	const url = currentEnv.base + workoutApis.markWorkoutsAsDone;
+
+	try {
+		const request = await fetch(url, {
+			method: "POST",
+			body: JSON.stringify({
+				userID,
+				workoutIDs: params.workoutIDs,
+				targetDate: params.targetDate,
+			}),
+		});
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+// UTILS
 
 const prepareEventTimes = (startTime: string, endTime: string) => {
 	const pStart = parseTime(startTime);
@@ -190,4 +248,7 @@ export {
 	prepareNewWorkoutWithPlan,
 	// requests
 	createNewWorkout,
+	getWorkouts,
+	getWorkoutsByDate,
+	markWorkoutsAsDone,
 };

@@ -1,10 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
 	getDailyMinsSummary,
+	getRangeSummary,
 	getWeeklyTotals,
 } from "../../utils/utils_summary";
 import { AwaitedResponse } from "../types";
-import { DailyMinsSummary, DailyMinsSummaryList, WeeklyTotals } from "./types";
+import {
+	CustomDateRange,
+	DailyMinsSummary,
+	DailyMinsSummaryList,
+	RangeSummary,
+	WeeklyTotals,
+} from "./types";
 
 export type SummaryParams = {
 	userID: string;
@@ -19,6 +26,12 @@ export interface DailySummaryResp {
 
 export interface WeeklyTotalsResp {
 	weeklySummary: WeeklyTotals;
+}
+
+export interface RangeSummaryResp {
+	perDay: DailyMinsSummaryList;
+	rangeSummary: RangeSummary;
+	dateRange: CustomDateRange;
 }
 
 const fetchDailyMinsSummary = createAsyncThunk(
@@ -50,5 +63,19 @@ const fetchWeeklyTotals = createAsyncThunk(
 		return data as WeeklyTotalsResp;
 	}
 );
+const fetchRangeSummary = createAsyncThunk(
+	"summary/fetchRangeSummary",
+	async (params: SummaryParams) => {
+		const { userID, startDate, endDate } = params;
+		const response = (await getRangeSummary(userID, {
+			startDate,
+			endDate,
+		})) as AwaitedResponse<RangeSummaryResp>;
 
-export { fetchDailyMinsSummary, fetchWeeklyTotals };
+		const data = response.Data as RangeSummaryResp;
+
+		return data as RangeSummaryResp;
+	}
+);
+
+export { fetchDailyMinsSummary, fetchWeeklyTotals, fetchRangeSummary };

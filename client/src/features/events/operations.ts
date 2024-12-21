@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+	deleteCalendarEvent,
+	DeletedEventResp,
 	getEventDetails,
 	getEventsByDate,
 	getEventsByRange,
@@ -9,6 +11,7 @@ import {
 import { AwaitedResponse } from "../types";
 import { CalendarEvent, CalendarEventSchedule, MonthlySummary } from "./types";
 import { CreateEventVals } from "../../utils/utils_options";
+import { UserWorkout } from "../workouts/types";
 
 export interface EventParams {
 	userID: string;
@@ -26,6 +29,12 @@ export interface EventsDateParams {
 export interface NewEventParams {
 	userID: string;
 	newEvent: CreateEventVals;
+}
+export interface DeleteEventParams {
+	userID: string;
+	eventID: number;
+	dateToDelete: string;
+	deleteSeries: boolean;
 }
 
 const fetchEventsByRange = createAsyncThunk(
@@ -60,6 +69,7 @@ export interface EventDetails {
 	event: CalendarEvent;
 	schedule: CalendarEventSchedule;
 	futureEvents: string[];
+	workouts: UserWorkout[];
 }
 
 const fetchEventDetails = createAsyncThunk(
@@ -108,10 +118,27 @@ const createNewEvent = createAsyncThunk(
 	}
 );
 
+const deleteEvent = createAsyncThunk(
+	"events/deleteEvent",
+	async (params: DeleteEventParams) => {
+		const { userID, eventID, dateToDelete, deleteSeries } = params;
+		const response = (await deleteCalendarEvent(userID, {
+			eventID,
+			dateToDelete,
+			deleteSeries,
+		})) as AwaitedResponse<DeletedEventResp>;
+
+		const data = response.Data;
+
+		return data as DeletedEventResp;
+	}
+);
+
 export {
 	fetchEventsByRange,
 	fetchMonthlySummary,
 	fetchEventsByDate,
 	fetchEventDetails,
 	createNewEvent,
+	deleteEvent,
 };

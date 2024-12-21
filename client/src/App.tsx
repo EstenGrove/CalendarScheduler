@@ -17,6 +17,7 @@ const routePaths = {
 	workouts: "./pages/DashboardWorkouts",
 	history: "./pages/DashboardWorkoutHistory",
 	health: "./pages/DashboardHealthProfile",
+	tracker: "./pages/DashboardWorkoutTracker",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
@@ -28,6 +29,7 @@ const LazyDashboardCalendarLayout = lazy(
 	() => import(routePaths.calendarLayout)
 );
 const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
+const LazyDashboardWorkoutTracker = lazy(() => import(routePaths.tracker));
 
 const Fallback = () => {
 	return (
@@ -96,6 +98,14 @@ function App() {
 									element={
 										<Suspense>
 											<LazyDashboardHealthProfile />
+										</Suspense>
+									}
+								/>
+								<Route
+									path="tracker"
+									element={
+										<Suspense>
+											<LazyDashboardWorkoutTracker />
 										</Suspense>
 									}
 								/>

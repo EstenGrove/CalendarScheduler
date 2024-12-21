@@ -15,6 +15,12 @@ import type {
 	UserWorkoutEventDB,
 	MinsSummaryClient,
 	MinsSummaryDB,
+	UserWorkoutPlanDB,
+	UserWorkoutPlanClient,
+	UserWorkoutDB,
+	UserWorkoutClient,
+	UserWorkoutByDateDB,
+	UserWorkoutByDateClient,
 } from "../services/types";
 
 class MonthlySummaryNormalizer {
@@ -407,14 +413,120 @@ class DailyMinsSummaryNormalizer {
 	}
 }
 
+class UserWorkoutPlanNormalizer {
+	#toClient(record: UserWorkoutPlanDB): UserWorkoutPlanClient {
+		const clientRecord: UserWorkoutPlanClient = {
+			workoutID: record.workout_id,
+			workoutName: record.workout_name,
+			workoutDesc: record.workout_desc,
+			workoutTypeID: record.workout_type_id,
+			planID: record.plan_id,
+			planName: record.plan_name,
+			planDesc: record.plan_desc,
+			planMins: record.target_mins,
+			planWeight: record.target_weight,
+			planReps: record.target_reps,
+			planSets: record.target_sets,
+			createdDate: record.created_date,
+			isActive: record.is_active,
+		};
+
+		return clientRecord;
+	}
+
+	toClientOne(record: UserWorkoutPlanDB): UserWorkoutPlanClient {
+		return this.#toClient(record);
+	}
+	toClient(records: UserWorkoutPlanDB[]): UserWorkoutPlanClient[] {
+		return records.map(this.#toClient);
+	}
+}
+
+class WorkoutNormalizer {
+	#toClient(record: UserWorkoutDB): UserWorkoutClient {
+		const clientRecord: UserWorkoutClient = {
+			userID: record.user_id,
+			workoutID: record.workout_id,
+			planID: record.plan_id,
+			name: record.workout_name,
+			desc: record.workout_desc,
+			createdDate: record.created_date,
+			isActive: record.is_active,
+		};
+
+		return clientRecord;
+	}
+
+	toClient(records: UserWorkoutDB[]): UserWorkoutClient[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toClient);
+	}
+}
+
+class UserWorkoutEntryNormalizer {
+	#toClient(record: UserWorkoutByDateDB): UserWorkoutByDateClient {
+		const clientRecord: UserWorkoutByDateClient = {
+			workoutID: record.workout_id,
+			scheduleID: record.schedule_id,
+			eventID: record.event_id,
+			workoutType: record.workout_type_name,
+			name: record.workout_name,
+			desc: record.workout_desc,
+			startTime: record.start_time,
+			endTime: record.end_time,
+			tagColor: record.tag_color,
+			weight: record.weight,
+			reps: record.reps,
+			mins: record.mins,
+			miles: record.miles,
+			steps: record.steps,
+			createdDate: record.created_date,
+		};
+		return clientRecord;
+	}
+
+	toClient(records: UserWorkoutByDateDB[]): UserWorkoutByDateClient[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toClient);
+	}
+}
+
+// CUSTOM NORMALIZERS
+
+// Returns custom workout records w/ plan details
+const convertUserWorkouts = (workouts: UserWorkoutPlanDB[]) => {
+	if (!workouts || !workouts.length) return [];
+	const newRecords = workouts.map((workout) => ({
+		planID: workout.plan_id,
+		name: workout.plan_name,
+		desc: workout.plan_desc,
+		workoutTypeID: workout.workout_type_id,
+		weight: workout.target_weight,
+		reps: workout.target_reps,
+		sets: workout.target_sets,
+		mins: workout.target_mins,
+		steps: workout.target_steps,
+		miles: workout.target_miles,
+		isActive: workout.is_active,
+		createdDate: workout.created_date,
+	}));
+
+	return newRecords;
+};
+
 const eventsNormalizer = new EventsNormalizer();
 const historyNormalizer = new HistoryNormalizer();
+const workoutNormalizer = new WorkoutNormalizer();
 const schedulesNormalizer = new SchedulesNormalizer();
 const summaryNormalizer = new MonthlySummaryNormalizer();
 const eventDetailsNormalizer = new EventDetailsNormalizer();
 const workoutEventNormalizer = new WorkoutEventNormalizer();
 const minsSummaryNormalizer = new DailyMinsSummaryNormalizer();
 const eventInstancesNormalizer = new EventInstancesNormalizer();
+const workoutPlanNormalizer = new UserWorkoutPlanNormalizer();
+const userWorkoutNormalizer = new UserWorkoutEntryNormalizer();
 
 export {
 	summaryNormalizer,
@@ -425,4 +537,9 @@ export {
 	historyNormalizer,
 	workoutEventNormalizer,
 	minsSummaryNormalizer,
+	workoutPlanNormalizer,
+	workoutNormalizer,
+	userWorkoutNormalizer,
+	// custom normalizers
+	convertUserWorkouts,
 };

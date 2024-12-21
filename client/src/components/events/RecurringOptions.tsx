@@ -1,4 +1,5 @@
 import styles from "../../css/events/RecurringOptions.module.scss";
+import { MONTHS } from "../../utils/utils_dates";
 import {
 	EventFrequency,
 	WeekDayToken,
@@ -166,6 +167,54 @@ const MonthlyOptions = ({ values, handleMonth }: MonthProps) => {
 	);
 };
 
+const monthOpts: Array<{ value: string; label: string }> = MONTHS.map(
+	(month, idx) => ({
+		value: String(idx),
+		label: month,
+	})
+);
+
+const YearlyOptions = ({ values, handleMonth }: MonthProps) => {
+	const { byMonth, byMonthDay } = values;
+	const monthSuffix = getMonthlySuffix(byMonthDay);
+
+	const handleMonthChoice = (_: string, value: string) => {
+		const idx = MONTHS.findIndex((x) => x === value);
+
+		handleMonth("byMonth", idx);
+	};
+
+	return (
+		<div className={styles.YearlyOptions}>
+			<div className={styles.YearlyOptions_months}>
+				<div>Every </div>
+				<Select
+					name="byMonth"
+					id="byMonth"
+					onChange={handleMonthChoice}
+					value={MONTHS[byMonth]}
+					options={monthOpts}
+				/>
+			</div>
+			<div className={styles.YearlyOptions_row}>
+				{/* on day:  */}
+				<span>On the </span>
+				<NumberInput
+					name="byMonthDay"
+					id="byMonthDay"
+					min={1}
+					max={31}
+					onChange={handleMonth}
+					value={byMonthDay}
+				/>
+				<span>
+					<b>{monthSuffix}</b> of the month
+				</span>
+			</div>
+		</div>
+	);
+};
+
 const RecurringOptions = ({
 	values,
 	handleDays,
@@ -191,6 +240,11 @@ const RecurringOptions = ({
 			{isRecurring && frequency === "Monthly" && (
 				<div className={styles.RecurringOptions_row}>
 					<MonthlyOptions handleMonth={handleMonth} values={values} />
+				</div>
+			)}
+			{isRecurring && frequency === "Yearly" && (
+				<div className={styles.RecurringOptions_row}>
+					<YearlyOptions handleMonth={handleMonth} values={values} />
 				</div>
 			)}
 		</div>

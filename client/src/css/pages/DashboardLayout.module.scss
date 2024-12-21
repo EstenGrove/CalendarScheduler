@@ -12,5 +12,18 @@
 		max-width: 80rem;
 		display: block;
 		margin: 0 auto;
+
+		&_filters {
+			width: 100%;
+			@include flex_row(flex-end, center);
+			gap: 0 1rem;
+		}
 	}
+}
+
+.TodayButton {
+	@include filterBtn();
+}
+.FiltersButton {
+	@include filterBtn();
 }

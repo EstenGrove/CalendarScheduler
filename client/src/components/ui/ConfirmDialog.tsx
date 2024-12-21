@@ -1,17 +1,20 @@
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/ui/ConfirmDialog.module.scss";
 import { useBackgroundBlur } from "../../hooks/useBackgroundBlur";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 type Props = {
 	closeDialog: () => void;
 	children?: ReactNode;
 	onCancel: () => void;
 	onConfirm: () => void;
+	isConfirming?: boolean;
 };
 
 type ButtonProps = {
 	onClick: () => void;
+	isConfirming?: boolean;
 };
 const CancelButton = ({ onClick }: ButtonProps) => {
 	return (
@@ -20,10 +23,15 @@ const CancelButton = ({ onClick }: ButtonProps) => {
 		</button>
 	);
 };
-const ConfirmButton = ({ onClick }: ButtonProps) => {
+const ConfirmButton = ({ onClick, isConfirming }: ButtonProps) => {
 	return (
-		<button type="button" onClick={onClick} className={styles.ConfirmButton}>
-			Confirm
+		<button
+			type="button"
+			onClick={onClick}
+			disabled={isConfirming}
+			className={styles.ConfirmButton}
+		>
+			{isConfirming ? "Saving..." : "Confirm"}
 		</button>
 	);
 };
@@ -33,11 +41,14 @@ const ConfirmDialog = ({
 	closeDialog,
 	onCancel,
 	onConfirm,
+	isConfirming = false,
 }: Props) => {
+	const modalRef = useRef<HTMLDivElement>(null);
+	useOutsideClick(modalRef, closeDialog);
 	useBackgroundBlur();
 
 	return (
-		<div className={styles.ConfirmDialog}>
+		<div ref={modalRef} className={styles.ConfirmDialog}>
 			<div className={styles.ConfirmDialog_top}>
 				<svg onClick={closeDialog} className={styles.ConfirmDialog_top_close}>
 					<use xlinkHref={`${sprite}#icon-clear`}></use>
@@ -47,8 +58,8 @@ const ConfirmDialog = ({
 				<div className={styles.ConfirmDialog_inner_main}>{children}</div>
 			</div>
 			<div className={styles.ConfirmDialog_footer}>
-				<CancelButton onClick={onCancel} />
-				<ConfirmButton onClick={onConfirm} />
+				<CancelButton onClick={onCancel} isConfirming={isConfirming} />
+				<ConfirmButton onClick={onConfirm} isConfirming={isConfirming} />
 			</div>
 		</div>
 	);

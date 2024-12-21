@@ -2,12 +2,13 @@ import { ComponentPropsWithoutRef, ReactNode } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/history/HistoryFilters.module.scss";
 import { WorkoutLogEntry } from "../../features/workoutHistory/types";
+import { FilterSettings } from "../../utils/utils_filters";
 
 type Props = {
 	filters: string[];
+	filterSettings: FilterSettings;
 	workoutLogs: WorkoutLogEntry[];
 	filteredLogs: WorkoutLogEntry[];
-	// selectFilter: (filter: string) => void;
 	toggleTodayFilter: () => void;
 	openFiltersModal: () => void;
 	clearFilters: () => void;
@@ -50,23 +51,38 @@ const FilterOption = ({ children, onClick, ...rest }: FilterProps) => {
 	);
 };
 
+// Checks if we have any selected filters beyond the 'None' which is used as initial state
+const checkForFilters = (
+	filters: string[],
+	filterSettings: FilterSettings
+): boolean => {
+	const hasToday = filters && filters.length > 0;
+	const hasNonDefault = filterSettings.rangeType !== "None";
+
+	return hasToday || hasNonDefault;
+};
+
 const HistoryFilters = ({
 	toggleTodayFilter,
 	filters = [],
+	filterSettings,
 	clearFilters,
 	workoutLogs,
 	filteredLogs,
 	openFiltersModal,
 }: Props) => {
-	const totalCount = workoutLogs?.length || 0;
-	const logCount = filteredLogs?.length || 0;
+	const totalCount: number = workoutLogs?.length || 0;
+	const logCount: number = filteredLogs?.length || 0;
+	const hasFilters: boolean = checkForFilters(filters, filterSettings);
+
 	return (
 		<div className={styles.HistoryFilters}>
 			<div className={styles.HistoryFilters_inner}>
 				<div className={styles.HistoryFilters_inner_count}>
 					<b>{logCount}</b> / <b>{totalCount}</b> logs
 				</div>
-				{filters && filters.length > 0 && (
+				{/* {filters && filters.length > 0 && ( */}
+				{hasFilters && (
 					<FilterOption
 						onClick={clearFilters}
 						style={{
@@ -80,10 +96,6 @@ const HistoryFilters = ({
 				<FilterOption onClick={toggleTodayFilter}>Today</FilterOption>
 				<FilterButton onClick={openFiltersModal} />
 			</div>
-			{/*  */}
-			{/*  */}
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

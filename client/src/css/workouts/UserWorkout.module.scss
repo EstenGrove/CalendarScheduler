@@ -1,0 +1,118 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+// $userAccent: var(--accent-purple);
+// $userAccent: var(--accent);
+$userAccent: var(--accent-blue);
+
+.UserWorkout {
+	width: 100%;
+	height: 10rem;
+	border-radius: 5rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	@include flex_row(flex-start, flex-start, wrap);
+	border-left: 4px solid $userAccent;
+	border-radius: 0 1rem 1rem 0;
+
+	&_type {
+		width: 6rem;
+		height: 6rem;
+		padding: 1rem 0.5rem;
+	}
+	&_info {
+		width: calc(100% - 6rem);
+		height: 70%;
+		@include flex_row(flex-start, flex-start);
+		padding: 1.5rem 0;
+		border-radius: 0 1rem 0 0;
+
+		&_main {
+			width: auto;
+
+			&_title {
+				font-size: 1.7rem;
+				color: $text1;
+			}
+			&_desc {
+				color: $text2;
+				font-size: 1.3rem;
+			}
+		}
+		&_options {
+			width: auto;
+			height: 100%;
+			align-self: flex-start;
+			margin-left: auto;
+			margin-top: -1rem;
+			margin-right: 0.5rem;
+
+			&_wrapper {
+				width: 2.5rem;
+				height: 1.5rem;
+				border-radius: 5rem;
+				background-color: var(--blueGrey800);
+				@include rowCenter();
+				cursor: pointer;
+
+				&_icon {
+					width: 1.8rem;
+					height: 1.8rem;
+					min-width: 1.8rem;
+					min-height: 1.8rem;
+					fill: var(--blueGrey200);
+				}
+			}
+		}
+	}
+
+	&_bottom {
+		width: 100%;
+		height: auto;
+		padding: 0 6rem;
+		padding-bottom: 0.5rem;
+		@include flex_row(flex-start, flex-start);
+		gap: 0 0.5rem;
+	}
+}
+
+@mixin badge() {
+	width: max-content;
+	padding: 0.2rem 0.4rem;
+	border-radius: 5rem;
+	background-color: var(--blueGrey900);
+	@include rowCenter();
+	gap: 0 0.3rem;
+	color: $text3;
+	font-size: 1rem;
+
+	&_icon {
+		width: 1.5rem;
+		height: 1.5rem;
+		fill: $accentPurple;
+		// fill: $text3;
+	}
+}
+
+.WeightBadge {
+	@include badge();
+}
+.MinutesBadge {
+	@include badge();
+}
+
+.ActivityType {
+	width: 3.5rem;
+	height: 3.5rem;
+	border-radius: 50%;
+	background-color: var(--blueGrey300);
+	background-color: var(--blueGrey900);
+	@include rowCenter();
+
+	&_icon {
+		width: 2.5rem;
+		height: 2.5rem;
+		fill: $userAccent;
+	}
+}

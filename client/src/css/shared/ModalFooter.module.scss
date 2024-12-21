@@ -1,0 +1,49 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.ModalFooter {
+	width: 100%;
+	height: 5rem;
+	position: absolute;
+	display: block;
+	bottom: 0;
+	left: 0;
+	padding: 0.5rem 1rem;
+	@include flex_row(flex-end, center);
+	gap: 0 1rem;
+	background-color: $background;
+	background-color: var(--bg200);
+	z-index: 100;
+
+	&_inner {
+		@include fill_container;
+		padding: 0.5rem 2rem;
+		@include flex_row(flex-end, center);
+	}
+}
+@mixin dialogBtn() {
+	padding: 0.8rem 1.6rem;
+	border-radius: 1rem;
+	font-size: 1.6rem;
+	color: #fff;
+	border: none;
+	outline: none;
+	&:hover {
+		cursor: pointer;
+	}
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.CancelButton {
+	@include dialogBtn();
+	background-color: transparent;
+	color: var(--accent-red);
+}
+.ConfirmButton {
+	@include dialogBtn();
+	background-color: var(--accent-red);
+}

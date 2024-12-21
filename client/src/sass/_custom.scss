@@ -33,3 +33,23 @@
 @mixin colCenter($wrapType: nowrap) {
 	@include flex_col(center, center, $wrapType);
 }
+
+// UI Mixins
+@mixin filterBtn() {
+	padding: 0.5rem 1rem;
+	border-radius: 0.5rem;
+	font-size: 1.6rem;
+	color: $text1;
+	background-color: var(--bg200);
+	border: $borderLight;
+	outline: none;
+	@include rowCenter();
+	gap: 0 0.3rem;
+
+	&_icon {
+		width: 1.4rem;
+		height: 1.4rem;
+		fill: $text1;
+		align-self: center;
+	}
+}

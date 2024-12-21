@@ -1,18 +1,25 @@
 import { type Context, Hono } from "hono";
-import { eventsService, schedulesService } from "../services";
+import {
+	eventsService,
+	schedulesService,
+	userWorkoutService,
+} from "../services";
 import type {
 	CalendarEventDB,
 	CreateEventVals,
 	EventInstanceDB,
 	MonthlyEventSummaryDB,
 	NewEventPayload,
+	UserWorkoutPlanDB,
 } from "../services/types";
 import { getResponseError, getResponseOk } from "../utils/data";
 import {
+	convertUserWorkouts,
 	eventInstancesNormalizer,
 	eventsNormalizer,
 	schedulesNormalizer,
 	summaryNormalizer,
+	workoutPlanNormalizer,
 } from "../utils/normalizing";
 import { groupByFn } from "../utils/processing";
 import { createMonthlySummaryMap } from "../utils/events";
@@ -72,14 +79,21 @@ app.get("/getEventDetails", async (ctx: Context) => {
 		userID,
 		eventID
 	);
-	// const details =
+	const eventWorkouts =
+		(await userWorkoutService.getUserWorkoutDetailsByEventID(
+			userID,
+			eventID
+		)) as UserWorkoutPlanDB[];
 
 	const event = eventInstancesNormalizer.toClientOne(eventRecord);
 	const schedule = schedulesNormalizer.toClientOne(scheduleRecord);
+	// const plans = workoutPlanNormalizer.toClient(eventWorkouts);
+	const plans = convertUserWorkouts(eventWorkouts);
 
 	const response = getResponseOk({
 		event: { ...event },
 		schedule: schedule,
+		workouts: plans,
 		futureEvents: [],
 		details: null,
 	});
@@ -142,12 +156,45 @@ app.post("/createEvent", async (ctx: Context) => {
 
 app.post("/deleteEvent", async (ctx: Context) => {
 	// check if user wants to delete ALL events, just this instance and any associated workouts
+	const body = await ctx.req.json();
+	const { userID, eventID, deleteSeries = false, dateToDelete } = body;
 
-	const response = getResponseOk({
-		message: "",
-	});
+	if (deleteSeries) {
+		const wasDeleted = await eventsService.deleteEventSeries(userID, {
+			eventID: eventID,
+			dateToDelete: dateToDelete, // not used for series deletion
+		});
+		console.log("wasDeleted(SERIES):", wasDeleted);
+		const response = getResponseOk({
+			message: `[DELETED-SERIES]: ${eventID} all recurrences and events were deleted.`,
+			eventID: eventID,
+			userID: userID,
+		});
 
-	return ctx.json(response);
+		return ctx.json(response);
+	} else {
+		const wasDeleted = await eventID.deleteEvent(userID, {
+			eventID: eventID,
+			dateToDelete: dateToDelete, // not used for series deletion
+		});
+		console.log("wasDeleted(EVENT-ONLY):", wasDeleted);
+
+		const response = getResponseOk({
+			message: `[DELETED]: ${eventID} for date: ${dateToDelete}`,
+			eventID: eventID,
+			userID: userID,
+		});
+
+		return ctx.json(response);
+	}
+
+	// const response = getResponseOk({
+	// 	message: 'Event was deleted',
+	// 	eventID: eventID,
+	// 	userID: userID
+	// });
+
+	// return ctx.json(response);
 });
 
 export default app;

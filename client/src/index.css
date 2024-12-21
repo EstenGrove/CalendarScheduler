@@ -13,6 +13,8 @@
 	--accent-blue: #007cff;
 	--accent-red: #ff001b;
 	--accent-red2: rgba(255, 0, 27, 0.4);
+	--accent-yellow: #f9f871;
+	--accent-grey: var(--blueGrey900);
 
 	/* --accent: #ff0066; */
 	--accent: rgb(255, 0, 102);
@@ -26,6 +28,27 @@
 	--bg-foreground-dark: #0c0f13;
 	--bg-foreground: var(--bg-foreground-dark);
 	--border-color: var(--blueGrey600);
+
+	/* Backgrounds (DARK) */
+	--bg100: #0b0e11;
+	--bg200: #0a0c0f;
+	--bg300: #080b0d;
+	--bg400: #07090b;
+	--bg500: #06080a;
+	--bg600: #050608;
+	--bg700: #040406;
+	--bg800: #020304;
+	--bg900: #010102;
+
+	/* Background (Shades) */
+	--bgShade200: #24272b;
+	--bgShade300: #3d3f42;
+	--bgShade400: #55575a;
+	--bgShade500: #6d6f71;
+	--bgShade600: #9e9fa1;
+	--bgShade700: #b6b7b8;
+	--bgShade800: #cecfd0;
+	--bgShade900: #e7e7e7;
 
 	/* Purple Shades (accent: 1000|1100) */
 
@@ -129,6 +152,10 @@ body {
 	font-family: var(--font-primary);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+	/* Prevent scrolls */
+	/* overflow-y: hidden; */
+	overflow-x: hidden;
 }
 
 :root[data-theme="light"] {

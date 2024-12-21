@@ -6,6 +6,7 @@ import { WorkoutLogEntry } from "../features/workoutHistory/types";
 import { WorkoutLogParams } from "../features/workoutHistory/operations";
 import { applyTimeStrToDate } from "./utils_dates";
 import { addMinutes } from "date-fns";
+import { sortObjByDateAsc, sortObjByDateDesc } from "./utils_misc";
 
 export type LogStep =
 	| "Type"
@@ -91,6 +92,53 @@ const prepareLogDates = (values: CreateLogValues): TimeRange => {
 	};
 };
 
+const prepareWorkoutLog = (values: CreateLogValues): CreateLogValues => {
+	const type = values.workoutType;
+	const { startTime, endTime } = prepareLogDates(values);
+	const startISO = startTime.toISOString();
+	const endISO = endTime.toISOString();
+
+	switch (true) {
+		// Reset weighted fields
+		case isWalkingType(type):
+		case isDistanceType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+				reps: 0,
+				sets: 0,
+				weight: 0,
+			};
+		}
+		// Reset distance fields
+		case isWeightedType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+				steps: 0,
+				miles: 0,
+			};
+		}
+		// Might need to reset weighted & distance fields???
+		case isOtherType(type): {
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+			};
+		}
+
+		default:
+			return {
+				...values,
+				startTime: startISO,
+				endTime: endISO,
+			};
+	}
+};
+
 const getWorkoutLogs = async (
 	userID: string,
 	range: WorkoutLogParams["range"]
@@ -124,6 +172,32 @@ const saveWorkoutLog = async (userID: string, workoutLog: CreateLogValues) => {
 	}
 };
 
+// SORTING UTILS
+export type LogSortBy =
+	| "workoutDate:ASC"
+	| "workoutDate:DESC"
+	| "workoutDate:ASC"
+	| "workoutDate:DESC"
+	| "createdDate:ASC"
+	| "createdDate:DESC"
+	| "name:ASC"
+	| "name:DESC";
+const sortWorkoutLogsBy = (logs: WorkoutLogEntry[], sortBy: LogSortBy) => {
+	switch (sortBy) {
+		case "workoutDate:ASC": {
+			const sorted = sortObjByDateAsc("date", logs);
+			return sorted;
+		}
+		case "workoutDate:DESC": {
+			const sorted = sortObjByDateDesc("date", logs);
+			return sorted;
+		}
+
+		default:
+			return logs;
+	}
+};
+
 export {
 	isWeightedType,
 	isWalkingType,
@@ -135,4 +209,6 @@ export {
 	// utils
 	getWorkoutTypeIDFromName,
 	prepareLogDates,
+	prepareWorkoutLog,
+	sortWorkoutLogsBy,
 };
