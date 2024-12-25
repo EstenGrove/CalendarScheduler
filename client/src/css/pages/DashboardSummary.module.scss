@@ -1,0 +1,21 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DashboardSummary {
+	width: 100%;
+	overflow-y: hidden;
+
+	&_nav {
+		width: 100%;
+		height: 8rem;
+		padding: 0 3.5rem;
+		border-bottom: $borderLight;
+		@include flex_row(flex-start, center);
+	}
+
+	&_main {
+		@include fill_container;
+		overflow-y: scroll;
+	}
+}

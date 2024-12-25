@@ -155,9 +155,6 @@ const prepareWorkoutEntry = (values: CreateLogValues) => {
 		...values,
 		...preparedValues,
 		workoutTypeID: typeID,
-		// const adjustedTimes: TimeRange = prepareLogDates(values);
-		// startTime: adjustedTimes.startTime.toISOString(),
-		// endTime: adjustedTimes.endTime.toISOString(),
 	};
 
 	return newLog;
@@ -180,7 +177,7 @@ const initialState: CreateLogValues = {
 	mins: 30,
 	reps: 20,
 	sets: 1,
-	weight: 15,
+	weight: 20,
 	steps: 0,
 	miles: 0,
 	startTime: getInitialStartTime(), //  start time

@@ -9,12 +9,17 @@
 	--bg-body: rgb(234, 236, 239);
 	--main-accent: rgb(124, 58, 237);
 	--accent-green: rgb(0, 226, 189);
+	/* --accent-green: #00e2bd; */
 	--accent-bright-red: rgb(255, 0, 102);
 	--accent-blue: #007cff;
-	--accent-red: #ff001b;
+	/* --accent-red: #b90034; */
+	--accent-red: #ff000d;
 	--accent-red2: rgba(255, 0, 27, 0.4);
 	--accent-yellow: #f9f871;
 	--accent-grey: var(--blueGrey900);
+
+	--decrease-accent: #ff333d;
+	--increase-accent: var(--accent-green);
 
 	/* --accent: #ff0066; */
 	--accent: rgb(255, 0, 102);
@@ -49,6 +54,27 @@
 	--bgShade700: #b6b7b8;
 	--bgShade800: #cecfd0;
 	--bgShade900: #e7e7e7;
+
+	/* Green Shades */
+	--green100: #00cbaa;
+	--green200: #00b597;
+	--green300: #009e84;
+	--green400: #008871;
+	--green500: #00715f;
+	--green600: #005a4c;
+	--green700: #004439;
+	--green800: #002d26;
+	--green900: #001713;
+
+	--greenShade100: #00e2bd;
+	--greenShade200: #1ae5c4;
+	--greenShade300: #33e8ca;
+	--greenShade400: #4debd1;
+	--greenShade500: #66eed7;
+	--greenShade600: #80f1de;
+	--greenShade700: #99f3e5;
+	--greenShade800: #ccf9f2;
+	--greenShade900: #e6fcf8;
 
 	/* Purple Shades (accent: 1000|1100) */
 

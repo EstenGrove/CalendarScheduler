@@ -179,9 +179,7 @@ const YearlyOptions = ({ values, handleMonth }: MonthProps) => {
 	const monthSuffix = getMonthlySuffix(byMonthDay);
 
 	const handleMonthChoice = (_: string, value: string) => {
-		const idx = MONTHS.findIndex((x) => x === value);
-
-		handleMonth("byMonth", idx);
+		handleMonth("byMonth", Number(value));
 	};
 
 	return (
@@ -192,7 +190,7 @@ const YearlyOptions = ({ values, handleMonth }: MonthProps) => {
 					name="byMonth"
 					id="byMonth"
 					onChange={handleMonthChoice}
-					value={MONTHS[byMonth]}
+					value={String(byMonth)}
 					options={monthOpts}
 				/>
 			</div>

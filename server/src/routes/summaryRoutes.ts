@@ -9,7 +9,12 @@ import { HTTPException } from "hono/http-exception";
 
 const app = new Hono();
 
-app.get("/getDashboardSummary", async (ctx: Context) => {
+// Summary view: /dashboard/summary/(day|week|month|year|range)
+// => /getDashboardSummary/:(day|week|month|year|range)
+app.get("/getDashboardSummary/:type", async (ctx: Context) => {
+	const param = ctx.req.param();
+	const { userID, startDate, endDate } = ctx.req.query();
+
 	const response = getResponseOk({
 		message: "",
 	});

@@ -1,0 +1,121 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$width: 80rem;
+$height: 38rem;
+
+.MainContainer {
+	min-width: $width;
+	max-width: $width;
+	min-height: max-content;
+	max-height: $height;
+	border-radius: 1rem;
+	border: $borderLight;
+	padding: 2rem;
+	padding-bottom: 1rem;
+	padding: 2rem 2rem;
+	margin: 1rem 0;
+
+	&_top {
+		width: 100%;
+		@include flex_row(space-between, center);
+		margin-bottom: 2rem;
+
+		&_title {
+			font-size: 1.6rem;
+			@include flex_row(flex-start, center);
+			gap: 0 1rem;
+
+			&_icon {
+				width: 1.7rem;
+				height: 1.7rem;
+				fill: $accentBlue;
+			}
+			&:hover {
+				cursor: pointer;
+				color: var(--accent-blue);
+			}
+		}
+
+		&_goTo {
+			width: 2.2rem;
+			height: 2.2rem;
+			border-radius: 50%;
+			background-color: var(--blueGrey500);
+			border: none;
+			outline: none;
+			@include rowCenter();
+			cursor: pointer;
+
+			&_icon {
+				width: 2rem;
+				height: 2rem;
+				fill: #fff;
+			}
+		}
+	}
+	&_main {
+		width: 100%;
+		height: 100%;
+		max-height: auto;
+		padding: 0 2rem;
+		transition: max-height 0.5s ease-in-out;
+	}
+}
+
+.MainSummaryCard {
+	width: 100%;
+	max-height: max-content;
+	min-height: auto;
+	border-radius: 1rem;
+	@include flex_row(flex-start, flex-start, wrap);
+
+	&_left {
+		width: 60%;
+		height: 100%;
+		min-height: 35rem;
+		padding-right: 6rem;
+	}
+	&_right {
+		width: 40%;
+		height: 100%;
+	}
+}
+
+.MainDisplay {
+	width: 100%;
+	height: 100%;
+	min-height: 32rem;
+	@include flex_row(center, flex-end);
+	margin-top: auto;
+}
+
+@media only screen and (max-width: 800px) {
+	.MainContainer {
+		min-width: 100%;
+		width: 100%;
+		max-width: 100%;
+		height: max-content;
+		height: auto;
+		min-height: max-content;
+	}
+	.MainSummaryCard {
+		width: 100%;
+		max-width: 100%;
+		min-width: 100%;
+		@include colCenter();
+		@include flex_col(flex-start, center);
+
+		&_left {
+			width: 100%;
+			height: 50%;
+			padding-right: 0;
+		}
+		&_right {
+			width: 100%;
+			height: 50%;
+			@include colCenter();
+		}
+	}
+}

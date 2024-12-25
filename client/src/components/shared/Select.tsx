@@ -17,9 +17,10 @@ type Props = {
 const Select = ({ name, id, value, options, onChange }: Props) => {
 	const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
 		const { name, value } = e.target;
-
 		return onChange && onChange(name, value);
 	};
+
+	console.log("value", value);
 
 	return (
 		<div className={styles.Select}>

@@ -1,0 +1,11 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.DashboardSettings {
+	@include fill_container;
+
+	&_main {
+		@include fill_container;
+	}
+}

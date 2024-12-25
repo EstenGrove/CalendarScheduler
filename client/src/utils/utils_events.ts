@@ -156,6 +156,9 @@ const isRecurring = (frequency: EventFrequency) => {
 
 const prepareRecurringEvent = (newEvent: CreateEventVals) => {
 	const interval = Number(newEvent.interval);
+	const byMonth = Number(newEvent.byMonth);
+	console.log("byMonth", byMonth);
+
 	switch (newEvent.frequency) {
 		case "Daily": {
 			return {
@@ -182,9 +185,11 @@ const prepareRecurringEvent = (newEvent: CreateEventVals) => {
 			};
 		}
 		case "Yearly": {
+			// byMonth is zero-based for yearly selections
 			return {
 				...newEvent,
 				interval: interval,
+				byMonth: byMonth + 1,
 				byDay: [],
 			};
 		}
