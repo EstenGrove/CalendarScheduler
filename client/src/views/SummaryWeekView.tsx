@@ -1,112 +1,62 @@
 import { ReactNode, useState } from "react";
 import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/views/SummaryWeekView.module.scss";
-import DiffSummary from "../components/summary/DiffSummary";
-import MainSummaryCard from "../components/summary/MainSummaryCard";
 import { subDays } from "date-fns";
-import SummaryCard from "../components/summary/SummaryCard";
-import BarSummary from "../components/summary/BarSummary";
+import { CustomDateRange, SummaryWeekData } from "../features/summary/types";
+// components
+import DiffSummary from "../components/summary/DiffSummary";
+import DiffWeekSummary from "../components/summary/DiffWeekSummary";
+import WeekStreak from "../components/summary/WeekStreak";
 
-type CardProps = {
-	children?: ReactNode;
-};
-const Card = ({ children }: CardProps) => {
-	return <div className={styles.Card}>{children}</div>;
-};
-
-const summaryData = {
-	currentWeekTotals: {
-		mins: 46,
-		reps: 118,
-		steps: 2802,
-		miles: 6.03,
-		dayTotals: [],
-	},
-	prevWeekTotals: {
-		mins: 15,
-		reps: 97,
-		steps: 4811,
-		miles: 4.03,
-		dayTotals: [],
-	},
+type TotalsProps = {
+	currentWeek: SummaryWeekData["currentWeek"];
+	prevWeek: SummaryWeekData["prevWeek"];
 };
 
-const dummy1 = (
-	<div className={styles.SummaryWeekView_group}>
-		<DiffSummary
-			title="Mins."
-			label="mins."
-			iconName="time"
-			prevValue={17}
-			curValue={24}
-			// date={subDays(new Date(), 3)}
-		/>
-		<DiffSummary
-			title="Reps"
-			label="reps"
-			iconName="weight"
-			prevValue={32}
-			curValue={18}
-			// date={subDays(new Date(), 1)}
-		/>
-		<DiffSummary
-			title="Steps"
-			label="steps"
-			iconName="steps"
-			prevValue={32}
-			curValue={33}
-			date={subDays(new Date(), 1)}
-		/>
-		<DiffSummary
-			title="Miles"
-			label="miles"
-			iconName="miles"
-			prevValue={32}
-			curValue={46}
-			date={subDays(new Date(), 1)}
-		/>
-	</div>
-);
-
-type LgCardProps = {
-	title: string;
-	children?: ReactNode;
-};
-
-const LargeCard = ({ title, children }: LgCardProps) => {
-	const [isCollapsed, setIsCollapsed] = useState(false);
-	const iconCss = {
-		transition: "all .3s linear",
-		transform: isCollapsed ? "rotate(-90deg)" : "initial",
-	};
-
-	const toggleCollapse = () => {
-		setIsCollapsed(!isCollapsed);
-	};
-
+const SummaryTotals = ({ currentWeek, prevWeek }: TotalsProps) => {
 	return (
-		<div className={styles.LargeCard}>
-			<div className={styles.LargeCard_top}>
-				<h4 className={styles.LargeCard_top_title}>{title}</h4>
-				<button
-					type="button"
-					onClick={toggleCollapse}
-					className={styles.LargeCard_top_goTo}
-				>
-					<svg className={styles.LargeCard_top_goTo_icon} style={iconCss}>
-						<use xlinkHref={`${sprite}#icon-keyboard_arrow_down`}></use>
-					</svg>
-				</button>
-			</div>
-			{!isCollapsed && (
-				<div
-					className={styles.LargeCard_main}
-					data-card-collapsed={isCollapsed}
-				>
-					{children}
-				</div>
-			)}
-		</div>
+		<>
+			<DiffSummary
+				title="Mins."
+				label="mins."
+				iconName="time"
+				prevValue={17}
+				curValue={24}
+				// date={subDays(new Date(), 3)}
+				// prevValue={prevWeek.totalMins}
+				// curValue={currentWeek.totalMins}
+			/>
+			<DiffSummary
+				title="Reps"
+				label="reps"
+				iconName="weight"
+				prevValue={32}
+				curValue={18}
+				// date={subDays(new Date(), 1)}
+				// prevValue={prevWeek.totalReps}
+				// curValue={currentWeek.totalReps}
+			/>
+			<DiffSummary
+				title="Steps"
+				label="steps"
+				iconName="steps"
+				prevValue={32}
+				curValue={33}
+				date={subDays(new Date(), 1)}
+				// prevValue={prevWeek.totalSteps}
+				// curValue={currentWeek.totalSteps}
+			/>
+			<DiffSummary
+				title="Miles"
+				label="miles"
+				iconName="miles"
+				prevValue={32}
+				curValue={46}
+				date={subDays(new Date(), 1)}
+				// prevValue={prevWeek.totalMiles}
+				// curValue={currentWeek.totalMiles}
+			/>
+		</>
 	);
 };
 
@@ -117,19 +67,92 @@ type CardLGProps = {
 const CardLG = ({ title, children }: CardLGProps) => {
 	return (
 		<div className={styles.CardLG}>
-			<div className={styles.CardLG_title}>{title}</div>
+			{/* <div className={styles.CardLG_title}>{title}</div> */}
 			<div className={styles.CardLG_inner}>{children}</div>
 		</div>
 	);
 };
 
-const SummaryWeekView = () => {
+type MainCardProps = {
+	title: string;
+	children?: ReactNode;
+	details?: string;
+};
+
+const MainCard = ({ title, children, details }: MainCardProps) => {
+	const [collapsed, setCollapsed] = useState<boolean>(false);
+	const iconCss = {
+		transition: "all .3s linear",
+		transform: collapsed ? "rotate(-90deg)" : "initial",
+	};
+
+	const toggleCollapse = () => {
+		setCollapsed(!collapsed);
+	};
+	return (
+		<div className={styles.MainCard} data-main-collapsed={collapsed}>
+			<div className={styles.MainCard_top}>
+				<h4 className={styles.MainCard_top_title}>
+					<svg className={styles.MainCard_top_title_icon}>
+						<use xlinkHref={`${sprite}#icon-history`}></use>
+					</svg>
+					<span>{title}</span>
+				</h4>
+				<button
+					type="button"
+					onClick={toggleCollapse}
+					className={styles.MainCard_top_goTo}
+				>
+					<svg className={styles.MainCard_top_goTo_icon} style={iconCss}>
+						<use xlinkHref={`${sprite}#icon-keyboard_arrow_down`}></use>
+					</svg>
+				</button>
+			</div>
+			{!collapsed && (
+				<div className={styles.MainCard_main}>
+					<div className={styles.MainCard_main_graph}>{children}</div>
+					<div className={styles.MainCard_main_details}>{details}</div>
+				</div>
+			)}
+		</div>
+	);
+};
+
+const summaryData = {
+	currentWeekTotals: {
+		mins: 46,
+		reps: 118,
+		steps: 2802,
+		miles: 6.03,
+		dayTotals: [],
+		streak: [],
+	},
+	prevWeekTotals: {
+		mins: 15,
+		reps: 97,
+		steps: 4811,
+		miles: 4.03,
+		dayTotals: [],
+		streak: [],
+	},
+};
+
+const getRangeMsg = (range: CustomDateRange) => {
+	return "Showing last week & this week";
+};
+
+const SummaryWeekView = ({ range }) => {
+	const rangeMsg = getRangeMsg(range);
 	return (
 		<div className={styles.SummaryWeekView}>
-			<div className={styles.SummaryWeekView_row}>
-				<CardLG title="Week">{dummy1}</CardLG>
-				<CardLG title="Progress">{dummy1}</CardLG>
-			</div>
+			{/* LEFT */}
+			<MainCard title="Weekly Mins." details={rangeMsg}>
+				<DiffWeekSummary />
+			</MainCard>
+			<CardLG title="Week">
+				<SummaryTotals />
+				{/* <WeekStreak /> */}
+			</CardLG>
 		</div>
 	);
 };

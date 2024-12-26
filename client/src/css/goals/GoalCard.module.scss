@@ -1,0 +1,19 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.GoalCard {
+	width: 30rem;
+	height: 15rem;
+	border-radius: 1rem;
+	border: $borderLight;
+
+	&_wrapper {
+		@include fill_container;
+		@include rowCenter;
+
+		&_svg {
+			border: 1px solid red;
+		}
+	}
+}

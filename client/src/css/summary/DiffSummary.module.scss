@@ -17,7 +17,8 @@ $width: 30rem;
 	border: $borderLight;
 	padding: 2rem;
 	padding-bottom: 1rem;
-	margin: 1rem 0;
+	background-color: $foreground;
+	background-color: var(--bg200);
 
 	&_top {
 		width: 100%;

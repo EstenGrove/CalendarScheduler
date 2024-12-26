@@ -15,8 +15,29 @@ app.get("/getDashboardSummary/:type", async (ctx: Context) => {
 	const param = ctx.req.param();
 	const { userID, startDate, endDate } = ctx.req.query();
 
+	// totals
+	const rangeTotals = (await summaryService.getTotalsInRange(userID, {
+		startDate: startDate,
+		endDate: endDate,
+	})) as RangeTotals[];
+
+	if (rangeTotals instanceof Error) {
+		const errResp = getResponseError(rangeTotals, {
+			weeklySummary: {},
+		});
+		return ctx.json(errResp);
+	}
+
 	const response = getResponseOk({
-		message: "",
+		currentWeek: {
+			...rangeTotals[0],
+			dayTotals: [],
+			streak: [],
+		},
+		prevWeek: {
+			dayTotals: [],
+			streak: [],
+		},
 	});
 
 	return ctx.json(response);

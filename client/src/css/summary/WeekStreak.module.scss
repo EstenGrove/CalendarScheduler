@@ -1,0 +1,81 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$size: 3.2rem;
+
+@mixin day() {
+	width: $size;
+	height: $size;
+	min-width: $size;
+	min-height: $size;
+	max-width: $size;
+	max-height: $size;
+	border-radius: 50%;
+
+	&_icon {
+		width: 2.5rem;
+		height: 2.5rem;
+	}
+}
+
+.WeekStreak {
+	width: 100%;
+	max-width: 35rem;
+	height: 8rem;
+	border-radius: 1rem;
+	border: $borderLight;
+
+	&_labels {
+		width: 100%;
+		@include flex_row(center, center);
+
+		&_day {
+			text-align: center;
+			width: calc(100% / 7);
+			height: 3rem;
+			font-size: 1.5rem;
+			color: $text2;
+		}
+	}
+
+	&_streak {
+		width: 100%;
+		@include flex_row(center, center);
+	}
+}
+
+.StreakDay {
+	@include day();
+	@include rowCenter();
+	background-color: $accentGreen;
+
+	&_icon {
+		fill: #fff;
+	}
+}
+.MissedDay {
+	@include day();
+
+	&_icon {
+		width: 3.5rem;
+		height: 3.5rem;
+		fill: $accentRed;
+	}
+}
+.FutureDay {
+	@include day();
+	background-color: var(--bg200);
+	@include rowCenter();
+
+	&_day {
+		font-size: 1.3rem;
+		color: $text1;
+	}
+}
+.Day {
+	width: calc(100% / 7);
+	height: 100%;
+	@include rowCenter();
+	text-align: center;
+}

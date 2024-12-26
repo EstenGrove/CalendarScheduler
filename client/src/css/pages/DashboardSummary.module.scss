@@ -4,7 +4,9 @@
 
 .DashboardSummary {
 	width: 100%;
-	overflow-y: hidden;
+	height: 100%;
+	max-height: 100dvh;
+	overflow-y: visible;
 
 	&_nav {
 		width: 100%;
@@ -15,7 +17,13 @@
 	}
 
 	&_main {
-		@include fill_container;
+		width: 100%;
+		min-height: fit-content;
+		// height: 100dvh;
+		// height: 75rem;
+		height: 82dvh;
 		overflow-y: scroll;
+		@include scrollbar;
+		// border: 2px solid red;
 	}
 }
