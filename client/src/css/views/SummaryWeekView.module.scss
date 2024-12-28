@@ -43,12 +43,9 @@
 	max-width: 100%;
 	height: 100%;
 	max-height: auto;
-	padding: 2rem;
+	padding: 1rem 2rem;
 	@include flex_row(flex-start, flex-start, wrap);
-	// display: grid;
-	// grid-template-columns: repeat(minmax(auto-fit, 1fr), minmax(65rem, 1fr));
-	// grid-template-rows: auto;
-	// grid-gap: 1rem;
+	gap: 0 1rem;
 	overflow-x: hidden;
 	overflow-y: auto;
 	@include scrollbar();
@@ -57,11 +54,9 @@
 		grid-column: 1 / 2;
 		grid-row: auto-fill;
 		background-color: #eaecef;
-		// @include flex_row(flex-start, flex-start, wrap);
 	}
 
 	&_group {
-		// @include flex_row(flex-start, flex-start, wrap);
 		display: flex;
 		gap: 1rem;
 	}
@@ -242,7 +237,7 @@ div[data-card-collapsed="true"] .LargeCard {
 		height: auto;
 		height: var(--mainCardMobileHeight);
 		max-height: 25rem;
-		margin: 2rem 0;
+		margin: 2rem 0 0 0;
 		border: $borderLight;
 
 		&_main {
@@ -251,6 +246,7 @@ div[data-card-collapsed="true"] .LargeCard {
 			&_graph {
 				height: 85%;
 				margin: 0 0;
+				padding: 0 0;
 				padding-bottom: 0;
 				@include flex_row(center, flex-end);
 				margin-top: auto;

@@ -1,3 +1,8 @@
+import type {
+	CustomRange,
+	RangeTotals,
+	RangeTotalsClient,
+} from "./SummaryService";
 import type { UserWorkoutPayload } from "./UserWorkoutService";
 
 export type WeekDayToken = "Su" | "Mo" | "Tu" | "We" | "Th" | "Fr" | "Sa";
@@ -340,6 +345,8 @@ export interface UserWorkoutEventClient {
 	tagColor: string | null;
 }
 
+// SUMMARY TYPES
+
 export interface MinsSummaryDB {
 	date: string;
 	total_mins: number;
@@ -351,6 +358,44 @@ export interface MinsSummaryClient {
 	totalMins: number;
 	weekday: string;
 	logCount: number;
+}
+
+export interface RangeSummary {
+	totalMins: number;
+	totalReps: number;
+	totalMiles: number;
+	totalSteps: number;
+	totalNumOfWorkouts: number;
+	totalNumOfWorkoutTypes: number;
+}
+
+export interface CustomDateRange {
+	startDate: string;
+	endDate: string;
+}
+
+export interface StreakDayDB {
+	day: Date | string;
+	is_completed: boolean | null;
+}
+export interface StreakDayClient {
+	day: Date | string;
+	isCompleted: boolean | null;
+}
+
+export interface DiffSummaryByWeek {
+	currentWeek: {
+		dateRange: CustomRange;
+		totals: RangeTotalsClient;
+		perDayTotals: MinsSummaryClient[];
+		perDayStreak: StreakDayClient[];
+	};
+	prevWeek: {
+		dateRange: CustomRange;
+		totals: RangeTotalsClient;
+		perDayTotals: MinsSummaryClient[];
+		perDayStreak: StreakDayClient[];
+	};
 }
 
 export interface UserWorkoutDB {

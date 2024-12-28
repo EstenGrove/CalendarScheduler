@@ -85,7 +85,7 @@ const DiffWeekSummary = ({ data = dummy }: Props) => {
 				{lastWeek.map((lastDay, idx) => {
 					const thisDay: number = thisWeek[idx];
 					return (
-						<GroupedDays>
+						<GroupedDays key={`GROUPED:${lastDay}`}>
 							<WeekDayBar
 								key={`LAST-WEEK:${lastDay}--${idx}`}
 								value={lastDay}

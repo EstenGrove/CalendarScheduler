@@ -70,6 +70,10 @@ const API_ENDPOINTS = {
 		getDailyMins: "/summary/getDailyMinsSummary",
 		getWeeklyTotals: "/summary/getWeeklyTotals",
 		getRangeSummary: "/summary/getRangeSummary",
+		getSummaryByDay: "/summary/getSummaryByDay",
+		getSummaryByWeek: "/summary/getSummaryByWeek",
+		getSummaryByMonth: "/summary/getSummaryByMonth",
+		getSummaryByYear: "/summary/getSummaryByYear",
 	},
 } as const;
 

@@ -19,11 +19,11 @@
 	&_main {
 		width: 100%;
 		min-height: fit-content;
-		// height: 100dvh;
-		// height: 75rem;
-		height: 82dvh;
+		height: calc(100dvh - var(--mobileHeader));
+		// height: calc(100dvh - 22rem);
+		padding-bottom: 1rem;
+		margin-bottom: 4rem;
 		overflow-y: scroll;
 		@include scrollbar;
-		// border: 2px solid red;
 	}
 }

@@ -12,7 +12,7 @@ type Props = {
 	curValue: number;
 	label: string | number;
 	scoreColor?: string;
-	date?: Date | string;
+	date: Date | string | null;
 };
 
 type BadgeProps = {
@@ -158,11 +158,10 @@ const DiffSummary = ({
 	label = "mins.",
 	prevValue = 20,
 	curValue = 40,
-	date,
+	date = null,
 	goTo,
 	iconName = "time",
-}: // scoreColor,
-Props) => {
+}: Props) => {
 	const icon = icons[iconName as keyof object];
 
 	const handleGoTo = () => {

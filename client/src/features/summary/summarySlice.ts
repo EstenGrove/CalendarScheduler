@@ -3,6 +3,8 @@ import {
 	DailyMinsSummary,
 	DailyMinsSummaryList,
 	RangeSummary,
+	SummaryWeek,
+	SummaryWeekData,
 	WeeklyTotals,
 } from "./types";
 import {
@@ -12,6 +14,7 @@ import {
 	RangeSummaryResp,
 	WeeklyTotalsResp,
 	DailySummaryResp,
+	fetchSummaryByWeek,
 } from "./operations";
 import { TStatus } from "../types";
 import { RootState } from "../../store/store";
@@ -41,6 +44,14 @@ export interface SummarySlice {
 		perDay: DailyMinsSummaryList;
 		summary: RangeSummary;
 	};
+	diffByWeek: {
+		status: TStatus;
+		currentWeek: SummaryWeek | null;
+		prevWeek: SummaryWeek | null;
+	};
+	// diffByDay: null;
+	// diffByMonth: null;
+	// diffByYear: null;
 }
 
 const initialState: SummarySlice = {
@@ -79,6 +90,11 @@ const initialState: SummarySlice = {
 			totalNumOfWorkoutTypes: 0,
 		},
 		status: "IDLE",
+	},
+	diffByWeek: {
+		status: "IDLE",
+		currentWeek: null,
+		prevWeek: null,
 	},
 };
 
@@ -128,6 +144,22 @@ const summarySlice = createSlice({
 					state.rangeSummary.endDate = action.payload.dateRange.endDate;
 				}
 			);
+
+		// Diff Summary by Week
+		builder
+			.addCase(fetchSummaryByWeek.pending, (state: SummarySlice) => {
+				state.diffByWeek.status = "PENDING";
+			})
+			.addCase(
+				fetchSummaryByWeek.fulfilled,
+				(state: SummarySlice, action: PayloadAction<SummaryWeekData>) => {
+					const { currentWeek, prevWeek } = action.payload;
+
+					state.diffByWeek.status = "FULFILLED";
+					state.diffByWeek.currentWeek = currentWeek;
+					state.diffByWeek.prevWeek = prevWeek;
+				}
+			);
 	},
 });
 
@@ -163,5 +195,7 @@ export const selectDailySummary = (state: RootState) => {
 export const selectWeeklySummary = (state: RootState) => {
 	return state.summary.weeklySummary.summary;
 };
+
+// DIFF SUMMARY BY (DAY|WEEK|MONTH|YEAR|CUSTOM)
 
 export default summarySlice.reducer;

@@ -1,4 +1,15 @@
-import { format, formatDistanceToNow, parse, set } from "date-fns";
+import {
+	endOfMonth,
+	endOfWeek,
+	endOfYear,
+	format,
+	formatDistanceToNow,
+	parse,
+	set,
+	startOfMonth,
+	startOfWeek,
+	startOfYear,
+} from "date-fns";
 import { WeekDay } from "../features/summary/types";
 
 const WEEK_DAYS: WeekDay[] = [
@@ -237,6 +248,25 @@ const formatDateAsWeekDay = (
 	return weekday;
 };
 
+const getWeekStartAndEnd = (base: Date | string = new Date()) => {
+	const startDate = startOfWeek(base);
+	const endDate = endOfWeek(base);
+
+	return { startDate, endDate };
+};
+const getMonthStartAndEnd = (base: Date | string = new Date()) => {
+	const startDate = startOfMonth(base);
+	const endDate = endOfMonth(base);
+
+	return { startDate, endDate };
+};
+const getYearStartAndEnd = (base: Date | string = new Date()) => {
+	const startDate = startOfYear(base);
+	const endDate = endOfYear(base);
+
+	return { startDate, endDate };
+};
+
 export {
 	MONTHS,
 	WEEK_DAYS,
@@ -257,4 +287,7 @@ export {
 	applyTimeStrToDate,
 	getDistanceToNow,
 	formatDateAsWeekDay,
+	getWeekStartAndEnd,
+	getMonthStartAndEnd,
+	getYearStartAndEnd,
 };

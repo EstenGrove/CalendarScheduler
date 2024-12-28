@@ -1,61 +1,63 @@
 import { endOfWeek, startOfWeek, subWeeks } from "date-fns";
 import { summaryService } from "../services";
+import type { RangeTotals } from "../services/SummaryService";
+import type { MinsSummaryDB, StreakDayDB } from "../services/types";
+import { formatDate } from "./dates";
+import type { SummaryByWeekDB, SummaryWeekDB } from "./types";
 
 export interface SummaryArgs {
 	startDate: string;
 	endDate: string;
 }
 
-const getSummaryWeekData = async (userID: string, params: SummaryArgs) => {
+// Gets mins, totals & streak for a given week & the week prior
+const getSummaryWeekData = async (
+	userID: string,
+	params: SummaryArgs
+): Promise<SummaryByWeekDB | unknown> => {
 	// target week range (start/end)
-	const weekStart = startOfWeek(params.startDate);
-	const weekEnd = endOfWeek(params.endDate);
-
+	const weekStart = params.startDate; // YYYY--MM-DD
+	const weekEnd = params.endDate;
 	// prev week range (start/end)
 	const prevWeekStart = startOfWeek(subWeeks(weekStart, 1));
 	const prevWeekEnd = endOfWeek(prevWeekStart);
 
-	// current week data
-	const weekTotals = await summaryService.getTotalsInRange(userID, {
-		startDate: weekStart.toString(),
-		endDate: weekEnd.toString(),
-	});
-	const weeklyMins = await summaryService.getDailyMins(userID, {
-		startDate: weekStart.toString(),
-		endDate: weekEnd.toString(),
-	});
-
-	// prev week data
-	const prevWeekTotals = await summaryService.getTotalsInRange(userID, {
-		startDate: prevWeekStart.toString(),
-		endDate: prevWeekEnd.toString(),
-	});
-	const prevWeeklyMins = await summaryService.getDailyMins(userID, {
-		startDate: prevWeekStart.toString(),
-		endDate: prevWeekEnd.toString(),
-	});
+	const prevStart = formatDate(prevWeekStart, "db");
+	const prevEnd = formatDate(prevWeekEnd, "db");
 
 	const weekData = await getSummaryWeek(userID, {
-		startDate: weekStart.toString(),
-		endDate: weekEnd.toString(),
+		startDate: weekStart,
+		endDate: weekEnd,
 	});
 	const prevData = await getSummaryWeek(userID, {
-		startDate: weekStart.toString(),
-		endDate: weekEnd.toString(),
+		startDate: prevStart,
+		endDate: prevEnd,
 	});
+
+	return {
+		currentWeek: weekData,
+		prevWeek: prevData,
+	};
 };
 
-const getSummaryWeek = async (userID: string, params: SummaryArgs) => {
+const getSummaryWeek = async (
+	userID: string,
+	params: SummaryArgs
+): Promise<SummaryWeekDB | unknown> => {
 	try {
-		const data = await Promise.all([
+		const [dailyMins, rangeTotals, weeklyStreak] = await Promise.all([
 			summaryService.getDailyMins(userID, params),
 			summaryService.getTotalsInRange(userID, params),
+			summaryService.getWeeklyStreak(userID, params),
 		]);
 		return {
-			dayTotals: data[0],
-			rangeTotals: data[1],
+			dailyMins: dailyMins as MinsSummaryDB[],
+			rangeTotals: rangeTotals as RangeTotals,
+			weeklyStreak: weeklyStreak as StreakDayDB[],
 		};
 	} catch (error) {
 		throw error;
 	}
 };
+
+export { getSummaryWeek, getSummaryWeekData };

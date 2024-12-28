@@ -1,4 +1,12 @@
-import { format, parse, set } from "date-fns";
+import {
+	format,
+	parse,
+	set,
+	startOfMonth,
+	endOfMonth,
+	startOfWeek,
+	endOfWeek,
+} from "date-fns";
 
 export interface ConvertTimeArgs {
 	formatToken: string;
@@ -144,6 +152,25 @@ const applyTimeStrToDate = (time: string, date: Date | string) => {
 	return withTime;
 };
 
+const getWeekStartAndEnd = (date: Date = new Date()) => {
+	const startDate = startOfWeek(date);
+	const endDate = endOfWeek(date);
+
+	return {
+		startDate,
+		endDate,
+	};
+};
+const getMonthStartAndEnd = (date: Date = new Date()) => {
+	const startDate = startOfMonth(date);
+	const endDate = endOfMonth(date);
+
+	return {
+		startDate,
+		endDate,
+	};
+};
+
 export {
 	// DATE & TIME TOKENS (formatting)
 	FORMAT_TOKENS,
@@ -159,4 +186,5 @@ export {
 	parseDate,
 	parseDateTime,
 	applyTimeStrToDate,
+	getWeekStartAndEnd,
 };

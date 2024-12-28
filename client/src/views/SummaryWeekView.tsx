@@ -1,9 +1,22 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/views/SummaryWeekView.module.scss";
 import { subDays } from "date-fns";
-import { CustomDateRange, SummaryWeekData } from "../features/summary/types";
+import { SummaryWeekData } from "../features/summary/types";
+import {
+	getDiffWeekRangesFromBase,
+	getSummaryByWeek,
+} from "../utils/utils_summary";
+import { formatDate, getWeekStartAndEnd } from "../utils/utils_dates";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../features/user/userSlice";
 // components
+import {
+	FiltersButton,
+	QuickFilterButton,
+	SummaryViewFilters,
+} from "../components/filters/SummaryViewFilters";
+import Modal from "../components/shared/Modal";
 import DiffSummary from "../components/summary/DiffSummary";
 import DiffWeekSummary from "../components/summary/DiffWeekSummary";
 import WeekStreak from "../components/summary/WeekStreak";
@@ -137,22 +150,64 @@ const summaryData = {
 	},
 };
 
-const getRangeMsg = (range: CustomDateRange) => {
-	return "Showing last week & this week";
-};
+const SummaryWeekView = () => {
+	const currentUser = useSelector(selectCurrentUser);
+	const [showFilters, setShowFilters] = useState(false);
 
-const SummaryWeekView = ({ range }) => {
-	const rangeMsg = getRangeMsg(range);
+	const getThisWeek = () => {
+		// fetch data
+	};
+
+	const openFilters = () => {
+		setShowFilters(true);
+	};
+	const closeFilters = () => {
+		setShowFilters(false);
+	};
+
+	// fetch summary week data
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) return;
+
+		const getData = async () => {
+			const { userID } = currentUser;
+			const base = new Date();
+			const ranges = getDiffWeekRangesFromBase(base);
+			console.log("ranges", ranges);
+		};
+
+		if (currentUser) {
+			getData();
+		}
+
+		return () => {
+			isMounted = false;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<div className={styles.SummaryWeekView}>
+			<SummaryViewFilters>
+				<QuickFilterButton onClick={getThisWeek}>This Week</QuickFilterButton>
+				<FiltersButton onClick={openFilters}>Filters</FiltersButton>
+			</SummaryViewFilters>
 			{/* LEFT */}
-			<MainCard title="Weekly Mins." details={rangeMsg}>
+			<MainCard title="Weekly Mins." details={"Showing last week & this week"}>
 				<DiffWeekSummary />
 			</MainCard>
 			<CardLG title="Week">
 				<SummaryTotals />
 				{/* <WeekStreak /> */}
 			</CardLG>
+
+			{showFilters && (
+				<Modal title="Filters" closeModal={closeFilters}>
+					{/*  */}
+					{/*  */}
+				</Modal>
+			)}
 		</div>
 	);
 };

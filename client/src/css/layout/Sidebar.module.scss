@@ -12,7 +12,7 @@ $topListHeight: 70%;
 	min-height: 100dvh;
 	max-height: 100dvh;
 	border-right: 1px solid var(--blueGrey800);
-	// overflow: hidden;
+	background-color: var(--bg100);
 	padding: 8rem 0.2rem;
 	padding-bottom: 2rem;
 	@include flex_col(flex-start, center);

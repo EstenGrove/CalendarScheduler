@@ -1,59 +1,87 @@
-import React from "react";
+import { useState } from "react";
 import styles from "../../css/goals/GoalCard.module.scss";
+import sprite from "../../assets/icons/calendar.svg";
+import ProgressCircle from "../ui/ProgressCircle";
 
-type Props = { percentage: number };
+type Props = {
+	title: string;
+	percentage: number;
+	details?: string | null;
+	size?: number;
+	color?: string;
+	trackColor?: string;
+	showText?: boolean;
+	iconName?: keyof typeof icons;
+};
 
-// const arc = (
-// 	<svg width={200} height={200} viewBox="200 200">
-// 		<circle
-// 			cx="50"
-// 			cy="50"
-// 			r={radius}
-// 			fill="none"
-// 			stroke="#e0e0e0"
-// 			strokeWidth="10"
-// 		/>
-// 		<circle
-// 			cx="50"
-// 			cy="50"
-// 			r={radius}
-// 			fill="none"
-// 			stroke="#007bff"
-// 			strokeWidth="10"
-// 			strokeDasharray={circumference}
-// 			strokeDashoffset={strokeDashoffset}
-// 		/>
-// 	</svg>
-// );
+// 0% => 565px
+// 20% => 452px
+// 100% => 0px
 
-const GoalCard = ({ percentage = 42 }: Props) => {
-	const radius = 50;
-	const circumference = 2 * Math.PI * radius;
-	const strokeDashoffset = circumference - (percentage / 100) * circumference;
+const icons = {
+	diff: "waterfall_chart",
+	insights: "insights",
+	time: "timer",
+	week: "date_range",
+	calendar: "event_note",
+	weight: "fitness_center",
+	steps: "directions_walk",
+	miles: "directions_run",
+} as const;
+
+const GoalCard = ({
+	title = "Stats",
+	details = null,
+	iconName = "calendar",
+	percentage = 72,
+	size = 150,
+	color = "var(--accent-blue)",
+	trackColor = "var(--blueGrey800)",
+	showText = true,
+}: Props) => {
+	const icon = icons[iconName as keyof object];
+	const [collapsed, setCollapsed] = useState<boolean>(false);
+	const iconCss = {
+		transition: "all .3s linear",
+		transform: collapsed ? "rotate(-90deg)" : "initial",
+	};
+
+	const toggleCollapse = () => {
+		setCollapsed(!collapsed);
+	};
 	return (
 		<div className={styles.GoalCard}>
-			<div className={styles.GoalCard_wrapper}>
-				<svg
-					className={styles.GoalCard_wrapper_svg}
-					viewBox="0 0 150 150"
-					width={125}
-					height={125}
+			<div className={styles.GoalCard_top}>
+				<h4 className={styles.GoalCard_top_title}>
+					<svg className={styles.GoalCard_top_title_icon}>
+						<use xlinkHref={`${sprite}#icon-${icon}`}></use>
+					</svg>
+					<span>{title}</span>
+				</h4>
+				<button
+					type="button"
+					onClick={toggleCollapse}
+					className={styles.GoalCard_top_goTo}
 				>
-					<circle
-						cx={75}
-						cy={75}
-						r={50}
-						stroke="green"
-						strokeWidth={6}
-						fill="none"
-						// pathLength={100}
-						pathLength={50}
-						transform="rotate(-60 75, 75)"
-					/>
-				</svg>
+					<svg className={styles.GoalCard_top_goTo_icon} style={iconCss}>
+						<use xlinkHref={`${sprite}#icon-keyboard_arrow_down`}></use>
+					</svg>
+				</button>
 			</div>
-			{/*  */}
-			{/*  */}
+			{!collapsed && (
+				<div className={styles.GoalCard_wrapper}>
+					<div className={styles.GoalCard_wrapper_main}>
+						<ProgressCircle
+							percentage={percentage}
+							size={size}
+							color={color}
+							trackColor={trackColor}
+							showText={showText}
+						/>
+					</div>
+					<div className={styles.GoalCard_wrapper_details}>{details}</div>
+				</div>
+			)}
 		</div>
 	);
 };
