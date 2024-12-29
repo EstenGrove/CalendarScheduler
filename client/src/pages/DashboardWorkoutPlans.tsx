@@ -1,9 +1,7 @@
 import React from "react";
 import styles from "../css/pages/DashboardWorkoutPlans.module.scss";
 
-type Props = {};
-
-const DashboardWorkoutPlans = ({}: Props) => {
+const DashboardWorkoutPlans = () => {
 	return (
 		<div className={styles.DashboardWorkoutPlans}>
 			{/*  */}

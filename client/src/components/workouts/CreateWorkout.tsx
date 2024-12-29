@@ -218,11 +218,6 @@ const CreateWorkout = ({ currentUser, closeModal }: Props) => {
 				/>
 			)}
 			{/* EXISTING PLAN FORM */}
-
-			{/*  */}
-			{/*  */}
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

@@ -67,58 +67,8 @@ const CreateWorkoutPlan = ({
 	handleCheckbox,
 	handleSelect,
 }: Props) => {
-	const handleWorkoutType = (name: string, type: WorkoutType) => {
-		return handleSelect && handleSelect(name, type.workoutType);
-	};
-
 	return (
 		<div className={styles.CreateWorkoutPlan}>
-			<div className={styles.CreateWorkoutPlan_row}>
-				<h2>Select a workout</h2>
-				<WorkoutTypesMenu
-					values={values}
-					selectWorkoutType={handleWorkoutType}
-				/>
-			</div>
-			<div className={styles.CreateWorkoutPlan_row}>
-				<h2>Add a name for the workout plan</h2>
-				<TextInput
-					name="workoutPlanName"
-					id="workoutPlanName"
-					value={values.workoutPlanName}
-					onChange={handleChange}
-				/>
-			</div>
-			<div className={styles.CreateWorkoutPlan_row}>
-				<h2>Select a weight (lbs.)</h2>
-				<CounterInput
-					name="workoutPlanWeight"
-					id="workoutPlanWeight"
-					step={5}
-					min={0}
-					max={100}
-					value={values.workoutPlanWeight}
-					onChange={handleChange}
-				/>
-			</div>
-			<div className={styles.CreateWorkoutPlan_row}>
-				<h2>Number of reps per set</h2>
-				<CounterInput
-					name="workoutPlanReps"
-					id="workoutPlanReps"
-					value={values.workoutPlanReps}
-					onChange={handleChange}
-				/>
-			</div>
-			<div className={styles.CreateWorkoutPlan_row}>
-				<h2>Number of sets</h2>
-				<CounterInput
-					name="workoutPlanSets"
-					id="workoutPlanSets"
-					value={values.workoutPlanSets}
-					onChange={handleChange}
-				/>
-			</div>
 			{/*  */}
 			{/*  */}
 			{/*  */}
