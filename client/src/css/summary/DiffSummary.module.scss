@@ -138,6 +138,9 @@ $width: 30rem;
 .DecreaseBadge {
 	@include diffBadge($decreaseAccent);
 }
+.NoChangeBadge {
+	@include diffBadge(var(--blueGrey700));
+}
 
 div[data-summary-collapsed="true"] {
 	height: 0;

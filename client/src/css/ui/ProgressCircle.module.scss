@@ -9,8 +9,8 @@
 	&_text {
 		font-size: 4.5rem;
 	}
-}
 
-// svg > circle#progress {
-// 	transition: stroke-dashoffset 0.7s ease-in-out;
-// }
+	&_progress {
+		box-shadow: 10px 3px 31px 0px rgba(0, 0, 0, 0.75);
+	}
+}

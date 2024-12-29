@@ -25,11 +25,13 @@ const routePaths = {
 	tracker: "./pages/DashboardWorkoutTracker",
 	settings: "./pages/DashboardSettings.tsx",
 	summary: "./pages/DashboardSummary.tsx",
+	logs: "./pages/DashboardWorkoutLogs.tsx",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
 const LazyDashboardWorkouts = lazy(() => import(routePaths.workouts));
 const LazyDashboardWorkoutHistory = lazy(() => import(routePaths.history));
+const LazyDashboardWorkoutLogs = lazy(() => import(routePaths.logs));
 const LazyDashboardLayout = lazy(() => import(routePaths.dashboardLayout));
 const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
 const LazyDashboardCalendarLayout = lazy(
@@ -88,6 +90,14 @@ function App() {
 										element={
 											<Suspense>
 												<LazyDashboardWorkoutHistory />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="logs"
+										element={
+											<Suspense>
+												<LazyDashboardWorkoutLogs />
 											</Suspense>
 										}
 									/>

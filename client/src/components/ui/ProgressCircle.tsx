@@ -1,12 +1,43 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "../../css/ui/ProgressCircle.module.scss";
 
+type ColorType = "blue" | "purple" | "green" | "primary";
+
 type Props = {
 	percentage: number;
 	size?: number;
-	color?: string;
+	color?: ColorType;
 	trackColor?: string;
 	showText?: boolean;
+};
+
+const accents = {
+	blue: {
+		main: "var(--accent-blue)",
+		start: "var(--blueTint200)",
+		stop: "var(--accent-blue)",
+	},
+	purple: {
+		main: "var(--accent-purple)",
+		start: "var(--purple200)",
+		stop: "var(--accent-purple)",
+	},
+	green: {
+		main: "var(--accent-green)",
+		start: "var(--green200)",
+		stop: "var(--accent-green)",
+	},
+	primary: {
+		main: "var(--accent)",
+		start: "var(--accentTint200)",
+		stop: "var(--accent)",
+	},
+};
+
+const getGradients = (color: ColorType) => {
+	const group = accents[color];
+
+	return group;
 };
 
 const range = {
@@ -15,6 +46,10 @@ const range = {
 };
 
 const getProgressFromPercent = (percent: number) => {
+	// if (percent > 100) {
+	// 	return 0;
+	// }
+
 	const rangeMax = range.max; // The value corresponding to 0%
 	const progress = rangeMax - percent * (rangeMax / 100);
 	return progress;
@@ -25,10 +60,13 @@ const initial = 565.48;
 const ProgressCircle = ({
 	percentage = 0,
 	size = 200,
-	color = "var(--accent)",
+	color = "purple",
 	trackColor = "var(--blueGrey800)",
 	showText = true,
 }: Props) => {
+	const gradientId = "progress-bar";
+	const gradients = getGradients(color);
+	const circum = 2 * Math.PI * 90;
 	const circleRef = useRef<SVGCircleElement>(null);
 	const [offset, setOffset] = useState(initial);
 
@@ -61,10 +99,37 @@ const ProgressCircle = ({
 				style={{ transform: "rotate(-90deg)" }}
 			>
 				<defs>
-					<linearGradient id="progress" x1="0%" y1="0%" x2="100%" y2="100%">
-						<stop offset="0%" stopColor="#4caf50" />
-						<stop offset="100%" stopColor="#1e88e5" />
+					<linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+						<stop offset="100%" stopColor={gradients.stop} />
+						<stop offset="0%" stopColor={gradients.start} />
 					</linearGradient>
+
+					<filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+						<feDropShadow
+							dx="0"
+							dy="0"
+							stdDeviation="6"
+							floodColor="rgba(0, 0, 0, 0.9)"
+						/>
+					</filter>
+
+					{/* Mask to show shadow only at the leading edge */}
+					<mask id="leading-edge-mask">
+						<rect width="100%" height="100%" fill="white" />
+						<circle
+							r={90}
+							cx="100"
+							cy="100"
+							fill="none"
+							stroke="black"
+							strokeWidth="16px"
+							strokeLinecap="round"
+							strokeDasharray={`${circum} ${circum}`}
+							style={{
+								strokeDashoffset: offset,
+							}}
+						/>
+					</mask>
 				</defs>
 
 				<circle
@@ -76,30 +141,51 @@ const ProgressCircle = ({
 					stroke={trackColor}
 					strokeWidth="16px"
 					className={styles.ProgressCircle_track}
-				></circle>
+				/>
 				<circle
 					ref={circleRef}
 					id="progress"
 					r="90"
 					cx="100"
 					cy="100"
-					stroke={color}
+					stroke={`url(#${gradientId})`}
 					strokeWidth="16px"
 					strokeLinecap="round"
 					fill="transparent"
-					strokeDasharray="565.48px"
 					className={styles.ProgressCircle_progress}
+					// strokeDasharray="565.48px"
+					strokeDasharray={`${circum} ${circum}`}
 					style={{
 						strokeDashoffset: offset + "px",
 						transition: "stroke-dashoffset 0.5s ease-in-out",
 					}}
-				></circle>
+				/>
+
+				{percentage > 100 && (
+					<circle
+						r={90}
+						cx="100"
+						cy="100"
+						fill="transparent"
+						stroke={`url(#${gradientId})`} // Second progress ring color
+						strokeWidth="16px"
+						strokeLinecap="round"
+						strokeDasharray={`${circum} ${circum}`}
+						style={{
+							strokeDashoffset: circum - ((percentage % 100) / 100) * circum,
+							transition: "stroke-dashoffset 0.7s ease-in-out",
+							filter: "url(#shadow)",
+							// mask: "url(#leading-edge-mask)",
+						}}
+						mask="url(#leading-edge-mask)"
+					/>
+				)}
 
 				{showText && (
 					<text
 						x="72px"
 						y="115px"
-						fill={color}
+						fill={gradients.main}
 						fontWeight="bold"
 						style={{
 							transform: "rotate(90deg) translate(30px, -196px)",

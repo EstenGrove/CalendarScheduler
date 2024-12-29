@@ -3,7 +3,7 @@ import { summaryService } from "../services";
 import type { RangeTotals } from "../services/SummaryService";
 import type { MinsSummaryDB, StreakDayDB } from "../services/types";
 import { formatDate } from "./dates";
-import type { SummaryByWeekDB, SummaryWeekDB } from "./types";
+import type { SummaryByWeekDB, SummaryDayDB, SummaryWeekDB } from "./types";
 
 export interface SummaryArgs {
 	startDate: string;
@@ -39,7 +39,6 @@ const getSummaryWeekData = async (
 		prevWeek: prevData,
 	};
 };
-
 const getSummaryWeek = async (
 	userID: string,
 	params: SummaryArgs
@@ -60,4 +59,24 @@ const getSummaryWeek = async (
 	}
 };
 
-export { getSummaryWeek, getSummaryWeekData };
+// Gets summary mins, totals
+const getSummaryDay = async (
+	userID: string,
+	params: SummaryArgs
+): Promise<SummaryDayDB | unknown> => {
+	try {
+		const [dailyMins, rangeTotals] = await Promise.all([
+			summaryService.getDailyMins(userID, params),
+			summaryService.getTotalsInRange(userID, params),
+		]);
+
+		return {
+			dailyMins: dailyMins as MinsSummaryDB[],
+			rangeTotals: rangeTotals as RangeTotals,
+		};
+	} catch (error) {
+		return error;
+	}
+};
+
+export { getSummaryWeek, getSummaryWeekData, getSummaryDay };

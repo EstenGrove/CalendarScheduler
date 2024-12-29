@@ -228,6 +228,23 @@ export interface NewWorkoutPlanPayload {
 	steps?: number;
 	miles?: number;
 }
+export interface CreateHistoryEntryValues {
+	userID: string;
+	workoutID: number;
+	date: Date | string;
+	mins: number;
+	startTime: Date | string;
+	endTime: Date | string;
+}
+
+export interface MarkHistoryEntryValues {
+	userID: string;
+	workoutID: number;
+	isCompleted: boolean;
+	date: Date | string;
+	startTime: Date | string;
+	endTime: Date | string;
+}
 
 export interface CreateLogValues {
 	workoutTypeID: number;

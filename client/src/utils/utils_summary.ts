@@ -6,7 +6,7 @@ import {
 } from "../features/summary/types";
 import { AsyncResponse } from "../features/types";
 import { currentEnv, summaryApis } from "./utils_env";
-import { getWeekStartAndEnd } from "./utils_dates";
+import { formatDate, getWeekStartAndEnd } from "./utils_dates";
 
 const getDailyMinsSummary = async (
 	userID: string,
@@ -141,8 +141,14 @@ const getDiffWeekRangesFromBase = (base: Date | string = new Date()) => {
 	const lastWeek = getWeekStartAndEnd(lastWeekBase);
 
 	return {
-		currentWeek: thisWeek,
-		prevWeek: lastWeek,
+		currentWeek: {
+			startDate: formatDate(thisWeek.startDate, "db"),
+			endDate: formatDate(thisWeek.endDate, "db"),
+		},
+		prevWeek: {
+			startDate: formatDate(lastWeek.startDate, "db"),
+			endDate: formatDate(lastWeek.endDate, "db"),
+		},
 	};
 };
 

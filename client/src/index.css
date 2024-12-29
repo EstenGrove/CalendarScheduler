@@ -8,6 +8,7 @@
 	/* Theme/Color Variables */
 	--bg-body: rgb(234, 236, 239);
 	--main-accent: rgb(124, 58, 237);
+	/* --main-accent: #7c3aed; */
 	--accent-green: rgb(0, 226, 189);
 	/* --accent-green: #00e2bd; */
 	--accent-bright-red: rgb(255, 0, 102);
@@ -76,6 +77,29 @@
 	--greenShade800: #ccf9f2;
 	--greenShade900: #e6fcf8;
 
+	/* Primary Accent (eg. --accent) Shades */
+
+	--accent100: #e6005c;
+	--accent200: #cc0052;
+	--accent300: #b30047;
+	--accent400: #99003d;
+	--accent500: #800033;
+	--accent600: #660029;
+	--accent700: #4c001f;
+	--accent800: #330014;
+	--accent900: #19000a;
+
+	/* Primary Accent Tints */
+	--accentTint100: #ff1a75;
+	--accentTint200: #ff3385;
+	--accentTint300: #ff4d94;
+	--accentTint400: #ff66a3;
+	--accentTint500: #ff80b3;
+	--accentTint600: #ff99c2;
+	--accentTint700: #ffb3d1;
+	--accentTint800: #ffcce0;
+	--accentTint900: #ffe6f0;
+
 	/* Purple Shades (accent: 1000|1100) */
 
 	--purple100: rgb(255, 255, 255);
@@ -134,6 +158,29 @@
 	--blue700: rgb(29, 78, 216);
 	--blue800: rgb(30, 64, 175);
 	--blue900: rgb(30, 58, 138);
+
+	/* Accent Blue Shades & Tints */
+
+	--accentBlue100: #0070e6;
+	--accentBlue200: #0063cc;
+	--accentBlue300: #0057b3;
+	--accentBlue400: #004a99;
+	--accentBlue500: #003e80;
+	--accentBlue600: #003266;
+	--accentBlue700: #00254c;
+	--accentBlue800: #001933;
+	--accentBlue900: #000c19;
+	/* Tints */
+	--blueTint100: #007cff;
+	--blueTint200: #1a89ff;
+	--blueTint300: #3396ff;
+	--blueTint400: #4da3ff;
+	--blueTint500: #66b0ff;
+	--blueTint600: #80beff;
+	--blueTint700: #99cbff;
+	--blueTint800: #b3d8ff;
+	--blueTint900: #cce5ff;
+	--blueTint1000: #e6f2ff;
 
 	/* BLUE-GREY SHADES */
 	--blueGrey50: rgb(248, 250, 252);

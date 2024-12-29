@@ -1,8 +1,8 @@
 import { ReactNode, useState, useEffect } from "react";
 import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/views/SummaryWeekView.module.scss";
-import { subDays } from "date-fns";
-import { SummaryWeekData } from "../features/summary/types";
+import { isSunday, subDays } from "date-fns";
+import { RangeSummary, SummaryWeekData } from "../features/summary/types";
 import {
 	getDiffWeekRangesFromBase,
 	getSummaryByWeek,
@@ -20,54 +20,55 @@ import Modal from "../components/shared/Modal";
 import DiffSummary from "../components/summary/DiffSummary";
 import DiffWeekSummary from "../components/summary/DiffWeekSummary";
 import WeekStreak from "../components/summary/WeekStreak";
+import { useAppDispatch } from "../store/store";
+import { fetchSummaryByWeek } from "../features/summary/operations";
+import {
+	selectSummaryByWeek,
+	SummarySlice,
+} from "../features/summary/summarySlice";
+import Loader from "../components/ui/Loader";
 
 type TotalsProps = {
-	currentWeek: SummaryWeekData["currentWeek"];
-	prevWeek: SummaryWeekData["prevWeek"];
+	currentWeek: RangeSummary;
+	prevWeek: RangeSummary;
 };
 
 const SummaryTotals = ({ currentWeek, prevWeek }: TotalsProps) => {
+	const isWeekStart = isSunday(new Date());
+	const dateStr = isWeekStart ? "New week" : "";
 	return (
 		<>
 			<DiffSummary
 				title="Mins."
 				label="mins."
 				iconName="time"
-				prevValue={17}
-				curValue={24}
-				// date={subDays(new Date(), 3)}
-				// prevValue={prevWeek.totalMins}
-				// curValue={currentWeek.totalMins}
+				prevValue={prevWeek.totalMins}
+				curValue={currentWeek.totalMins}
+				date={dateStr}
 			/>
 			<DiffSummary
 				title="Reps"
 				label="reps"
 				iconName="weight"
-				prevValue={32}
-				curValue={18}
-				// date={subDays(new Date(), 1)}
-				// prevValue={prevWeek.totalReps}
-				// curValue={currentWeek.totalReps}
+				prevValue={prevWeek.totalReps}
+				curValue={currentWeek.totalReps}
+				date={dateStr}
 			/>
 			<DiffSummary
 				title="Steps"
 				label="steps"
 				iconName="steps"
-				prevValue={32}
-				curValue={33}
-				date={subDays(new Date(), 1)}
-				// prevValue={prevWeek.totalSteps}
-				// curValue={currentWeek.totalSteps}
+				prevValue={prevWeek.totalSteps}
+				curValue={currentWeek.totalSteps}
+				date={dateStr}
 			/>
 			<DiffSummary
 				title="Miles"
 				label="miles"
 				iconName="miles"
-				prevValue={32}
-				curValue={46}
-				date={subDays(new Date(), 1)}
-				// prevValue={prevWeek.totalMiles}
-				// curValue={currentWeek.totalMiles}
+				prevValue={prevWeek.totalMiles}
+				curValue={currentWeek.totalMiles}
+				date={dateStr}
 			/>
 		</>
 	);
@@ -131,30 +132,44 @@ const MainCard = ({ title, children, details }: MainCardProps) => {
 	);
 };
 
-const summaryData = {
-	currentWeekTotals: {
-		mins: 46,
-		reps: 118,
-		steps: 2802,
-		miles: 6.03,
-		dayTotals: [],
-		streak: [],
-	},
-	prevWeekTotals: {
-		mins: 15,
-		reps: 97,
-		steps: 4811,
-		miles: 4.03,
-		dayTotals: [],
-		streak: [],
-	},
+interface Filters {
+	startDate: Date | string;
+	endDate: Date | string;
+}
+
+interface WeeklyMinsData {
+	thisWeek: number[];
+	lastWeek: number[];
+}
+const getWeeklyMins = (
+	diffSummary: SummarySlice["diffByWeek"]
+): WeeklyMinsData => {
+	const { currentWeek, prevWeek } = diffSummary;
+	const curMins = currentWeek?.dailyMins || [];
+	const prevMins = prevWeek?.dailyMins || [];
+	const currentWeekMins = curMins.map((day) => day.totalMins);
+	const prevWeekMins = prevMins.map((day) => day.totalMins);
+
+	return {
+		thisWeek: currentWeekMins,
+		lastWeek: prevWeekMins,
+	};
 };
 
 const SummaryWeekView = () => {
+	const dispatch = useAppDispatch();
 	const currentUser = useSelector(selectCurrentUser);
+	const diffSummary = useSelector(selectSummaryByWeek);
+	const weeklyMins = getWeeklyMins(diffSummary);
+	const curTotals = diffSummary.currentWeek?.rangeTotals as RangeSummary;
+	const prevTotals = diffSummary.prevWeek?.rangeTotals as RangeSummary;
 	const [showFilters, setShowFilters] = useState(false);
+	const range = getWeekStartAndEnd(new Date());
+	const [filters, setFilters] = useState<Filters>(range);
 
-	const getThisWeek = () => {
+	console.log("diffSummary", diffSummary);
+
+	const getFilteredWeekly = () => {
 		// fetch data
 	};
 
@@ -173,8 +188,14 @@ const SummaryWeekView = () => {
 		const getData = async () => {
 			const { userID } = currentUser;
 			const base = new Date();
-			const ranges = getDiffWeekRangesFromBase(base);
-			console.log("ranges", ranges);
+			const { currentWeek } = getDiffWeekRangesFromBase(base);
+			dispatch(
+				fetchSummaryByWeek({
+					userID,
+					startDate: currentWeek.startDate,
+					endDate: currentWeek.endDate,
+				})
+			);
 		};
 
 		if (currentUser) {
@@ -187,20 +208,33 @@ const SummaryWeekView = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	if (diffSummary.status === "PENDING") {
+		return <Loader>Loading...</Loader>;
+	}
 	return (
 		<div className={styles.SummaryWeekView}>
-			<SummaryViewFilters>
-				<QuickFilterButton onClick={getThisWeek}>This Week</QuickFilterButton>
-				<FiltersButton onClick={openFilters}>Filters</FiltersButton>
-			</SummaryViewFilters>
-			{/* LEFT */}
-			<MainCard title="Weekly Mins." details={"Showing last week & this week"}>
-				<DiffWeekSummary />
-			</MainCard>
-			<CardLG title="Week">
-				<SummaryTotals />
-				{/* <WeekStreak /> */}
-			</CardLG>
+			{diffSummary.currentWeek && (
+				<>
+					<SummaryViewFilters>
+						<QuickFilterButton onClick={getFilteredWeekly}>
+							This Week
+						</QuickFilterButton>
+						<FiltersButton onClick={openFilters}>Filters</FiltersButton>
+					</SummaryViewFilters>
+					{/* LEFT */}
+					<MainCard
+						title="Weekly Mins."
+						details={"Showing last week & this week"}
+					>
+						{/* <DiffWeekSummary data={weeklyMins} /> */}
+						<DiffWeekSummary />
+					</MainCard>
+					<CardLG title="Week">
+						<SummaryTotals currentWeek={curTotals} prevWeek={prevTotals} />
+						{/* <WeekStreak /> */}
+					</CardLG>
+				</>
+			)}
 
 			{showFilters && (
 				<Modal title="Filters" closeModal={closeFilters}>

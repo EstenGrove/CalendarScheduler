@@ -8,7 +8,7 @@ type Props = {
 	percentage: number;
 	details?: string | null;
 	size?: number;
-	color?: string;
+	color?: "blue" | "green" | "purple" | "primary";
 	trackColor?: string;
 	showText?: boolean;
 	iconName?: keyof typeof icons;
@@ -35,7 +35,7 @@ const GoalCard = ({
 	iconName = "calendar",
 	percentage = 72,
 	size = 150,
-	color = "var(--accent-blue)",
+	color = "blue",
 	trackColor = "var(--blueGrey800)",
 	showText = true,
 }: Props) => {

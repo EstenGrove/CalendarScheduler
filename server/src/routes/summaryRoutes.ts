@@ -9,7 +9,7 @@ import type { MinsSummaryClient, MinsSummaryDB } from "../services/types";
 import { groupBy, type TRecord } from "../utils/processing";
 import type { RangeTotals } from "../services/SummaryService";
 import { HTTPException } from "hono/http-exception";
-import { getSummaryWeekData } from "../utils/summary";
+import { getSummaryDay, getSummaryWeekData } from "../utils/summary";
 import type { SummaryByWeekDB } from "../utils/types";
 
 import { startOfWeek, subWeeks } from "date-fns";
@@ -64,6 +64,17 @@ app.get("/getSummaryByWeek", async (ctx: Context) => {
 // /dashboard/summary/day
 app.get("/getSummaryByDay", async (ctx: Context) => {
 	const { userID, startDate, endDate } = ctx.req.query();
+
+	const dailyData = await getSummaryDay(userID, {
+		startDate,
+		endDate,
+	});
+
+	const response = getResponseOk({
+		message: "",
+	});
+
+	return ctx.json(response);
 });
 
 // /dashboard

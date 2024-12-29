@@ -8,7 +8,8 @@ const SummaryDayView = () => {
 			<GoalCard
 				title="Minutes Goal"
 				iconName="time"
-				percentage={78}
+				percentage={46}
+				color="green"
 				details={formatDate(new Date(), "shortMonth")}
 			/>
 		</div>

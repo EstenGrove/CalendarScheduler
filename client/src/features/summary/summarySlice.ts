@@ -197,5 +197,8 @@ export const selectWeeklySummary = (state: RootState) => {
 };
 
 // DIFF SUMMARY BY (DAY|WEEK|MONTH|YEAR|CUSTOM)
+export const selectSummaryByWeek = (state: RootState) => {
+	return state.summary.diffByWeek;
+};
 
 export default summarySlice.reducer;

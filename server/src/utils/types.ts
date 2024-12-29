@@ -9,6 +9,11 @@ import type {
 	StreakDayDB,
 } from "../services/types";
 
+export interface SummaryDayDB {
+	dailyMins: MinsSummaryDB[];
+	rangeTotals: RangeTotals;
+}
+
 export interface SummaryWeekDB {
 	dailyMins: MinsSummaryDB[];
 	rangeTotals: RangeTotals[];

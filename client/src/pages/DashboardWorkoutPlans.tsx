@@ -6,7 +6,6 @@ type Props = {};
 const DashboardWorkoutPlans = ({}: Props) => {
 	return (
 		<div className={styles.DashboardWorkoutPlans}>
-			<h4>Plans</h4>
 			{/*  */}
 			{/*  */}
 			{/*  */}

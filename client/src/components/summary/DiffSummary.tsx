@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import styles from "../../css/summary/DiffSummary.module.scss";
 import sprite from "../../assets/icons/calendar.svg";
 import { formatDate } from "../../utils/utils_dates";
+import { isFuture, isValid } from "date-fns";
 
 type Props = {
 	title: string;
@@ -12,7 +13,7 @@ type Props = {
 	curValue: number;
 	label: string | number;
 	scoreColor?: string;
-	date: Date | string | null;
+	date?: Date | string | null;
 };
 
 type BadgeProps = {
@@ -27,6 +28,13 @@ const IncreaseBadge = ({ percent }: BadgeProps) => {
 		<div className={styles.IncreaseBadge}>
 			<span className={styles.IncreaseBadge_arrow}>↑</span>
 			<span>+{diff}%</span>
+		</div>
+	);
+};
+const NoChangeBadge = () => {
+	return (
+		<div className={styles.NoChangeBadge}>
+			<span>0%</span>
 		</div>
 	);
 };
@@ -102,7 +110,7 @@ const CardContainer = ({ handleGoTo, icon, title, children }: CardProps) => {
 };
 
 interface DiffData {
-	type: "DECREASED" | "INCREASED";
+	type: "DECREASED" | "INCREASED" | "NO-DATA" | "NO-CHANGES";
 	diff: number;
 }
 const getChangesDiff = (prevValue: number, curValue: number): DiffData => {
@@ -130,6 +138,42 @@ type DiffDisplayProps = {
 	date: string | Date | null;
 };
 
+const hasIncreased = (prevVal: number, curVal: number) => {
+	const { type, diff } = getChangesDiff(prevVal, curVal);
+	const increased = type === "INCREASED" && (curVal > prevVal || diff > 0);
+
+	return increased;
+};
+const hasDecreased = (prevVal: number, curVal: number) => {
+	const { type, diff } = getChangesDiff(prevVal, curVal);
+	const decreased = type === "DECREASED" && diff === 100 && prevVal > curVal;
+
+	return decreased;
+};
+const hasNoChanges = (prevVal: number, curVal: number) => {
+	// const { type, diff } = getChangesDiff(prevVal, curVal);
+	const hasNoChanges = prevVal === curVal;
+
+	return hasNoChanges;
+};
+const hasNoData = (prevVal: number, curVal: number, date: Date | string) => {
+	// const { type, diff } = getChangesDiff(prevVal, curVal);
+	const inFuture = isFuture(date);
+	const noData = prevVal === curVal;
+
+	return noData;
+};
+
+const processDate = (date: Date | string | null | undefined): string => {
+	if (!date) return "";
+	const validDate = isValid(date);
+	if (validDate || date instanceof Date) {
+		return formatDate(date, "shortMonth");
+	} else {
+		return date;
+	}
+};
+
 const DiffDisplay = ({
 	prevValue,
 	curValue,
@@ -137,17 +181,25 @@ const DiffDisplay = ({
 	date = null,
 }: DiffDisplayProps) => {
 	const { type, diff } = getChangesDiff(prevValue, curValue);
-	const newDate = date ? formatDate(date, "shortMonth") : "";
+	const newDate = processDate(date);
+
+	if (label === "mins.") {
+	}
 	return (
 		<div className={styles.DiffDisplay}>
 			<div className={styles.DiffDisplay_current}>
-				<div className={styles.DiffDisplay_current_value}>{curValue}</div>
+				<div className={styles.DiffDisplay_current_value}>{curValue || 0}</div>
 				<div className={styles.DiffDisplay_current_label}>{label}</div>
 			</div>
 			<div className={styles.DiffDisplay_changed}>
 				<div className={styles.DiffDisplay_changed_date}>{newDate}</div>
-				{type === "INCREASED" && <IncreaseBadge percent={diff} />}
-				{type === "DECREASED" && <DecreaseBadge percent={diff} />}
+				{type === "INCREASED" && !isNaN(diff) && (
+					<IncreaseBadge percent={diff} />
+				)}
+				{type === "DECREASED" && !isNaN(diff) && (
+					<DecreaseBadge percent={diff} />
+				)}
+				{isNaN(diff) && <NoChangeBadge />}
 			</div>
 		</div>
 	);
