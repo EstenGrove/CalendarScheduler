@@ -42,3 +42,19 @@ export interface RangeSummary {
 	totalNumOfWorkouts: number;
 	totalNumOfWorkoutTypes: number;
 }
+
+export interface StreakItem {
+	day: Date | string;
+	isCompleted: boolean | null;
+}
+
+export interface SummaryWeek {
+	dateRange: CustomDateRange;
+	dailyMins: DailyMins[];
+	rangeTotals: RangeSummary;
+	weeklyStreak: StreakItem[];
+}
+export interface SummaryWeekData {
+	currentWeek: SummaryWeek;
+	prevWeek: SummaryWeek;
+}

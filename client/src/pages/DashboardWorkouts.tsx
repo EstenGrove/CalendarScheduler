@@ -67,6 +67,7 @@ const DashboardWorkouts = () => {
 					<PageNavButton to="week">This Week</PageNavButton>
 					<PageNavButton to="plans">Plans</PageNavButton>
 					<PageNavButton to="history">History</PageNavButton>
+					<PageNavButton to="logs">Logs</PageNavButton>
 				</PageNav>
 			</div>
 			<Outlet />

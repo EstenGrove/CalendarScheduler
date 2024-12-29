@@ -3,6 +3,9 @@ import styles from "../css/pages/DashboardWorkoutTracker.module.scss";
 import { useGeoTracker } from "../hooks/useGeoTracker";
 import PageHeader from "../components/layout/PageHeader";
 
+// REQUIREMENTS:
+// - Used for geolocation tracking for timed walks/runs & distance walks/runs
+
 const DashboardWorkoutTracker = () => {
 	const [geoData, setGeoData] = useState<GeolocationPosition[]>([]);
 	const tracker = useGeoTracker({

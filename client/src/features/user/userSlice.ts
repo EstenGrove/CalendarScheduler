@@ -4,14 +4,6 @@ import { CurrentSession, CurrentUser } from "./types";
 import { RootState } from "../../store/store";
 import { getUserByID } from "./operations";
 
-export interface UserHealthProfile {
-	age: number;
-	height: number;
-	weight: number;
-	strideLength: number; // steps x strideLength(in feet) = distance(in feet)/ 5280(feet per mile)
-	bodyMassIndex: number;
-}
-
 export interface CurrentUserSlice {
 	status: TStatus;
 	currentUser: CurrentUser | null;

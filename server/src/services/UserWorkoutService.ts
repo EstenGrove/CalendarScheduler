@@ -159,6 +159,13 @@ class UserWorkoutService {
 			return error;
 		}
 	}
+	async editWorkout(userID: string, values: UserWorkoutPayload) {
+		try {
+			//
+		} catch (error) {
+			return error;
+		}
+	}
 	async deleteWorkout(userID: string, workoutID: number) {
 		//
 	}

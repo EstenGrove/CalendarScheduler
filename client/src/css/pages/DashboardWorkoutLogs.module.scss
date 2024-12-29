@@ -1,0 +1,127 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$shadow: rgba(0, 0, 0, 0.25);
+
+.DashboardWorkoutLogs {
+	width: 100%;
+	height: 100%;
+
+	&_filters {
+		width: 100%;
+		position: sticky;
+	}
+	&_search {
+		// position: relative;
+		width: 100%;
+		max-width: 100%;
+		padding: 1rem 0;
+		display: block;
+		margin: 0 auto;
+		@include rowCenter();
+		-webkit-box-shadow: 0px 7px 7px -3px $shadow;
+		-moz-box-shadow: 0px 7px 7px -3px $shadow;
+		box-shadow: 0px 7px 7px -3px $shadow;
+
+		&_input {
+			width: 100%;
+			max-width: 70rem;
+			width: 80%;
+			height: 4rem;
+			border-radius: 1rem;
+			background-color: $foreground;
+			border: $borderLight;
+			outline: none;
+			font-size: 1.6rem;
+			padding-left: 1rem;
+			color: #fff;
+			&:hover {
+				cursor: pointer;
+				border-color: $accent;
+			}
+			&:focus-within {
+				cursor: pointer;
+				border-color: $accent;
+			}
+
+			&::placeholder {
+				color: $text2;
+			}
+		}
+	}
+	&_list {
+		width: 100%;
+		min-height: auto;
+		height: calc(100dvh - 25rem);
+		// height: 100%;
+		// height: 100dvh;
+
+		&_loading {
+			width: 100%;
+			@include rowCenter;
+		}
+	}
+}
+
+.SearchInputWrapper {
+	position: relative;
+	width: 80%;
+	max-width: 70rem;
+	height: 4rem;
+	display: block;
+	margin: 0 auto;
+
+	&_btn {
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translate(-1rem, -50%);
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		background-color: var(--blueGrey800);
+		@include rowCenter();
+		border: none;
+		outline: none;
+		&:hover {
+			cursor: pointer;
+			background-color: var(--blueGrey900);
+		}
+		&:hover &_icon {
+			fill: #fff;
+		}
+
+		&_icon {
+			width: 2rem;
+			height: 2rem;
+			fill: var(--accent-red);
+		}
+	}
+}
+
+.SearchInput {
+	width: 100%;
+	max-width: 70rem;
+	height: 4rem;
+	border-radius: 1rem;
+	background-color: $foreground;
+	border: $borderLight;
+	outline: none;
+	font-size: 1.6rem;
+	padding-left: 1rem;
+	color: #fff;
+	&:hover {
+		cursor: pointer;
+		border-color: $accent;
+	}
+	&:focus-within {
+		cursor: pointer;
+		border-color: $accent;
+	}
+
+	&::placeholder {
+		color: $text2;
+	}
+}

@@ -15,7 +15,9 @@
 	}
 	&_main {
 		@include fill_container;
-		height: auto;
+		height: 75dvh;
+		overflow-y: scroll;
+		@include scrollbar;
 	}
 }
 

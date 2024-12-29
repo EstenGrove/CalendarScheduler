@@ -8,6 +8,11 @@ import Home from "./pages/Home";
 import DashboardWorkoutWeek from "./pages/DashboardWorkoutWeek";
 import DashboardWorkoutPlans from "./pages/DashboardWorkoutPlans";
 import Loader from "./components/ui/Loader";
+import SummaryWeekView from "./views/SummaryWeekView";
+import SummaryDayView from "./views/SummaryDayView";
+import SummaryMonthView from "./views/SummaryMonthView";
+import SummaryYearView from "./views/SummaryYearView";
+import SummaryRangeView from "./views/SummaryRangeView";
 
 const routePaths = {
 	dashboard: "./pages/Dashboard",
@@ -18,11 +23,15 @@ const routePaths = {
 	history: "./pages/DashboardWorkoutHistory",
 	health: "./pages/DashboardHealthProfile",
 	tracker: "./pages/DashboardWorkoutTracker",
+	settings: "./pages/DashboardSettings.tsx",
+	summary: "./pages/DashboardSummary.tsx",
+	logs: "./pages/DashboardWorkoutLogs.tsx",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
 const LazyDashboardWorkouts = lazy(() => import(routePaths.workouts));
 const LazyDashboardWorkoutHistory = lazy(() => import(routePaths.history));
+const LazyDashboardWorkoutLogs = lazy(() => import(routePaths.logs));
 const LazyDashboardLayout = lazy(() => import(routePaths.dashboardLayout));
 const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
 const LazyDashboardCalendarLayout = lazy(
@@ -30,6 +39,8 @@ const LazyDashboardCalendarLayout = lazy(
 );
 const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 const LazyDashboardWorkoutTracker = lazy(() => import(routePaths.tracker));
+const LazyDashboardSettings = lazy(() => import(routePaths.settings));
+const LazyDashboardSummary = lazy(() => import(routePaths.summary));
 
 const Fallback = () => {
 	return (
@@ -82,6 +93,14 @@ function App() {
 											</Suspense>
 										}
 									/>
+									<Route
+										path="logs"
+										element={
+											<Suspense>
+												<LazyDashboardWorkoutLogs />
+											</Suspense>
+										}
+									/>
 								</Route>
 								<Route
 									path="calendar"
@@ -96,7 +115,7 @@ function App() {
 								<Route
 									path="health"
 									element={
-										<Suspense>
+										<Suspense fallback={<Fallback />}>
 											<LazyDashboardHealthProfile />
 										</Suspense>
 									}
@@ -104,11 +123,33 @@ function App() {
 								<Route
 									path="tracker"
 									element={
-										<Suspense>
+										<Suspense fallback={<Fallback />}>
 											<LazyDashboardWorkoutTracker />
 										</Suspense>
 									}
 								/>
+								<Route
+									path="settings"
+									element={
+										<Suspense fallback={<Fallback />}>
+											<LazyDashboardSettings />
+										</Suspense>
+									}
+								/>
+								<Route
+									path="summary"
+									element={
+										<Suspense fallback={<Fallback />}>
+											<LazyDashboardSummary />
+										</Suspense>
+									}
+								>
+									<Route path="day" element={<SummaryDayView />} />
+									<Route path="week" element={<SummaryWeekView />} />
+									<Route path="month" element={<SummaryMonthView />} />
+									<Route path="year" element={<SummaryYearView />} />
+									<Route path="range" element={<SummaryRangeView />} />
+								</Route>
 							</Route>
 						</Routes>
 					</div>

@@ -16,7 +16,7 @@ const Dashboard = () => {
 		<div className={styles.Dashboard}>
 			{windowSize.width < 800 && <Navbar currentUser={currentUser} />}
 			<main className={styles.Dashboard_main}>
-				{windowSize.width > 800 && <Sidebar />}
+				{windowSize.width > 800 && <Sidebar currentUser={currentUser} />}
 
 				{/* FLOATING ACTIONS BAR */}
 				<QuickActions currentUser={currentUser} />

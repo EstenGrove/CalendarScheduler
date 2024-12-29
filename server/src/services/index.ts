@@ -6,6 +6,7 @@ import { WorkoutHistoryService } from "./WorkoutHistoryService";
 import { WorkoutsServices } from "./WorkoutsServices";
 import { UserWorkoutService } from "./UserWorkoutService";
 import { SummaryService } from "./SummaryService";
+import { WorkoutTypesService } from "./WorkoutTypesService";
 
 const eventsService = new EventsService(db);
 const summaryService = new SummaryService(db);
@@ -14,6 +15,7 @@ const plansService = new WorkoutPlansService(db);
 const schedulesService = new SchedulesService(db);
 const historyService = new WorkoutHistoryService(db);
 const userWorkoutService = new UserWorkoutService(db);
+const workoutTypesService = new WorkoutTypesService(db);
 
 const services = {
 	schedules: schedulesService,
@@ -23,6 +25,7 @@ const services = {
 	userWorkouts: userWorkoutService,
 	history: historyService,
 	summary: summaryService,
+	workoutTypes: workoutTypesService,
 } as const;
 
 export {
@@ -33,5 +36,6 @@ export {
 	historyService,
 	summaryService,
 	userWorkoutService,
+	workoutTypesService,
 	services,
 };

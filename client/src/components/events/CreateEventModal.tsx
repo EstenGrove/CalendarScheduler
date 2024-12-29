@@ -6,6 +6,7 @@ import { formatDate } from "../../utils/utils_dates";
 import { useAppDispatch } from "../../store/store";
 import { createNewEvent } from "../../features/events/operations";
 import { CurrentUser } from "../../features/user/types";
+import { prepareRecurringEvent } from "../../utils/utils_events";
 
 type Props = {
 	currentUser: CurrentUser;
@@ -112,18 +113,23 @@ const CreateEventModal = ({ currentUser, closeModal }: Props) => {
 		}
 	};
 
-	const saveNewEvent = () => {
+	const saveNewEvent = async () => {
+		const updatedEvent = prepareRecurringEvent(newEventValues);
 		const eventValues = {
 			newEvent: {
-				...newEventValues,
+				...updatedEvent,
 				interval: Number(newEventValues.interval),
 			},
 			userID: currentUser.userID,
 		};
 		console.log("Values:", eventValues);
 
-		dispatch(createNewEvent(eventValues));
-		closeModal();
+		// const result = await dispatch(createNewEvent(eventValues)).unwrap();
+		const result = { newEvent: null };
+
+		if (result && result.newEvent) {
+			closeModal();
+		}
 	};
 	const cancelNewEvent = () => {
 		closeModal();

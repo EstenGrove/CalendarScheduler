@@ -1,15 +1,75 @@
 import { Hono, type Context } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import { summaryService } from "../services";
-import { minsSummaryNormalizer } from "../utils/normalizing";
+import {
+	convertSummaryByWeek,
+	minsSummaryNormalizer,
+} from "../utils/normalizing";
 import type { MinsSummaryClient, MinsSummaryDB } from "../services/types";
 import { groupBy, type TRecord } from "../utils/processing";
 import type { RangeTotals } from "../services/SummaryService";
 import { HTTPException } from "hono/http-exception";
+import { getSummaryDay, getSummaryWeekData } from "../utils/summary";
+import type { SummaryByWeekDB } from "../utils/types";
+
+import { startOfWeek, subWeeks } from "date-fns";
+import { formatDate, getWeekStartAndEnd } from "../utils/dates";
 
 const app = new Hono();
 
-app.get("/getDashboardSummary", async (ctx: Context) => {
+// /dashboard/summary/year
+app.get("/getSummaryByYear", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+});
+// /dashboard/summary/month
+app.get("/getSummaryByMonth", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+});
+// /dashboard/summary/week
+app.get("/getSummaryByWeek", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+
+	const weekStart = startDate; // YYYY--MM-DD
+	const minusWeek = startOfWeek(subWeeks(weekStart, 1));
+	// prev week range (start/end)
+	const { startDate: prevStart, endDate: prevEnd } =
+		getWeekStartAndEnd(minusWeek);
+
+	const data = (await getSummaryWeekData(userID, {
+		startDate,
+		endDate,
+	})) as SummaryByWeekDB;
+
+	const weeklySummary = convertSummaryByWeek(data);
+
+	const resp = getResponseOk({
+		currentWeek: {
+			...weeklySummary.currentWeek,
+			dateRange: {
+				startDate,
+				endDate,
+			},
+		},
+		prevWeek: {
+			...weeklySummary.prevWeek,
+			dateRange: {
+				startDate: formatDate(prevStart, "db"),
+				endDate: formatDate(prevEnd, "db"),
+			},
+		},
+	});
+
+	return ctx.json(resp);
+});
+// /dashboard/summary/day
+app.get("/getSummaryByDay", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+
+	const dailyData = await getSummaryDay(userID, {
+		startDate,
+		endDate,
+	});
+
 	const response = getResponseOk({
 		message: "",
 	});
@@ -17,6 +77,7 @@ app.get("/getDashboardSummary", async (ctx: Context) => {
 	return ctx.json(response);
 });
 
+// /dashboard
 app.get("/getDailyMinsSummary", async (ctx: Context) => {
 	const { userID, startDate, endDate } = ctx.req.query();
 
@@ -42,6 +103,7 @@ app.get("/getDailyMinsSummary", async (ctx: Context) => {
 	return ctx.json(response);
 });
 
+// /dashboard
 app.get("/getWeeklyTotals", async (ctx: Context) => {
 	const { userID, startDate, endDate } = ctx.req.query();
 

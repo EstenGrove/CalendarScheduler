@@ -11,7 +11,7 @@ import {
 } from "../../components/workouts/types";
 import { AwaitedResponse } from "../types";
 import { getWorkoutPlans } from "../../utils/utils_workoutPlans";
-import { UserWorkout, Workout, WorkoutPlan } from "./types";
+import { UserWorkout, WorkoutPlan } from "./types";
 
 export interface NewWorkoutPlanParams {
 	userID: string;

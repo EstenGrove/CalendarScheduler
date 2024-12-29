@@ -1,4 +1,8 @@
 import type {
+	RangeTotals,
+	RangeTotalsClient,
+} from "../services/SummaryService";
+import type {
 	CalendarEventClient,
 	CalendarEventDB,
 	MonthlyEventSummaryClient,
@@ -21,7 +25,14 @@ import type {
 	UserWorkoutClient,
 	UserWorkoutByDateDB,
 	UserWorkoutByDateClient,
+	StreakDayClient,
+	StreakDayDB,
 } from "../services/types";
+import type {
+	SummaryByWeekClient,
+	SummaryByWeekDB,
+	SummaryWeekClient,
+} from "./types";
 
 class MonthlySummaryNormalizer {
 	#toDB(record: MonthlyEventSummaryClient): MonthlyEventSummaryDB {
@@ -516,6 +527,80 @@ const convertUserWorkouts = (workouts: UserWorkoutPlanDB[]) => {
 	return newRecords;
 };
 
+const convertWeeklyStreaks = (streaks: StreakDayDB[]): StreakDayClient[] => {
+	if (!streaks || !streaks.length) return [];
+
+	const weeklyStreaks: StreakDayClient[] = streaks.map((item) => ({
+		day: item.day,
+		isCompleted: item.is_completed,
+	}));
+
+	return weeklyStreaks;
+};
+
+const convertRangeTotals = (
+	rangeTotals: RangeTotals | RangeTotals[]
+): RangeTotalsClient => {
+	if (Array.isArray(rangeTotals)) {
+		const record = rangeTotals[0];
+		const clientTotals: RangeTotalsClient = {
+			totalMins: record.total_mins,
+			totalReps: record.total_reps,
+			totalMiles: record.total_miles,
+			totalSteps: record.total_steps,
+			totalWorkouts: record.total_workouts,
+			totalWorkoutTypes: record.total_workout_types,
+		};
+		return clientTotals;
+	} else {
+		return {
+			totalMins: rangeTotals.total_mins,
+			totalReps: rangeTotals.total_reps,
+			totalMiles: rangeTotals.total_miles,
+			totalSteps: rangeTotals.total_steps,
+			totalWorkouts: rangeTotals.total_workouts,
+			totalWorkoutTypes: rangeTotals.total_workout_types,
+		};
+	}
+};
+
+const convertSummaryByWeek = (data: SummaryByWeekDB): SummaryByWeekClient => {
+	const { currentWeek, prevWeek } = data;
+	const {
+		dailyMins: curMins,
+		rangeTotals: curTotalsList,
+		weeklyStreak: curStreak,
+	} = currentWeek;
+	const {
+		dailyMins: prevMins,
+		rangeTotals: prevTotalsList,
+		weeklyStreak: prevStreak,
+	} = prevWeek;
+
+	const curWeekMins = minsSummaryNormalizer.toClient(curMins);
+	const prevWeekMins = minsSummaryNormalizer.toClient(prevMins);
+	const curStreakData: StreakDayClient[] = convertWeeklyStreaks(curStreak);
+	const prevStreakData: StreakDayClient[] = convertWeeklyStreaks(prevStreak);
+	const curRangeTotals: RangeTotalsClient = convertRangeTotals(curTotalsList);
+	const prevRangeTotals: RangeTotalsClient = convertRangeTotals(prevTotalsList);
+
+	const curWeekData: SummaryWeekClient = {
+		dailyMins: curWeekMins,
+		rangeTotals: curRangeTotals,
+		weeklyStreak: curStreakData,
+	};
+	const prevWeekData: SummaryWeekClient = {
+		dailyMins: prevWeekMins,
+		rangeTotals: prevRangeTotals,
+		weeklyStreak: prevStreakData,
+	};
+
+	return {
+		currentWeek: curWeekData,
+		prevWeek: prevWeekData,
+	};
+};
+
 const eventsNormalizer = new EventsNormalizer();
 const historyNormalizer = new HistoryNormalizer();
 const workoutNormalizer = new WorkoutNormalizer();
@@ -542,4 +627,7 @@ export {
 	userWorkoutNormalizer,
 	// custom normalizers
 	convertUserWorkouts,
+	convertSummaryByWeek,
+	convertWeeklyStreaks,
+	convertRangeTotals,
 };

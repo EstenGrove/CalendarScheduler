@@ -1,5 +1,11 @@
 import type { Pool } from "pg";
-import type { CreateLogValues, WorkoutLogClient, WorkoutLogDB } from "./types";
+import type {
+	CreateHistoryEntryValues,
+	CreateLogValues,
+	MarkHistoryEntryValues,
+	WorkoutLogClient,
+	WorkoutLogDB,
+} from "./types";
 
 export interface LogRange {
 	startDate: string;
@@ -12,6 +18,15 @@ class WorkoutHistoryService {
 		this.#db = db;
 	}
 
+	async createHistoryEntry(userID: string, entry: CreateHistoryEntryValues) {
+		//
+	}
+	async editHistoryEntry(userID: string, entry: CreateHistoryEntryValues) {
+		//
+	}
+	async markHistoryEntry(userID: string, entry: MarkHistoryEntryValues) {
+		//
+	}
 	async createLog(userID: string, log: CreateLogValues) {
 		const {
 			workoutTypeID,
@@ -131,7 +146,6 @@ class WorkoutHistoryService {
 			return error;
 		}
 	}
-
 	async getWorkoutLogs(
 		userID: string,
 		range: LogRange

@@ -1,0 +1,15 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.SummaryDayView {
+	width: 100%;
+	max-width: 100%;
+	height: 100%;
+	max-height: auto;
+	padding: 3rem;
+	@include flex_row(flex-start, flex-start, wrap);
+	overflow-x: hidden;
+	overflow-y: auto;
+	@include scrollbar();
+}

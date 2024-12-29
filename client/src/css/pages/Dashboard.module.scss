@@ -4,6 +4,9 @@
 
 .Dashboard {
 	@include fill_container;
+	max-height: 100dvh;
+	overflow-x: hidden;
+	overflow-y: hidden;
 
 	&_main {
 		@include fill_container;

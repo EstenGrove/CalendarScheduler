@@ -1,5 +1,5 @@
 import type { Pool } from "pg";
-import type { MinsSummaryDB } from "./types";
+import type { MinsSummaryDB, StreakDayDB } from "./types";
 
 export interface CustomRange {
 	startDate: string;
@@ -13,6 +13,14 @@ export interface RangeTotals {
 	total_steps: number;
 	total_workouts: number;
 	total_workout_types: number;
+}
+export interface RangeTotalsClient {
+	totalMins: number;
+	totalReps: number;
+	totalMiles: number;
+	totalSteps: number;
+	totalWorkouts: number;
+	totalWorkoutTypes: number;
 }
 
 class SummaryService {
@@ -56,6 +64,26 @@ class SummaryService {
 			const rows = results?.rows;
 
 			return rows as RangeTotals[];
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async getWeeklyStreak(
+		userID: string,
+		dateRange: CustomRange
+	): Promise<StreakDayDB[] | unknown> {
+		const { startDate, endDate } = dateRange;
+		try {
+			const query = `SELECT * FROM get_workout_streak_for_week(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [userID, startDate, endDate]);
+			const rows = results?.rows;
+
+			return rows;
 		} catch (error) {
 			return error;
 		}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/layout/Navbar.module.scss";
 import { NavLink } from "react-router-dom";
@@ -55,7 +55,7 @@ const MobileMenu = ({ closeMenu }: MenuProps) => {
 					<NavLink to="workouts/week">Workouts</NavLink>
 				</li>
 				<li onClick={closeMenu} className={styles.MobileMenu_list_item}>
-					<NavLink to="summary">Summary</NavLink>
+					<NavLink to="summary/week">Summary</NavLink>
 				</li>
 				<li onClick={closeMenu} className={styles.MobileMenu_list_item}>
 					<NavLink to="health">Health Profile</NavLink>
@@ -65,6 +65,9 @@ const MobileMenu = ({ closeMenu }: MenuProps) => {
 				</li>
 				<li onClick={closeMenu} className={styles.MobileMenu_list_item}>
 					<NavLink to="tracker">Tracker</NavLink>
+				</li>
+				<li onClick={closeMenu} className={styles.MobileMenu_list_item}>
+					<NavLink to="settings">Settings</NavLink>
 				</li>
 			</ul>
 		</div>

@@ -1,0 +1,30 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.SummaryViewFilters {
+	width: 100%;
+	height: auto;
+	display: block;
+
+	&_info {
+		width: 100%;
+		font-size: 1.2rem;
+		color: $text2;
+	}
+
+	&_inner {
+		width: 100%;
+		@include flex_row(flex-end, center);
+		gap: 0 0.5rem;
+		margin-bottom: 2rem;
+	}
+}
+
+.QuickFilterButton {
+	@include filterBtn();
+}
+
+.FiltersButton {
+	@include filterBtn();
+}
