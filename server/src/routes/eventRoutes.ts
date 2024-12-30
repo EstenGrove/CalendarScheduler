@@ -23,6 +23,7 @@ import {
 } from "../utils/normalizing";
 import { groupByFn } from "../utils/processing";
 import { createMonthlySummaryMap } from "../utils/events";
+import { createEvent } from "../services/EventsService";
 
 const app: Hono = new Hono();
 
@@ -135,21 +136,26 @@ app.get("/getMonthlySummary", async (ctx: Context) => {
 app.post("/createEvent", async (ctx: Context) => {
 	const body = await ctx.req.json<NewEventPayload>();
 	const { userID, newEvent } = body;
-	const cleanEvent = { ...newEvent, startTime: "12:00 PM", endTime: "1:00 PM" };
 
-	const eventRecord = await eventsService
-		.createEvent(userID, cleanEvent)
-		.catch((err) => {
-			if (err) {
-				console.log("❌ [ERROR]: ", err);
-			}
-		});
+	const eventRecord = await createEvent(userID, newEvent).catch((err) => {
+		if (err) {
+			console.log("❌ [ERROR]: ", err);
+		}
+	});
+
+	// const eventRecord = await eventsService
+	// 	.createEvent(userID, newEvent)
+	// 	.catch((err) => {
+	// 		if (err) {
+	// 			console.log("❌ [ERROR]: ", err);
+	// 		}
+	// 	});
 
 	const response = getResponseOk({
 		UserID: body.userID,
-		Message: "Success",
+		Message: "Success: Event was created.",
 		eventDates: [],
-		newEvent: eventRecord || body.newEvent,
+		newEvent: eventRecord,
 	});
 	return ctx.json(response);
 });

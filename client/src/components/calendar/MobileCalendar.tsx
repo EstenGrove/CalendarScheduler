@@ -18,6 +18,7 @@ interface CalendarState {
 }
 
 type Props = {
+	initialState?: CalendarState;
 	selectedDate: Date | null;
 	onDateSelect: (date: Date) => void;
 	onPrev: (state: CalendarState) => void;
@@ -46,7 +47,13 @@ const isSelected = (dayDate: Date, selectedDate: Date | null): boolean => {
 	return day === selected;
 };
 
+const defaultState = {
+	month: new Date().getMonth(),
+	year: new Date().getFullYear(),
+};
+
 const MobileCalendar = ({
+	initialState = defaultState,
 	onDateSelect,
 	onPrev,
 	onNext,
@@ -54,10 +61,8 @@ const MobileCalendar = ({
 	eventsSummary,
 	selectedDate,
 }: Props) => {
-	const [calendarState, setCalendarState] = useState<CalendarState>({
-		month: new Date().getMonth(),
-		year: new Date().getFullYear(),
-	});
+	const [calendarState, setCalendarState] =
+		useState<CalendarState>(initialState);
 	const { month: currentMonth, year: currentYear } = calendarState;
 	const calendarWeeks: CalendarWeek[] = generateWeeksAndDates(
 		currentMonth,

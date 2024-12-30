@@ -110,8 +110,6 @@ const UserWorkout = ({ workout }: Props) => {
 
 	const onTouchStart = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
-		console.log("(START)", e);
-		console.log("screenX", screenX);
 		startX = screenX;
 
 		if (cardRef.current) {
@@ -120,7 +118,6 @@ const UserWorkout = ({ workout }: Props) => {
 	};
 	const onTouchMove = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
-		console.log("MOVE");
 		moveX = screenX;
 		const deltaX = moveX - startX;
 		console.log(screenX);
@@ -131,8 +128,7 @@ const UserWorkout = ({ workout }: Props) => {
 
 	const onTouchEnd = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
-		console.log("(END)", e);
-		console.log("screenX", screenX);
+
 		endX = screenX;
 		if (cardRef.current) {
 			cardRef.current.style.transform = `translateX(0px)`;
@@ -168,8 +164,6 @@ const UserWorkout = ({ workout }: Props) => {
 				<WeightBadge weight={workout.weight} />
 				<MinutesBadge mins={workout.mins} />
 			</div>
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

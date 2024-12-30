@@ -5,6 +5,7 @@ import type {
 	EventInstanceDB,
 	MonthlyEventSummaryDB,
 } from "./types";
+import { eventsService } from ".";
 
 export interface NewTagVals {
 	eventID: number;
@@ -18,6 +19,20 @@ export type EventSvcResp = Promise<EventInstanceDB[] | unknown>;
 export type DeleteEventArgs = {
 	eventID: number;
 	dateToDelete: Date | string;
+};
+
+// Handles invoking either the recurrence event generator or single event generator
+const createEvent = async (
+	userID: string,
+	newEvent: CreateEventVals
+): Promise<EventInstanceDB[] | unknown> => {
+	const { isRecurring } = newEvent;
+
+	if (isRecurring) {
+		return await eventsService.createEvent(userID, newEvent);
+	} else {
+		return await eventsService.createSingleEvent(userID, newEvent);
+	}
 };
 
 class EventsService {
@@ -120,6 +135,46 @@ class EventsService {
 			const rows = results?.rows;
 			console.log("results", results);
 			console.log("rows", rows);
+			return rows;
+		} catch (error) {
+			return error;
+		}
+	}
+	async createSingleEvent(
+		userID: string,
+		newEvent: CreateEventVals
+	): Promise<EventInstanceDB[] | unknown> {
+		const {
+			title,
+			desc,
+			startDate,
+			endDate,
+			startTime,
+			endTime,
+			tagColor = "var(--blueGrey800)",
+		} = newEvent;
+		try {
+			const query = `SELECT * FROM create_single_calendar_event(
+				$1,
+				$2,
+				$3,
+				$4,
+				$5,
+				$6,
+				$7,
+				$8
+			)`;
+			const results = await this.#db.query(query, [
+				userID,
+				title,
+				desc,
+				startDate,
+				endDate,
+				startTime,
+				endTime,
+				tagColor,
+			]);
+			const rows = results?.rows;
 			return rows;
 		} catch (error) {
 			return error;
@@ -273,4 +328,4 @@ class EventsService {
 	}
 }
 
-export { EventsService };
+export { EventsService, createEvent };

@@ -82,6 +82,10 @@ const fetchEventDetails = createAsyncThunk(
 		)) as AwaitedResponse<EventDetails>;
 		const data = response.Data;
 
+		if (!data.event) {
+			throw new Error("Event not found.");
+		}
+
 		return data as EventDetails;
 	}
 );
@@ -95,6 +99,10 @@ const fetchMonthlySummary = createAsyncThunk(
 			endDate: params.endDate,
 		})) as AwaitedResponse<{ eventsSummary: MonthlySummary }>;
 		const data = response.Data;
+
+		if (!data.eventsSummary) {
+			throw new Error("Error fetching monthly summary");
+		}
 
 		return data.eventsSummary as MonthlySummary;
 	}

@@ -9,6 +9,7 @@ interface CalendarState {
 }
 
 type Props = {
+	calendarState: CalendarState;
 	selectedDate: Date | null;
 	eventsSummary: MonthlySummary;
 	eventItems: CalendarEvent[];
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const CalendarSplit = ({
+	calendarState,
 	selectedDate,
 	onDateSelect,
 	onEventSelect,
@@ -33,6 +35,7 @@ const CalendarSplit = ({
 		<div className={styles.CalendarSplit}>
 			<div className={styles.CalendarSplit_calendar}>
 				<MobileCalendar
+					initialState={calendarState}
 					selectedDate={selectedDate}
 					onDateSelect={onDateSelect}
 					onNext={onNextMonth}

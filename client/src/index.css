@@ -16,6 +16,7 @@
 	/* --accent-red: #b90034; */
 	--accent-red: #ff000d;
 	--accent-red2: rgba(255, 0, 27, 0.4);
+	--accent-red3: #ff333d;
 	--accent-yellow: #f9f871;
 	--accent-grey: var(--blueGrey900);
 
@@ -55,6 +56,27 @@
 	--bgShade700: #b6b7b8;
 	--bgShade800: #cecfd0;
 	--bgShade900: #e7e7e7;
+
+	/* Yellow */
+	--yellow100: #fefef1;
+	--yellow200: #fefee3;
+	--yellow300: #fdfdd4;
+	--yellow400: #fdfcc6;
+	--yellow500: #fcfcb8;
+	--yellow600: #fbfbaa;
+	--yellow700: #fbfa9c;
+	--yellow800: #faf98d;
+	--yellow900: #faf97f;
+
+	--yellowTint100: #e0df66;
+	--yellowTint200: #c7c65a;
+	--yellowTint300: #aeae4f;
+	--yellowTint400: #959544;
+	--yellowTint500: #7d7c39;
+	--yellowTint600: #64632d;
+	--yellowTint700: #4b4a22;
+	--yellowTint800: #323217;
+	--yellowTint900: #19190b;
 
 	/* Green Shades */
 	--green100: #00cbaa;

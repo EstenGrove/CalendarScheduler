@@ -131,6 +131,7 @@ export type WorkoutTypeName =
 	| "Planked Pull-ups"
 	| "Lateral Butterflys"
 	| "Overhead Press"
+	| "Dumbell Floor Press (no bench)"
 	| "Pushups"
 	| "Situps"
 	| "Curls"

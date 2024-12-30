@@ -89,6 +89,7 @@ export interface DateFormats {
 		input: string;
 		shortMonth: string;
 		month: string;
+		tod: string;
 	};
 	time: {
 		noTod: string;
@@ -96,12 +97,14 @@ export interface DateFormats {
 		long: string;
 		mil: string;
 		db: string;
+		tod: string;
 	};
 	datetime: {
 		short: string;
 		long: string;
 		full: string;
 		db: string;
+		tod: string;
 	};
 	weekday: {
 		full: string; // 'Monday', 'Tuesday' etc
@@ -121,6 +124,7 @@ const FORMAT_TOKENS: DateFormats = {
 		input: "yyyy-MM-dd",
 		shortMonth: "MMM do, yyyy",
 		month: "MMM",
+		tod: "a",
 	},
 	time: {
 		noTod: "hh:mm",
@@ -128,12 +132,14 @@ const FORMAT_TOKENS: DateFormats = {
 		long: "hh:mm a",
 		mil: "HH:mm a",
 		db: "HH:mm",
+		tod: "a",
 	},
 	datetime: {
 		short: "M/d/yy h:m a",
 		long: "MM/dd/yyyy hh:mm a",
 		full: "MMMM do, yyyy hh:mm a",
 		db: "yyyy-MM-dd HH:mm",
+		tod: "a",
 	},
 	weekday: {
 		full: "EEEE",

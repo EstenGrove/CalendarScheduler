@@ -20,6 +20,8 @@ export interface CreateEventVals {
 	byMonthDay: number;
 	byMonth: number;
 	// optional
+	startTime: string;
+	endTime: string;
 	location: string;
 	url: string;
 	notes: string;
