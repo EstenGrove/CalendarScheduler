@@ -1,3 +1,4 @@
+import { startOfMonth, startOfQuarter } from "date-fns";
 import { WorkoutType } from "./utils_workoutPlans";
 
 export type RangePresetType =
@@ -32,3 +33,52 @@ export interface FilterSettings {
 	workoutType: WorkoutLogType | null;
 	workoutLength: number; // how long was the workout
 }
+
+// Filter State utils
+// Returns start of month as date
+
+const getInitialMonth = (): Date => {
+	return startOfMonth(new Date());
+};
+// Returns start of quarter as date
+const getInitialQuarter = () => {
+	return startOfQuarter(new Date());
+};
+const getInitialYear = (): number => {
+	return new Date().getFullYear();
+};
+const getInitialFilterState = () => {
+	const initialState: FilterSettings = {
+		// rangeType: "Week",
+		rangeType: "None",
+		rangeDate: new Date(),
+		rangeMonth: getInitialMonth(),
+		rangeYear: getInitialYear(),
+		rangeQuarter: getInitialQuarter(),
+		customStart: "",
+		customEnd: "",
+		workoutType: null,
+		workoutLength: 0,
+	};
+	return initialState;
+};
+
+const initialFilters: FilterSettings = {
+	rangeType: "None",
+	rangeDate: new Date(),
+	rangeMonth: getInitialMonth(),
+	rangeYear: getInitialYear(),
+	rangeQuarter: getInitialQuarter(),
+	customStart: "",
+	customEnd: "",
+	workoutType: null,
+	workoutLength: 0,
+};
+
+export {
+	initialFilters,
+	getInitialFilterState,
+	getInitialMonth,
+	getInitialQuarter,
+	getInitialYear,
+};

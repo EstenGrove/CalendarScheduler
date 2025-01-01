@@ -2,14 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getWorkoutHistory, saveLogEntry } from "./operations";
 import { TStatus } from "../types";
 import { WorkoutType } from "../../utils/utils_workoutPlans";
-import { WorkoutHistoryEntry, WorkoutLogEntry } from "./types";
+import { HistoryEntry, WorkoutLogEntry } from "./types";
 import { RootState } from "../../store/store";
 import { sortWorkoutLogsBy } from "../../utils/utils_workoutLogs";
 
 export interface HistorySlice {
 	status: TStatus;
 	workoutTypes: WorkoutType[];
-	workoutHistory: WorkoutHistoryEntry[];
+	// workoutHistory: WorkoutHistoryEntry[];
+	workoutHistory: HistoryEntry[];
 	workoutLogs: WorkoutLogEntry[];
 }
 

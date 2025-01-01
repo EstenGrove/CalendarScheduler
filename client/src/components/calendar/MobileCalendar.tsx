@@ -19,7 +19,7 @@ interface CalendarState {
 
 type Props = {
 	initialState?: CalendarState;
-	selectedDate: Date | null;
+	selectedDate: Date | string | null;
 	onDateSelect: (date: Date) => void;
 	onPrev: (state: CalendarState) => void;
 	onNext: (state: CalendarState) => void;
@@ -38,7 +38,10 @@ const hasEvent = (dayDate: Date, eventsSummary: MonthlySummary): boolean => {
 	}
 };
 
-const isSelected = (dayDate: Date, selectedDate: Date | null): boolean => {
+const isSelected = (
+	dayDate: Date,
+	selectedDate: Date | string | null
+): boolean => {
 	if (!selectedDate) return false;
 
 	const day = formatDate(dayDate, "long");

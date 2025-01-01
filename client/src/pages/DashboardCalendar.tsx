@@ -16,7 +16,7 @@ import {
 	fetchMonthlySummary,
 } from "../features/events/operations";
 import { selectCurrentUser } from "../features/user/userSlice";
-import { formatDate } from "../utils/utils_dates";
+import { formatDate, parseDate } from "../utils/utils_dates";
 import {
 	getAllQueryParams,
 	TParams,
@@ -42,6 +42,15 @@ const getInitialState = () => {
 	};
 };
 
+const getInitialDate = () => {
+	const params = getAllQueryParams();
+	const date = params?.selectedDate || null;
+
+	if (!date) return null;
+	const parsed = parseDate(date);
+	return formatDate(parsed, "long");
+};
+
 const DashboardCalendar = () => {
 	const params = useParams();
 	const queryParams = useQueryParams();
@@ -50,12 +59,12 @@ const DashboardCalendar = () => {
 	const eventsSummary = useSelector(selectMonthlySummary);
 	const selectedDateEvents = useSelector(selectSelectedDateEvents);
 	// local state
-	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-	const [calendarState, setCalendarState] = useState<CalendarState>({
-		...getInitialState(),
-		// year: new Date().getFullYear(),
-		// month: new Date().getMonth(),
-	});
+	const [selectedDate, setSelectedDate] = useState<Date | string | null>(
+		getInitialDate
+	);
+
+	const [calendarState, setCalendarState] =
+		useState<CalendarState>(getInitialState);
 
 	// select date from upper calendar nav (eg. <MobileCalendar/>)
 	const selectDate = (date: Date) => {

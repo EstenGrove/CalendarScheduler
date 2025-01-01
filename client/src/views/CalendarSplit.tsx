@@ -10,7 +10,7 @@ interface CalendarState {
 
 type Props = {
 	calendarState: CalendarState;
-	selectedDate: Date | null;
+	selectedDate: Date | string | null;
 	eventsSummary: MonthlySummary;
 	eventItems: CalendarEvent[];
 	onDateSelect: (date: Date) => void;

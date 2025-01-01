@@ -13,6 +13,7 @@ import SummaryDayView from "./views/SummaryDayView";
 import SummaryMonthView from "./views/SummaryMonthView";
 import SummaryYearView from "./views/SummaryYearView";
 import SummaryRangeView from "./views/SummaryRangeView";
+import PageNotFound from "./pages/PageNotFound";
 
 const routePaths = {
 	dashboard: "./pages/Dashboard",
@@ -20,11 +21,11 @@ const routePaths = {
 	calendarLayout: "./pages/DashboardCalendarLayout",
 	calendarEvent: "./pages/DashboardCalendarEvent",
 	workouts: "./pages/DashboardWorkouts",
-	history: "./pages/DashboardWorkoutHistory",
 	health: "./pages/DashboardHealthProfile",
 	tracker: "./pages/DashboardWorkoutTracker",
 	settings: "./pages/DashboardSettings.tsx",
 	summary: "./pages/DashboardSummary.tsx",
+	history: "./pages/DashboardWorkoutHistory",
 	logs: "./pages/DashboardWorkoutLogs.tsx",
 };
 
@@ -151,6 +152,7 @@ function App() {
 									<Route path="range" element={<SummaryRangeView />} />
 								</Route>
 							</Route>
+							<Route path="*" element={<PageNotFound />} />
 						</Routes>
 					</div>
 				</div>

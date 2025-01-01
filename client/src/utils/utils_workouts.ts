@@ -242,6 +242,8 @@ const prepareNewWorkoutWithPlan = (
 	return { event: eventValues, workout: workoutValues };
 };
 
+// WORKOUT TRACKER
+
 export {
 	prepareRecurring,
 	prepareNewWorkout,

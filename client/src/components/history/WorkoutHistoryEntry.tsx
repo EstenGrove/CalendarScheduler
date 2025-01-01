@@ -1,174 +1,479 @@
-import React from "react";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/history/WorkoutHistoryEntry.module.scss";
-import { getActivityTypeFromWorkoutTypeID } from "../../utils/utils_workoutPlans";
+import { differenceInHours, format } from "date-fns";
+import { HistoryEntry } from "../../features/workoutHistory/types";
+import { useRef, useState } from "react";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
-type Props = {};
-
-const NotComplete = () => {
-	return (
-		<div className={styles.NotComplete}>
-			<div className={styles.NotComplete_dot}></div>
-			<div className={styles.NotComplete_label}>Not-Done</div>
-		</div>
-	);
+type Props = {
+	entry: HistoryEntry;
 };
-const InProgress = () => {
-	return (
-		<div className={styles.InProgress}>
-			<div className={styles.InProgress_dot}></div>
-			<div className={styles.InProgress_label}>In-Progress</div>
-		</div>
-	);
+type ItemProps = {
+	icon: keyof typeof iconOpts;
+	recorded: number;
+	target: number;
+	label: string;
 };
-const Completed = () => {
-	return (
-		<div className={styles.Completed}>
-			<div className={styles.Completed_dot}></div>
-			<div className={styles.Completed_label}>Done</div>
-		</div>
-	);
+type RecordedItemsProps = {
+	entry: HistoryEntry;
 };
-const PastDue = () => {
-	return (
-		<div className={styles.PastDue}>
-			<div className={styles.PastDue_dot}></div>
-			<div className={styles.PastDue_label}>Past-Due</div>
-		</div>
-	);
+type TimeProps = {
+	startTime: string;
+	endTime: string;
 };
-
-const Status = () => {
-	return (
-		<div className={styles.Status}>
-			{/*  */}
-			{/*  */}
-			{/*  */}
-		</div>
-	);
+type ItemBadgeProps = {
+	icon: keyof typeof iconOpts;
 };
-const EntryHeader = ({ historyEntry }) => {
-	const { name, desc } = historyEntry.workout;
-	const { startTime, endTime } = historyEntry.entry;
-
-	return (
-		<div className={styles.EntryHeader}>
-			<div className={styles.EntryHeader_details}>
-				<div className={styles.EntryHeader_details_name}>
-					{name || "Planked Pull-Ups"}
-				</div>
-				<div className={styles.EntryHeader_details_desc}>
-					{startTime || "9:15 AM"} to {endTime || "9:45 AM"}
-				</div>
-			</div>
-		</div>
-	);
-};
-
-const iconTypes = {
-	walk: "directions_walk",
-	run: "directions_run",
-	distance: "follow_the_signs",
-	weight: "fitness_center",
-	sport: "sports_tennis",
-	timed: "timer",
-};
-
-const getIconType = (val: string) => {
-	const key = val || "weight";
-	return iconTypes[key as keyof object];
-};
-
-const fake = {
-	1: "var(--accent-green)",
-	2: "var(--accent-purple)",
-	7: "var(--accent-yellow)",
-	8: "var(--accent-red)",
-};
-
-const getTypeFromID = (id: number) => {
-	const type = getActivityTypeFromWorkoutTypeID(id);
-
-	return type;
-};
-
-type ActivityProps = {
-	// workout: UserWorkout;
-};
-
-const ActivityType = ({ workout }: ActivityProps) => {
-	const cssColor = {};
-	const icon = "timer";
-	return (
-		<div className={styles.ActivityType}>
-			<svg className={styles.ActivityType_icon} style={cssColor}>
-				<use xlinkHref={`${sprite}#icon-${icon}`}></use>
-			</svg>
-		</div>
-	);
-};
-
+// Recorded Item by Activity Type props
 type WeightProps = {
-	weight: number;
+	// actual
+	recordedReps: number;
+	recordedSets: number;
+	recordedWeight: number;
+	// targets
+	targetReps: number;
+	targetSets: number;
+	targetWeight: number;
 };
-const WeightBadge = ({ weight }: WeightProps) => {
+type WalkItemProps = {
+	recordedMins: number;
+	recordedSteps: number;
+	recordedMiles: number;
+	targetMins: number;
+	targetSteps: number;
+	targetMiles: number;
+};
+type CardioItemProps = {
+	// actual
+	recordedMins: number;
+	recordedReps: number;
+	recordedSets: number;
+	// targets
+	targetMins: number;
+	targetReps: number;
+	targetSets: number;
+};
+type TimedItemsProps = {
+	recordedMins: number;
+	targetMins: number;
+};
+type MenuProps = {
+	closeMenu: () => void;
+	viewLog: () => void;
+	editLog: () => void;
+	deleteLog: () => void;
+};
+type MenuIconProps = {
+	openMenu: () => void;
+};
+const iconOpts = {
+	time: "timer",
+	miles: "follow_the_signs",
+	steps: "directions_walk",
+	weight: "fitness_center",
+	lbs: "fitness_center",
+	reps: "timelapse",
+	sets: "timelapse",
+	run: "directions_run",
+	stretch: "accessibility",
+	done: "done",
+	doneAll: "done_all",
+	notDone: "clear",
+} as const;
+
+const getActivityTypeFromEntry = (entry: HistoryEntry): string => {
+	const type = entry.activityType || entry.workoutType;
+
+	switch (type) {
+		case "weight":
+			return "weight";
+		case "walk":
+			return "miles";
+		case "stretch":
+			return "stretch";
+		case "other":
+			return "doneAll";
+
+		default:
+			return "time";
+	}
+};
+
+const formatThousand = (value: number): string => {
+	if (Number(value) >= 1000) {
+		const newStr = Math.floor(value / 100) / 10.0;
+		return newStr + "k";
+	} else {
+		return String(value);
+	}
+};
+
+const getTimeMsg = (startTime: string, endTime: string) => {
+	const greaterThan10Hours = differenceInHours(endTime, startTime) >= 10;
+
+	const start = format(startTime, "h:mm a");
+
+	if (greaterThan10Hours) {
+		return "All Day";
+	} else {
+		return "at " + start;
+	}
+};
+const Item = ({ icon, recorded, target, label }: ItemProps) => {
+	const isDone = recorded >= target;
+	const newStepsR = formatThousand(recorded);
+
 	return (
-		<div className={styles.WeightBadge}>
-			<svg className={styles.WeightBadge_icon}>
-				<use xlinkHref={`${sprite}#icon-fitness_center`}></use>
-			</svg>
-			<span>{weight}lbs.</span>
+		<div className={styles.ItemAlt}>
+			<IconBadge icon={icon} isDone={isDone} />
+			<div className={styles.ItemAlt_recorded}>
+				<div className={styles.ItemAlt_recorded_actual}>{newStepsR}</div>
+			</div>
+			<div className={styles.ItemAlt_label}>{label}</div>
 		</div>
 	);
 };
-type MinsProps = {
-	mins: number;
-};
-const MinutesBadge = ({ mins }: MinsProps) => {
+const TimeEntry = ({ startTime, endTime }: TimeProps) => {
+	const timeMsg: string = getTimeMsg(startTime, endTime);
 	return (
-		<div className={styles.MinutesBadge}>
-			<svg className={styles.MinutesBadge_icon}>
-				<use xlinkHref={`${sprite}#icon-timer`}></use>
+		<div className={styles.TimeEntry}>
+			<span>{timeMsg}</span>
+		</div>
+	);
+};
+
+const Mins = ({ mins }: { mins: number }) => {
+	return (
+		<div className={styles.Mins}>
+			<svg className={styles.Mins_icon}>
+				<use xlinkHref={`${sprite}#icon-stopwatch`}></use>
 			</svg>
 			<span>{mins}m</span>
 		</div>
 	);
 };
-
-const WorkoutHistoryEntry = ({ history }: Props) => {
-	const { entry, workout } = history;
-
-	console.log("entry", entry);
+const IconBadge = ({ icon = "timer", isDone = false }) => {
+	const name = iconOpts[icon as keyof object];
+	const iconCss = {
+		fill: isDone ? "var(--accent-green)" : "var(--accent-red3)",
+	};
 	return (
-		<div className={styles.WorkoutHistoryEntry}>
-			{/* LEFT */}
-			<div className={styles.WorkoutHistoryEntry_type}>
-				<ActivityType />
+		<div className={styles.RecordedItems_item_badge}>
+			<svg className={styles.RecordedItems_item_badge_icon} style={iconCss}>
+				<use xlinkHref={`${sprite}#icon-${name}`}></use>
+			</svg>
+		</div>
+	);
+};
+const WeightItems = ({
+	// actual
+	recordedReps,
+	recordedSets,
+	recordedWeight,
+	// targets
+	targetReps,
+	targetSets,
+	targetWeight,
+}: WeightProps) => {
+	const isRepsDone = recordedReps >= targetReps;
+	const isSetsDone = recordedSets >= targetSets;
+	const isCorrectWeight = recordedWeight >= targetWeight;
+	return (
+		<div className={styles.RecordedItems}>
+			{/* WEIGHT */}
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isCorrectWeight ? "done" : "notDone"}
+					recorded={recordedWeight}
+					target={targetWeight}
+					label="lbs."
+				/>
 			</div>
-			{/* MAIN BODY */}
-			<div className={styles.WorkoutHistoryEntry_main}>
-				<div className={styles.WorkoutHistoryEntry_main_header}>
-					<EntryHeader historyEntry={history} />
+			{/* REPS */}
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isRepsDone ? "done" : "notDone"}
+					recorded={recordedReps}
+					target={targetReps}
+					label="reps"
+				/>
+			</div>
+			{/* SETS */}
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isSetsDone ? "done" : "notDone"}
+					recorded={recordedSets}
+					target={targetSets}
+					label="sets"
+				/>
+			</div>
+		</div>
+	);
+};
+const WalkItems = ({
+	// actual
+	recordedMins,
+	recordedSteps,
+	recordedMiles,
+	// target
+	targetMins,
+	targetSteps,
+	targetMiles,
+}: WalkItemProps) => {
+	const isMinsDone = recordedMins >= targetMins;
+	const isStepsDone = recordedSteps >= targetSteps;
+	const isMilesDone = recordedMiles >= targetMiles;
+	return (
+		<div className={styles.RecordedItems}>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isMinsDone ? "done" : "notDone"}
+					recorded={recordedMins}
+					target={targetMins}
+					label="mins"
+				/>
+			</div>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isStepsDone ? "done" : "notDone"}
+					recorded={recordedSteps}
+					target={targetSteps}
+					label="steps"
+				/>
+			</div>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isMilesDone ? "done" : "notDone"}
+					recorded={recordedMiles}
+					target={targetMiles}
+					label="mi"
+				/>
+			</div>
+		</div>
+	);
+};
+const CardioItems = ({
+	// actual
+	recordedMins,
+	recordedReps,
+	recordedSets,
+	// targets
+	targetMins,
+	targetReps,
+	targetSets,
+}: CardioItemProps) => {
+	const isRepsDone = recordedReps >= targetReps;
+	const isSetsDone = recordedSets >= targetSets;
+	const isMinsDone = recordedMins >= targetMins;
+	return (
+		<div className={styles.RecordedItems}>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isMinsDone ? "done" : "notDone"}
+					recorded={recordedMins}
+					target={targetMins}
+					label="mins"
+				/>
+			</div>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isRepsDone ? "done" : "notDone"}
+					recorded={recordedReps}
+					target={targetReps}
+					label="reps"
+				/>
+			</div>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isSetsDone ? "done" : "notDone"}
+					recorded={recordedSets}
+					target={targetSets}
+					label="sets"
+				/>
+			</div>
+		</div>
+	);
+};
+// Stretch, timed
+const TimedItems = ({
+	// actual
+	recordedMins,
+	// target
+	targetMins,
+}: TimedItemsProps) => {
+	const isMinsDone = recordedMins >= targetMins;
+	return (
+		<div className={styles.RecordedItems}>
+			<div className={styles.RecordedItems_item}>
+				<Item
+					icon={isMinsDone ? "done" : "notDone"}
+					recorded={recordedMins}
+					target={targetMins}
+					label="mins"
+				/>
+			</div>
+		</div>
+	);
+};
+const RecordedItems = ({ entry }: RecordedItemsProps) => {
+	const {
+		activityType,
+		recordedMins,
+		recordedSteps,
+		recordedMiles,
+		recordedReps,
+		recordedSets,
+		recordedWeight,
+		// target
+		targetMins,
+		targetSteps,
+		targetMiles,
+		targetReps,
+		targetSets,
+		targetWeight,
+	} = entry;
+	// const isRepititionType =
+
+	return (
+		<>
+			{activityType === "weight" && (
+				<WeightItems
+					recordedReps={recordedReps}
+					recordedSets={recordedSets}
+					recordedWeight={recordedWeight}
+					targetWeight={targetWeight}
+					targetReps={targetReps}
+					targetSets={targetSets}
+				/>
+			)}
+			{activityType === "cardio" && (
+				<CardioItems
+					recordedMins={recordedMins}
+					recordedReps={recordedReps}
+					recordedSets={recordedSets}
+					targetMins={targetMins}
+					targetReps={targetReps}
+					targetSets={targetSets}
+				/>
+			)}
+			{(activityType === "walk" || activityType === "distance") && (
+				<WalkItems
+					recordedMins={recordedMins}
+					recordedSteps={recordedSteps}
+					recordedMiles={recordedMiles}
+					targetMins={targetMins}
+					targetSteps={targetSteps}
+					targetMiles={targetMiles}
+				/>
+			)}
+			{(activityType === "timed" ||
+				activityType === "stretch" ||
+				activityType === "other") && (
+				<TimedItems recordedMins={recordedMins} targetMins={targetMins} />
+			)}
+		</>
+	);
+};
+
+const MenuIcon = ({ openMenu }: MenuIconProps) => {
+	return (
+		<div onClick={openMenu} className={styles.MenuIcon}>
+			<svg className={styles.MenuIcon_icon}>
+				<use xlinkHref={`${sprite}#icon-keyboard_control`}></use>
+			</svg>
+		</div>
+	);
+};
+
+const ItemHeader = ({ entry }: Props) => {
+	return (
+		<div className={styles.ItemHeader}>
+			<div className={styles.ItemHeader_name}>{entry.name}</div>
+			<div className={styles.ItemHeader_time}>2 days ago (12/30/2024)</div>
+		</div>
+	);
+};
+const ItemBadge = ({ icon = "time" }: ItemBadgeProps) => {
+	const name = iconOpts[icon as keyof object];
+
+	return (
+		<div className={styles.ItemBadge}>
+			<svg className={styles.ItemBadge_icon}>
+				<use xlinkHref={`${sprite}#icon-${name}`}></use>
+			</svg>
+		</div>
+	);
+};
+
+const MenuOptions = ({ closeMenu, viewLog, editLog, deleteLog }: MenuProps) => {
+	const menuRef = useRef<HTMLDivElement>(null);
+	useOutsideClick(menuRef, closeMenu);
+	return (
+		<div ref={menuRef} className={styles.MenuOptions}>
+			<ul className={styles.MenuOptions_list}>
+				<li onClick={viewLog} className={styles.MenuOptions_list_item}>
+					View
+				</li>
+				<li onClick={editLog} className={styles.MenuOptions_list_item}>
+					Edit
+				</li>
+				<li onClick={deleteLog} className={styles.MenuOptions_list_item}>
+					Delete
+				</li>
+			</ul>
+		</div>
+	);
+};
+
+const WorkoutHistoryEntry = ({ entry }: Props) => {
+	const type = getActivityTypeFromEntry(entry) as keyof typeof iconOpts;
+	const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+	const viewHistoryEntry = () => {
+		// do stuff
+	};
+	const editHistoryEntry = () => {
+		// do stuff
+	};
+	const deleteHistoryEntry = () => {
+		// do stuff
+	};
+
+	const openMenu = () => {
+		setShowMoreOptions(true);
+	};
+	const closeMenu = () => {
+		setShowMoreOptions(false);
+	};
+
+	return (
+		<div className={styles.HistoryItem}>
+			<div className={styles.HistoryItem_top}>
+				<div className={styles.HistoryItem_top_main}>
+					<ItemBadge icon={type} />
+					<ItemHeader entry={entry} />
 				</div>
-				<div className={styles.WorkoutHistoryEntry_main_badges}>
-					<MinutesBadge mins={workout.mins || 30} />
-					<WeightBadge weight={workout.weight || 20} />
+				<div className={styles.HistoryItem_top_more}>
+					<MenuIcon openMenu={openMenu} />
+					{showMoreOptions && (
+						<MenuOptions
+							viewLog={viewHistoryEntry}
+							editLog={editHistoryEntry}
+							deleteLog={deleteHistoryEntry}
+							closeMenu={closeMenu}
+						/>
+					)}
 				</div>
 			</div>
-			{/* RIGHT */}
-			<div className={styles.WorkoutHistoryEntry_more}>
-				<div className={styles.WorkoutHistoryEntry_more_options}>
-					<div className={styles.WorkoutHistoryEntry_more_options_wrapper}>
-						<svg
-							className={styles.WorkoutHistoryEntry_more_options_wrapper_icon}
-						>
-							<use xlinkHref={`${sprite}#icon-keyboard_control`}></use>
-						</svg>
-					</div>
-				</div>
-				<div className={styles.WorkoutHistoryEntry_more_status}>
-					<Completed />
-				</div>
+			<div className={styles.HistoryItem_recorded}>
+				<RecordedItems entry={entry} />
+			</div>
+			<div className={styles.HistoryItem_bottom}>
+				<Mins mins={entry.recordedMins} />
+				<TimeEntry
+					startTime={"2024-12-31T19:02:00.000Z"}
+					endTime={"2024-12-31T19:32:00.000Z"}
+				/>
 			</div>
 		</div>
 	);

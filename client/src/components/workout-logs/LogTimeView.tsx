@@ -54,7 +54,7 @@ const LogTimeView = ({
 					<TimePicker
 						name="startTime"
 						onChange={handleChange}
-						initialTime={formatTime(new Date(), "long")}
+						value={formatTime(new Date(), "long")}
 					/>
 				</div>
 				{!!approxEnd && (
