@@ -85,7 +85,6 @@ export interface HistoryEntry {
 	planID: number;
 	historyID: number;
 	workoutID: number;
-	workoutTypeID: number;
 	workoutType: WorkoutTypeName;
 	activityType: WorkoutActivityType;
 	name: string;

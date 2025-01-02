@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import styles from "../../css/summary/DiffWeekSummary.module.scss";
-import { formatDate, WEEK_DAYS } from "../../utils/utils_dates";
+import { formatDate, formatDateAsWeekDay } from "../../utils/utils_dates";
 import { eachDayOfInterval, subDays, subWeeks } from "date-fns";
 
 interface DiffDay {
@@ -10,19 +10,13 @@ interface DiffDay {
 
 type Props = {
 	data: {
-		// lastWeek: number[];
-		// thisWeek: number[];
 		lastWeek: DiffDay[];
 		thisWeek: DiffDay[];
 	};
 };
 
-// ['S', 'M', 'T', 'W, 'T', 'F', 'S']
-const weekDays: string[] = [...WEEK_DAYS].map((day) => day.slice(0, 1));
-
 const dayMinsRange = {
 	min: 0,
-	// max: 180, // max # of mins to workout a day
 	max: 240, // max # of mins to workout a day
 	// max: 1440, // # of mins in a day
 	// max: 1080, // 18 hrs in mins
@@ -32,10 +26,13 @@ const getHeightFromValue = (valueInMins: number = 0) => {
 	const percentage = valueInMins / dayMinsRange.max;
 
 	return percentage * 600;
-	// return percentage * 7000;
 };
 
-const WeekDayLabels = () => {
+type WeekDayProps = {
+	weekDays: string[];
+};
+
+const WeekDayLabels = ({ weekDays }: WeekDayProps) => {
 	return (
 		<div className={styles.WeekDayLabels}>
 			{weekDays.map((day, idx) => (
@@ -48,15 +45,11 @@ const WeekDayLabels = () => {
 };
 
 type BarProps = {
-	// lastWeekDay: DiffDay;
-	// thisWeekDay: DiffDay;
-	// color: string;
 	diffValue: number;
 	value: number;
 	color: string;
 };
 
-// const WeekDayBar = ({ diffValue, value, color }: BarProps) => {
 const WeekDayBar = ({ diffValue, value, color }: BarProps) => {
 	const height: number = getHeightFromValue(value);
 	const css = {
@@ -141,9 +134,19 @@ interface DiffDay {
 	date: Date | string;
 }
 
+const getDayLabels = (thisWeek: DiffDay[]) => {
+	const dayLabels = thisWeek.map((day) => {
+		const weekdate = formatDateAsWeekDay(day.date);
+		return weekdate.slice(0, 1);
+	});
+
+	return dayLabels;
+};
+
 const DiffWeekSummary = ({ data = dummy }: Props) => {
 	const { lastWeek, thisWeek } = data;
-	console.log("data", data);
+	const dayLabels = getDayLabels(thisWeek);
+	console.log("dayLabels", dayLabels);
 
 	return (
 		<div className={styles.DiffWeekSummary}>
@@ -171,7 +174,7 @@ const DiffWeekSummary = ({ data = dummy }: Props) => {
 				})}
 			</div>
 			<div className={styles.DiffWeekSummary_labels}>
-				<WeekDayLabels />
+				<WeekDayLabels weekDays={dayLabels} />
 			</div>
 		</div>
 	);

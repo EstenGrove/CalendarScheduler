@@ -117,16 +117,17 @@ const getChangesDiff = (prevValue: number, curValue: number): DiffData => {
 	if (curValue < prevValue) {
 		const decrease = ((prevValue - curValue) / prevValue) * 100;
 		const diff = parseFloat(decrease.toFixed(2));
+
 		return {
 			type: "DECREASED",
-			diff: diff,
+			diff: diff === Infinity ? 100 : diff,
 		};
 	} else {
 		const increase = ((curValue - prevValue) / prevValue) * 100;
 		const diff = parseFloat(increase.toFixed(2));
 		return {
 			type: "INCREASED",
-			diff: diff,
+			diff: diff === Infinity ? 100 : diff,
 		};
 	}
 };
@@ -183,8 +184,6 @@ const DiffDisplay = ({
 	const { type, diff } = getChangesDiff(prevValue, curValue);
 	const newDate = processDate(date);
 
-	if (label === "mins.") {
-	}
 	return (
 		<div className={styles.DiffDisplay}>
 			<div className={styles.DiffDisplay_current}>

@@ -9,9 +9,13 @@ export interface SummaryArgs {
 	startDate: string;
 	endDate: string;
 }
+export interface TwoWeekRanges {
+	currentWeek: SummaryArgs;
+	prevWeek: SummaryArgs;
+}
 
 // Gets mins, totals & streak for a given week & the week prior
-const getSummaryWeekData = async (
+const getSummaryWeekData2 = async (
 	userID: string,
 	params: SummaryArgs
 ): Promise<SummaryByWeekDB | unknown> => {
@@ -33,6 +37,32 @@ const getSummaryWeekData = async (
 		startDate: prevStart,
 		endDate: prevEnd,
 	});
+
+	return {
+		currentWeek: weekData,
+		prevWeek: prevData,
+	};
+};
+
+const getSummaryWeekData = async (
+	userID: string,
+	params: TwoWeekRanges
+): Promise<SummaryByWeekDB | unknown> => {
+	// target week range (start/end)
+	const weekStart = params.currentWeek.startDate;
+	const weekEnd = params.currentWeek.endDate;
+	// prev week range
+	const prevStart = params.prevWeek.startDate;
+	const prevEnd = params.prevWeek.endDate;
+
+	const weekData = (await getSummaryWeek(userID, {
+		startDate: weekStart,
+		endDate: weekEnd,
+	})) as SummaryByWeekDB;
+	const prevData = (await getSummaryWeek(userID, {
+		startDate: prevStart,
+		endDate: prevEnd,
+	})) as SummaryByWeekDB;
 
 	return {
 		currentWeek: weekData,

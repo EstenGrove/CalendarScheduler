@@ -2,19 +2,25 @@ import styles from "../css/pages/DashboardWorkoutHistory.module.scss";
 import sprite from "../assets/icons/calendar.svg";
 import { ChangeEvent, useState } from "react";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "../store/store";
-import { CurrentUser } from "../features/user/types";
-import { selectCurrentUser } from "../features/user/userSlice";
 import { HistoryEntry } from "../features/workoutHistory/types";
+import { FilterSettings, initialFilters } from "../utils/utils_filters";
+import { selectWorkoutHistory } from "../features/workoutHistory/historySlice";
 // components
 import WorkoutHistoryEntry from "../components/history/WorkoutHistoryEntry";
 import WorkoutHistoryFilters from "../components/history/WorkoutHistoryFilters";
-import { FilterSettings, initialFilters } from "../utils/utils_filters";
-import { selectWorkoutHistory } from "../features/workoutHistory/historySlice";
 
-const fake1 = {
+const fake1: HistoryEntry = {
+	planID: 23,
+	historyID: 12,
+	workoutID: 4,
+	workoutType: "Curls",
 	name: "Weekly Curls (3x/week)",
+	desc: "",
 	activityType: "weight",
+	date: "2024-12-30",
+	startTime: "2024-12-30T09:22:000Z",
+	endTime: "2024-12-30T09:46:000Z",
+	// recorded & target values
 	targetMins: 30,
 	targetReps: 20,
 	targetSets: 4,
@@ -28,32 +34,19 @@ const fake1 = {
 	recordedMiles: 0,
 	recordedSteps: 0,
 	recordedWeight: 20,
-	workout: {
-		workoutID: 1,
-		name: "Curls (3x a week)",
-		desc: "Curls performed 3x a week",
-	},
-	entry: {
-		historyID: 1,
-		userID: "XXXX-XXXX-XXXXXX",
-		date: "2024-12-23",
-		startTime: "9:30 AM",
-		endTime: "9:45 AM",
-		mins: 15,
-		reps: 0,
-		sets: 0,
-		steps: 0,
-		miles: 0,
-		isCompleted: true,
-	},
 };
 
 const fake2: HistoryEntry = {
 	planID: 0,
 	historyID: 0,
+	workoutID: 8,
 	name: "Daily Walk (30mins)",
+	desc: "",
 	workoutType: "Free Walk",
 	activityType: "walk",
+	date: "2024-12-30",
+	startTime: "2024-12-30T09:22:000Z",
+	endTime: "2024-12-30T09:46:000Z",
 	targetMins: 30,
 	targetReps: 0,
 	targetSets: 0,
@@ -71,9 +64,14 @@ const fake2: HistoryEntry = {
 const fake3: HistoryEntry = {
 	planID: 0,
 	historyID: 0,
+	workoutID: 99,
 	name: "Yoga Stretching",
+	desc: "",
 	workoutType: "Stretch",
 	activityType: "stretch",
+	date: "2024-12-30",
+	startTime: "2024-12-30T09:22:000Z",
+	endTime: "2024-12-30T09:46:000Z",
 	targetMins: 25,
 	targetReps: 0,
 	targetSets: 0,
@@ -96,8 +94,6 @@ const historyEntries = [fake1, fake2, fake3, fake2, fake1, fake1];
 // - Quick access filters NEED to be included in 'FilterSettings'
 
 const DashboardWorkoutHistory = () => {
-	const dispatch = useAppDispatch();
-	const currentUser: CurrentUser = useSelector(selectCurrentUser);
 	const workoutHistory = useSelector(selectWorkoutHistory);
 	// filters
 	const [filterSettings, setFilterSettings] =
@@ -106,6 +102,8 @@ const DashboardWorkoutHistory = () => {
 
 	const handleSearch = (name: string, value: string) => {
 		// do stuff
+		console.log("name", name);
+		console.log("value", value);
 	};
 	const clearSearch = () => {
 		// do stuff
