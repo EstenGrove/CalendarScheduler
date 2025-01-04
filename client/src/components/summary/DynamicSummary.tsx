@@ -1,8 +1,6 @@
-import React from "react";
 import styles from "../../css/summary/DynamicSummary.module.scss";
 import SummaryCard from "./SummaryCard";
 import Loader from "../ui/Loader";
-import BarSummary from "./BarSummary";
 import ScoreCard from "./ScoreCard";
 import {
 	CustomDateRange,
@@ -26,8 +24,6 @@ const DynamicSummary = ({ isLoading, rangeSummary, dateRange }: Props) => {
 	const { perDay, summary } = rangeSummary;
 	const barChartData = prepareBarChartData(perDay);
 	const { totalMins, totalReps, totalSteps, totalNumOfWorkouts } = summary;
-
-	console.log("barChartData", barChartData);
 
 	return (
 		<div className={styles.DynamicSummary}>

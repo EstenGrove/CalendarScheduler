@@ -168,6 +168,7 @@ const SummaryWeekView = () => {
 	// filters
 	const [showFilters, setShowFilters] = useState(false);
 	const [filters, setFilters] = useState<Filters>(range);
+	console.log("filters", filters);
 
 	const getFilteredWeekly = () => {
 		// fetch data
@@ -217,17 +218,16 @@ const SummaryWeekView = () => {
 				<>
 					<SummaryViewFilters>
 						<QuickFilterButton onClick={getFilteredWeekly}>
-							This Week
+							Last 7 days
 						</QuickFilterButton>
 						<FiltersButton onClick={openFilters}>Filters</FiltersButton>
 					</SummaryViewFilters>
 					{/* LEFT */}
 					<MainCard
 						title="Weekly Mins."
-						details={"Showing last week & this week"}
+						details={"Showing last 7 days & week prior"}
 					>
 						<DiffWeekSummary data={weeklyMins} />
-						{/* <DiffWeekSummary /> */}
 					</MainCard>
 					<CardLG>
 						<SummaryTotals currentWeek={curTotals} prevWeek={prevTotals} />

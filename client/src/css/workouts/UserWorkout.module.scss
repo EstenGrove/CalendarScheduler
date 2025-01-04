@@ -2,9 +2,13 @@
 @import "../../sass/mixins";
 @import "../../sass/custom";
 
-// $userAccent: var(--accent-purple);
-// $userAccent: var(--accent);
 $userAccent: var(--accent-blue);
+
+.UserWorkoutWrapper {
+	width: 100%;
+	height: max-content;
+	position: relative;
+}
 
 .UserWorkout {
 	width: 100%;
@@ -15,6 +19,9 @@ $userAccent: var(--accent-blue);
 	@include flex_row(flex-start, flex-start, wrap);
 	border-left: 4px solid $userAccent;
 	border-radius: 0 1rem 1rem 0;
+	background-color: $foreground;
+	z-index: 999;
+	// transition: 0.5s ease-in-out;
 
 	&_type {
 		width: 6rem;
@@ -71,9 +78,52 @@ $userAccent: var(--accent-blue);
 		width: 100%;
 		height: auto;
 		padding: 0 6rem;
+		padding-right: 1rem;
 		padding-bottom: 0.5rem;
 		@include flex_row(flex-start, flex-start);
 		gap: 0 0.5rem;
+
+		&_status {
+			// width: 100%;
+			justify-self: flex-end;
+			margin-left: auto;
+		}
+	}
+}
+
+.SwipeActions {
+	position: absolute;
+	display: block;
+	top: 0.1rem;
+	left: -15rem;
+	width: 15rem;
+	height: 9.5rem;
+	flex-grow: 2;
+	@include flex_row(flex-start, center);
+	z-index: -1;
+
+	&_markDone {
+		width: 50%;
+		height: 100%;
+		background-color: $accentGreen;
+		@include rowCenter();
+
+		&_label {
+			width: max-content;
+			transform: rotate(-90deg);
+			color: #fff;
+		}
+	}
+	&_edit {
+		width: 50%;
+		height: 100%;
+		background-color: var(--yellowTint100);
+		@include rowCenter();
+
+		&_label {
+			transform: rotate(-90deg);
+			color: #fff;
+		}
 	}
 }
 

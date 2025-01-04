@@ -27,6 +27,9 @@ const routePaths = {
 	summary: "./pages/DashboardSummary.tsx",
 	history: "./pages/DashboardWorkoutHistory",
 	logs: "./pages/DashboardWorkoutLogs.tsx",
+	userSettings: "./views/UserSettings.tsx",
+	workoutTypeSettings: "./views/WorkoutTypeSettings.tsx",
+	workoutSettings: "./views/WorkoutSettings.tsx",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
@@ -42,6 +45,11 @@ const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 const LazyDashboardWorkoutTracker = lazy(() => import(routePaths.tracker));
 const LazyDashboardSettings = lazy(() => import(routePaths.settings));
 const LazyDashboardSummary = lazy(() => import(routePaths.summary));
+const LazyUserSettings = lazy(() => import(routePaths.userSettings));
+const LazyWorkoutTypeSettings = lazy(
+	() => import(routePaths.workoutTypeSettings)
+);
+const LazyWorkoutSettings = lazy(() => import(routePaths.workoutSettings));
 
 const Fallback = () => {
 	return (
@@ -136,7 +144,32 @@ function App() {
 											<LazyDashboardSettings />
 										</Suspense>
 									}
-								/>
+								>
+									<Route
+										path="user"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyUserSettings />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="types"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyWorkoutTypeSettings />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="workouts"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyWorkoutSettings />
+											</Suspense>
+										}
+									/>
+								</Route>
 								<Route
 									path="summary"
 									element={

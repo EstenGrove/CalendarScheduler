@@ -21,8 +21,6 @@ const DynamicSummaryView = ({ currentUser, dateRange }: Props) => {
 	const isLoading = useSelector(selectIsLoadingRangeSummary);
 	const rangeSummary = useSelector(selectRangeSummary);
 
-	console.log("dateRange", dateRange);
-
 	const getSummaryData = useCallback(() => {
 		if (currentUser?.userID && dateRange) {
 			const { userID } = currentUser;
@@ -52,17 +50,11 @@ const DynamicSummaryView = ({ currentUser, dateRange }: Props) => {
 
 	return (
 		<div className={styles.DynamicSummaryView}>
-			<div className={styles.DynamicSummaryView_options}>
-				{/* CUSTOM DATE PICKER AND OR SELECT PICKER */}
-				{/* CUSTOM DATE PICKER AND OR SELECT PICKER */}
-			</div>
 			<DynamicSummary
 				isLoading={isLoading}
 				dateRange={dateRange}
 				rangeSummary={rangeSummary}
 			/>
-			{/*  */}
-			{/*  */}
 		</div>
 	);
 };

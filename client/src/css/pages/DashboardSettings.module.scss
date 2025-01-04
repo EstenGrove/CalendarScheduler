@@ -5,7 +5,15 @@
 .DashboardSettings {
 	@include fill_container;
 
+	&_nav {
+		width: 100%;
+		height: auto;
+		padding: 2rem 2rem;
+		border-bottom: $borderLight;
+	}
+
 	&_main {
 		@include fill_container;
+		padding: 2rem;
 	}
 }

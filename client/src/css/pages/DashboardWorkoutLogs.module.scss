@@ -54,8 +54,6 @@ $shadow: rgba(0, 0, 0, 0.25);
 		width: 100%;
 		min-height: auto;
 		height: calc(100dvh - 25rem);
-		// height: 100%;
-		// height: 100dvh;
 
 		&_loading {
 			width: 100%;
@@ -123,5 +121,16 @@ $shadow: rgba(0, 0, 0, 0.25);
 
 	&::placeholder {
 		color: $text2;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.DashboardWorkoutLogs {
+		width: 100%;
+
+		&_list {
+			width: 100%;
+			height: calc(100dvh - 34rem);
+		}
 	}
 }

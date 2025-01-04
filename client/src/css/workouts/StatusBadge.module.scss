@@ -1,0 +1,41 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+@mixin statusBadge($color) {
+	min-width: max-content;
+	width: max-content;
+	padding: 0.2rem 0.7rem;
+	border-radius: 5rem;
+	@include flex_row(center, center);
+	gap: 0 0.5rem;
+	border: 1px solid $color;
+
+	&_dot {
+		width: 1rem;
+		height: 1rem;
+		border-radius: 50%;
+		background-color: $color;
+	}
+	&_label {
+		color: $color;
+		font-size: 1.1rem;
+	}
+}
+
+.StatusBadge {
+	width: max-content;
+}
+
+.NotComplete {
+	@include statusBadge(var(--yellowTint100));
+}
+.Completed {
+	@include statusBadge(var(--accent-green));
+}
+.PastDue {
+	@include statusBadge(var(--accent-red3));
+}
+.InProgress {
+	@include statusBadge(var(--accent-blue));
+}

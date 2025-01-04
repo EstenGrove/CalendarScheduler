@@ -146,7 +146,6 @@ const getDayLabels = (thisWeek: DiffDay[]) => {
 const DiffWeekSummary = ({ data = dummy }: Props) => {
 	const { lastWeek, thisWeek } = data;
 	const dayLabels = getDayLabels(thisWeek);
-	console.log("dayLabels", dayLabels);
 
 	return (
 		<div className={styles.DiffWeekSummary}>

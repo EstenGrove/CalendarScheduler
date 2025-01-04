@@ -142,7 +142,9 @@ $shadow: rgba(0, 0, 0, 0.25);
 		&_list {
 			width: 100%;
 			padding: 0 2rem;
-			height: calc(100dvh - 22rem);
+			padding-top: 1rem;
+			// height: calc(100dvh - 22rem);
+			height: calc(100dvh - 34rem);
 		}
 	}
 }

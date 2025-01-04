@@ -66,6 +66,12 @@ const API_ENDPOINTS = {
 		createLog: "/history/createLog",
 		getLogs: "/history/getWorkoutLogs",
 	},
+	workoutTypes: {
+		getAll: "/workoutTypes/getWorkoutTypes",
+		update: "/workoutTypes/updateWorkoutType",
+		delete: "/workoutTypes/deleteWorkoutType",
+		create: "/workoutTypes/createWorkoutType",
+	},
 	summary: {
 		getDailyMins: "/summary/getDailyMinsSummary",
 		getWeeklyTotals: "/summary/getWeeklyTotals",
@@ -84,6 +90,7 @@ export const {
 	workouts: workoutApis,
 	workoutHistory: historyApis,
 	summary: summaryApis,
+	workoutTypes: workoutTypeApis,
 } = API_ENDPOINTS;
 
 export {

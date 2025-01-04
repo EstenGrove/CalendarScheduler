@@ -1,6 +1,6 @@
 import { eachDayOfInterval } from "date-fns";
 import styles from "../../css/summary/DynamicBarSummary.module.scss";
-import { formatDateAsWeekDay } from "../../utils/utils_dates";
+import { formatDateAsWeekDay, parseDate } from "../../utils/utils_dates";
 import { CustomDateRange } from "../../features/summary/types";
 
 type Props = {
@@ -25,9 +25,15 @@ const getHeightFromValue = (valueInMins: number = 0) => {
 };
 
 const getWeekdayLabels = (startDate: Date | string, endDate: Date | string) => {
-	const dates = eachDayOfInterval({ start: startDate, end: endDate });
+	const parsedStart = parseDate(startDate.toString(), "input");
+	const parsedEnd = parseDate(endDate.toString(), "input");
+	const dates = eachDayOfInterval({
+		start: parsedStart,
+		end: parsedEnd,
+	});
 	const weekdays = dates.map((date) => {
-		return formatDateAsWeekDay(date, "letter");
+		const weekday = formatDateAsWeekDay(date);
+		return weekday.slice(0, 1);
 	});
 
 	return weekdays;
