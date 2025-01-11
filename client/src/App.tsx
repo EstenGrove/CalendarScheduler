@@ -27,6 +27,9 @@ const routePaths = {
 	summary: "./pages/DashboardSummary.tsx",
 	history: "./pages/DashboardWorkoutHistory",
 	logs: "./pages/DashboardWorkoutLogs.tsx",
+	goals: "./pages/DashboardGoals.tsx",
+	userGoals: "./views/UserGoalsView.tsx",
+	userGoalsProgress: "./views/UserGoalsProgressView.tsx",
 	userSettings: "./views/UserSettings.tsx",
 	workoutTypeSettings: "./views/WorkoutTypeSettings.tsx",
 	workoutSettings: "./views/WorkoutSettings.tsx",
@@ -40,6 +43,11 @@ const LazyDashboardLayout = lazy(() => import(routePaths.dashboardLayout));
 const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
 const LazyDashboardCalendarLayout = lazy(
 	() => import(routePaths.calendarLayout)
+);
+const LazyDashboardGoals = lazy(() => import(routePaths.goals));
+const LazyDashboardUserGoals = lazy(() => import(routePaths.userGoals));
+const LazyDashboardGoalsProgress = lazy(
+	() => import(routePaths.userGoalsProgress)
 );
 const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 const LazyDashboardWorkoutTracker = lazy(() => import(routePaths.tracker));
@@ -129,6 +137,31 @@ function App() {
 										</Suspense>
 									}
 								/>
+								<Route
+									path="goals"
+									element={
+										<Suspense fallback={<Fallback />}>
+											<LazyDashboardGoals />
+										</Suspense>
+									}
+								>
+									<Route
+										path="current"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyDashboardUserGoals />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="progress"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyDashboardGoalsProgress />
+											</Suspense>
+										}
+									/>
+								</Route>
 								<Route
 									path="tracker"
 									element={

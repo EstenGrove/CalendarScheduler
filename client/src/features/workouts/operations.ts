@@ -1,9 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+	cancelWorkoutForDate,
+	CancelWorkoutParams,
 	createNewWorkout,
 	CreateWorkoutResponse,
 	getWorkouts,
 	getWorkoutsByDate,
+	markWorkoutAsComplete,
 } from "../../utils/utils_workouts";
 import {
 	NewWorkoutAndPlan,
@@ -51,10 +54,27 @@ export interface UserWorkoutsResp {
 	workouts: UserWorkout[];
 }
 
+export interface MarkAsDoneBatchParams {
+	workoutIDs: number[];
+	workoutDate: string;
+}
 export interface MarkAsDoneParams {
 	userID: string;
-	workoutIDs: number[];
-	targetDate: string;
+	updatedWorkout: UserWorkout;
+	workoutDate: string;
+}
+export interface MarkAsParams {
+	updatedWorkout: UserWorkout;
+	workoutDate: string;
+}
+
+export interface MarkWorkoutDoneParams {
+	userID: string;
+	workoutID: number;
+	workoutDate: string;
+	startTime: string;
+	endTime: string;
+	isCompleted: boolean;
 }
 
 const createWorkoutWithPlan = createAsyncThunk(
@@ -113,12 +133,42 @@ const fetchWorkoutPlans = createAsyncThunk(
 		return data as { workoutPlans: WorkoutPlan[] };
 	}
 );
-const markWorkoutAsComplete = createAsyncThunk(
-	"workouts/markWorkoutAsComplete",
-	async (params) => {
-		// const { userID, workoutIDs, targetDate } = params;
-		//
-		console.log("params", params);
+const markWorkoutAsDone = createAsyncThunk(
+	"workouts/markWorkoutAsDone",
+	async (params: MarkWorkoutDoneParams) => {
+		const { userID, workoutID, workoutDate, startTime, endTime, isCompleted } =
+			params;
+		const response = (await markWorkoutAsComplete(userID, {
+			workoutID,
+			workoutDate,
+			startTime,
+			endTime,
+			isCompleted,
+		})) as AwaitedResponse<{ updatedWorkout: UserWorkout }>;
+
+		const data = response.Data;
+
+		return data.updatedWorkout as UserWorkout;
+	}
+);
+const cancelWorkoutByDate = createAsyncThunk(
+	"workouts/cancelWorkoutByDate",
+	async (params: CancelWorkoutParams) => {
+		const {
+			userID,
+			workoutID,
+			workoutDate,
+			cancelReason = "Not available",
+		} = params;
+		const response = (await cancelWorkoutForDate(userID, {
+			userID: userID,
+			workoutID: workoutID,
+			workoutDate: workoutDate,
+			cancelReason: cancelReason,
+		})) as AwaitedResponse<{ cancelledWorkout: UserWorkout }>;
+		const data = response.Data;
+
+		return data.cancelledWorkout as UserWorkout;
 	}
 );
 
@@ -127,5 +177,6 @@ export {
 	fetchWorkoutPlans,
 	fetchWorkouts,
 	fetchWorkoutsByDate,
-	markWorkoutAsComplete,
+	markWorkoutAsDone,
+	cancelWorkoutByDate,
 };

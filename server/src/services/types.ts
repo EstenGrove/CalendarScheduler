@@ -15,6 +15,13 @@ export type EventFrequency =
 	| "Custom"
 	| "Never";
 
+export type WorkoutStatus =
+	| "COMPLETE"
+	| "NOT-COMPLETE"
+	| "IN-PROGRESS"
+	| "CANCELLED"
+	| "PAST-DUE";
+
 export interface CreateEventVals {
 	title: string;
 	desc: string;
@@ -181,6 +188,7 @@ export interface WorkoutPlanClient {
 	createdDate: string;
 }
 
+// Specific one-off log entry
 export interface WorkoutLogDB {
 	log_id: number;
 	user_id: string;
@@ -460,6 +468,7 @@ export interface UserWorkoutByDateDB {
 	miles: number;
 	steps: number;
 	reps: number;
+	sets: number;
 	created_date: string;
 }
 
@@ -474,9 +483,124 @@ export interface UserWorkoutByDateClient {
 	name: string;
 	desc: string;
 	weight: number;
+	sets: number;
 	mins: number;
 	reps: number;
 	miles: number;
 	steps: number;
 	createdDate: string;
+}
+
+export interface WorkoutCustomDB extends UserWorkoutByDateDB {
+	workout_status: WorkoutStatus;
+}
+export interface WorkoutCustomClient extends UserWorkoutByDateClient {
+	workoutStatus: WorkoutStatus;
+}
+
+export interface CancelledWorkoutDB {
+	cancel_id: number;
+	workout_id: number;
+	cancel_date: string;
+	cancelled_by: string;
+	created_date: string;
+	modified_date: string;
+}
+export interface CancelledWorkoutClient {
+	cancelID: number;
+	workoutID: number;
+	cancelDate: string;
+	cancelledBy: string;
+	createdDate: string;
+	modifiedDate: string;
+}
+export interface WorkoutHistoryDB {
+	history_id: number;
+	workout_id: number;
+	workout_type: string;
+	activity_type: string;
+	workout_name: string;
+	workout_desc: string;
+	workout_date: string;
+	start_time: string;
+	end_time: string;
+	notes: string;
+	// target
+	target_mins: number;
+	target_reps: number;
+	target_sets: number;
+	target_steps: number;
+	target_miles: number;
+	target_weight: number;
+	// recorded
+	recorded_mins: number;
+	recorded_reps: number;
+	recorded_sets: number;
+	recorded_steps: number;
+	recorded_miles: number;
+	recorded_weight: number;
+	created_date: string;
+	is_active: boolean;
+}
+
+export interface WorkoutHistoryClient {
+	historyID: number;
+	workoutID: number;
+	workoutType: string;
+	activityType: string;
+	name: string;
+	desc: string;
+	date: string;
+	startTime: string;
+	endTime: string;
+	notes: string;
+	// target
+	// target
+	targetMins: number;
+	targetReps: number;
+	targetSets: number;
+	targetMiles: number;
+	targetSteps: number;
+	targetWeight: number;
+	// actual
+	recordedMins: number;
+	recordedReps: number;
+	recordedSets: number;
+	recordedMiles: number;
+	recordedSteps: number;
+	recordedWeight: number;
+	createdDate: string;
+	isActive: boolean;
+}
+export interface WorkoutHistoryRecordDB {
+	history_id: number;
+	workout_id: number;
+	user_id: string;
+	workout_date: string;
+	start_time: string;
+	end_time: string;
+	workout_mins: number;
+	reps: number;
+	sets: number;
+	steps: number;
+	miles: number;
+	notes: string;
+	created_date: string;
+	is_active: boolean;
+}
+export interface WorkoutHistoryRecordClient {
+	historyID: number;
+	workoutID: number;
+	userID: string;
+	workoutDate: string;
+	startTime: string;
+	endTime: string;
+	workoutMins: number;
+	reps: number;
+	sets: number;
+	steps: number;
+	miles: number;
+	notes: string;
+	createdDate: string;
+	isActive: boolean;
 }

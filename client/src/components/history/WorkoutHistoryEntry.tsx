@@ -1,9 +1,16 @@
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/history/WorkoutHistoryEntry.module.scss";
-import { differenceInHours, format } from "date-fns";
+import { differenceInHours, format, isYesterday } from "date-fns";
 import { HistoryEntry } from "../../features/workoutHistory/types";
 import { useRef, useState } from "react";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
+import { ActivityType } from "../../utils/utils_activity";
+import {
+	applyTimeStrToDate,
+	formatDate,
+	formatTime,
+	getDistanceToNow,
+} from "../../utils/utils_dates";
 
 type Props = {
 	entry: HistoryEntry;
@@ -75,23 +82,28 @@ const iconOpts = {
 	reps: "timelapse",
 	sets: "timelapse",
 	run: "directions_run",
+	cardio: "",
 	stretch: "accessibility",
 	done: "done",
 	doneAll: "done_all",
 	notDone: "clear",
 } as const;
 
-const getActivityTypeFromEntry = (entry: HistoryEntry): string => {
-	const type = entry.activityType || entry.workoutType;
+const getActivityTypeKey = (entry: HistoryEntry): keyof typeof iconOpts => {
+	const type = entry.activityType as ActivityType;
 
 	switch (type) {
-		case "weight":
+		case "Lift":
 			return "weight";
-		case "walk":
+		case "Walk":
 			return "miles";
-		case "stretch":
+		case "Run":
+			return "run";
+		case "Cardio":
+			return "cardio";
+		case "Stretch":
 			return "stretch";
-		case "other":
+		case "More":
 			return "doneAll";
 
 		default:
@@ -323,7 +335,7 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 		recordedMiles,
 		recordedReps,
 		recordedSets,
-		recordedWeight,
+		recordedWeight, // UPDATE workout_history TO INCLUDE
 		// target
 		targetMins,
 		targetSteps,
@@ -332,11 +344,10 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 		targetSets,
 		targetWeight,
 	} = entry;
-	// const isRepititionType =
 
 	return (
 		<>
-			{activityType === "weight" && (
+			{activityType === "Lift" && (
 				<WeightItems
 					recordedReps={recordedReps}
 					recordedSets={recordedSets}
@@ -346,7 +357,7 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 					targetSets={targetSets}
 				/>
 			)}
-			{activityType === "cardio" && (
+			{activityType === "Cardio" && (
 				<CardioItems
 					recordedMins={recordedMins}
 					recordedReps={recordedReps}
@@ -356,7 +367,7 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 					targetSets={targetSets}
 				/>
 			)}
-			{(activityType === "walk" || activityType === "distance") && (
+			{(activityType === "Walk" || activityType === "Run") && (
 				<WalkItems
 					recordedMins={recordedMins}
 					recordedSteps={recordedSteps}
@@ -366,9 +377,9 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 					targetMiles={targetMiles}
 				/>
 			)}
-			{(activityType === "timed" ||
-				activityType === "stretch" ||
-				activityType === "other") && (
+			{(activityType === "Timed" ||
+				activityType === "Stretch" ||
+				activityType === "More") && (
 				<TimedItems recordedMins={recordedMins} targetMins={targetMins} />
 			)}
 		</>
@@ -385,11 +396,28 @@ const MenuIcon = ({ openMenu }: MenuIconProps) => {
 	);
 };
 
+const getHowLongAgo = (startTime: string, date: string) => {
+	if (!startTime) return "a while";
+	const timeStr: string = formatTime(startTime, "long");
+	const withTime = applyTimeStrToDate(timeStr, date);
+	const dist = getDistanceToNow(withTime);
+
+	if (isYesterday(withTime)) {
+		return "yesterday";
+	} else {
+		return dist + " ago";
+	}
+};
+
 const ItemHeader = ({ entry }: Props) => {
+	const ago = getHowLongAgo(entry.startTime, entry.date);
+	const date = formatDate(entry.date, "long");
 	return (
 		<div className={styles.ItemHeader}>
 			<div className={styles.ItemHeader_name}>{entry.name}</div>
-			<div className={styles.ItemHeader_time}>2 days ago (12/30/2024)</div>
+			<div className={styles.ItemHeader_time}>
+				{ago} ({date})
+			</div>
 		</div>
 	);
 };
@@ -426,7 +454,7 @@ const MenuOptions = ({ closeMenu, viewLog, editLog, deleteLog }: MenuProps) => {
 };
 
 const WorkoutHistoryEntry = ({ entry }: Props) => {
-	const type = getActivityTypeFromEntry(entry) as keyof typeof iconOpts;
+	const type = getActivityTypeKey(entry);
 	const [showMoreOptions, setShowMoreOptions] = useState(false);
 
 	const viewHistoryEntry = () => {

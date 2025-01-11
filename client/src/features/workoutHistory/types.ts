@@ -1,3 +1,4 @@
+import { ActivityType } from "../../utils/utils_activity";
 import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
 
 export type WorkoutActivityType =
@@ -81,17 +82,18 @@ export interface LogRangeSummary {
 	byType: WorkoutTypeLogSummary[];
 }
 
+// Scheduled workout history records
 export interface HistoryEntry {
-	planID: number;
+	planID: number; // DON'T NEED THIS
 	historyID: number;
 	workoutID: number;
 	workoutType: WorkoutTypeName;
-	activityType: WorkoutActivityType;
+	activityType: ActivityType;
 	name: string;
 	desc: string;
-	date: Date | string;
-	startTime: Date | string;
-	endTime: Date | string;
+	date: string;
+	startTime: string;
+	endTime: string;
 	// target
 	targetMins: number;
 	targetReps: number;

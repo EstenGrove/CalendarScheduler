@@ -115,7 +115,6 @@ const getTimeFromState = (time: TimeVals) => {
 };
 
 const getInitialState = (initialTime: string): TimeVals => {
-	console.log("initialTime", initialTime);
 	const parsed = parseTime(initialTime);
 	const formatted = format(parsed, "h:mm a");
 

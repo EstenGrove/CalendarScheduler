@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getWorkoutHistory, saveLogEntry } from "./operations";
+import {
+	getWorkoutHistoryRecords,
+	getWorkoutLogRecords,
+	saveLogEntry,
+} from "./operations";
 import { TStatus } from "../types";
 import { WorkoutType } from "../../utils/utils_workoutPlans";
 import { HistoryEntry, WorkoutLogEntry } from "./types";
@@ -35,13 +39,13 @@ const historySlice = createSlice({
 				state.workoutLogs = [action.payload, ...state.workoutLogs];
 			});
 
-		// get logs/history
+		// get logs records
 		builder
-			.addCase(getWorkoutHistory.pending, (state: HistorySlice) => {
+			.addCase(getWorkoutLogRecords.pending, (state: HistorySlice) => {
 				state.status = "PENDING";
 			})
 			.addCase(
-				getWorkoutHistory.fulfilled,
+				getWorkoutLogRecords.fulfilled,
 				(
 					state: HistorySlice,
 					action: PayloadAction<{ history: object[]; logs: WorkoutLogEntry[] }>
@@ -50,6 +54,18 @@ const historySlice = createSlice({
 					const sortedByDate = sortWorkoutLogsBy(logs, "workoutDate:DESC");
 					state.status = "FULFILLED";
 					state.workoutLogs = sortedByDate;
+				}
+			);
+		// get history records
+		builder
+			.addCase(getWorkoutHistoryRecords.pending, (state: HistorySlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				getWorkoutHistoryRecords.fulfilled,
+				(state: HistorySlice, action: PayloadAction<HistoryEntry[]>) => {
+					state.status = "FULFILLED";
+					state.workoutHistory = action.payload;
 				}
 			);
 	},

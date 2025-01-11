@@ -19,8 +19,8 @@ const dayMinsRange = {
 
 const getHeightFromValue = (valueInMins: number = 0) => {
 	const percentage = valueInMins / dayMinsRange.max;
-
-	return percentage * 600;
+	const value = percentage * 600;
+	return value > 100 ? 100 : value;
 	// return percentage * 7000;
 };
 

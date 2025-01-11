@@ -1,6 +1,6 @@
 import styles from "../css/pages/DashboardWorkoutHistory.module.scss";
 import sprite from "../assets/icons/calendar.svg";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { HistoryEntry } from "../features/workoutHistory/types";
 import { FilterSettings, initialFilters } from "../utils/utils_filters";
@@ -8,6 +8,11 @@ import { selectWorkoutHistory } from "../features/workoutHistory/historySlice";
 // components
 import WorkoutHistoryEntry from "../components/history/WorkoutHistoryEntry";
 import WorkoutHistoryFilters from "../components/history/WorkoutHistoryFilters";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { formatDate } from "../utils/utils_dates";
+import { useAppDispatch } from "../store/store";
+import { getWorkoutHistoryRecords } from "../features/workoutHistory/operations";
+import { selectCurrentUser } from "../features/user/userSlice";
 
 const fake1: HistoryEntry = {
 	planID: 23,
@@ -93,12 +98,29 @@ const historyEntries = [fake1, fake2, fake3, fake2, fake1, fake1];
 // - Store filters in query params
 // - Quick access filters NEED to be included in 'FilterSettings'
 
+const getLogRange = () => {
+	const start = startOfMonth(new Date());
+	const end = endOfMonth(new Date());
+	const startDate = formatDate(start, "db");
+	const endDate = formatDate(end, "db");
+
+	return {
+		start: startDate,
+		end: endDate,
+	};
+};
+
 const DashboardWorkoutHistory = () => {
+	const dispatch = useAppDispatch();
+	const currentUser = useSelector(selectCurrentUser);
 	const workoutHistory = useSelector(selectWorkoutHistory);
 	// filters
 	const [filterSettings, setFilterSettings] =
 		useState<FilterSettings>(initialFilters);
 	const [searchVal, setSearchVal] = useState<string>("");
+	const [filteredHistory, setFilteredHistory] = useState<HistoryEntry[]>(
+		workoutHistory || []
+	);
 
 	const handleSearch = (name: string, value: string) => {
 		// do stuff
@@ -110,11 +132,38 @@ const DashboardWorkoutHistory = () => {
 		setSearchVal("");
 	};
 
+	// fetch workout history records for range
+	useEffect(() => {
+		let isMounted = true;
+		if (!isMounted) {
+			return;
+		}
+
+		const getHistory = async () => {
+			const logRange = getLogRange();
+			const results = await dispatch(
+				getWorkoutHistoryRecords({
+					userID: currentUser.userID,
+					range: logRange,
+				})
+			).unwrap();
+			setFilteredHistory(results);
+		};
+
+		getHistory();
+
+		return () => {
+			isMounted = false;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<div className={styles.DashboardWorkoutHistory}>
 			<div className={styles.DashboardWorkoutHistory_filters}>
 				<WorkoutHistoryFilters
 					filterSettings={filterSettings}
+					filteredLogs={filteredHistory}
 					workoutHistory={workoutHistory || []}
 				/>
 			</div>
@@ -147,7 +196,7 @@ const DashboardWorkoutHistory = () => {
 			</div>
 
 			<div className={styles.DashboardWorkoutHistory_list}>
-				{historyEntries.map((history, idx) => (
+				{workoutHistory.map((history, idx) => (
 					<WorkoutHistoryEntry key={history.name + idx} entry={history} />
 				))}
 			</div>

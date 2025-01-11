@@ -1,9 +1,12 @@
 import type { Pool } from "pg";
 import type {
+	CancelledWorkoutDB,
 	UserWorkoutByDateDB,
 	UserWorkoutDB,
 	UserWorkoutEventDB,
 	UserWorkoutPlanDB,
+	WorkoutCustomDB,
+	WorkoutHistoryDB,
 } from "./types";
 
 export interface UserWorkoutPayload {
@@ -16,6 +19,19 @@ export interface UserWorkoutPayload {
 	mins: number;
 }
 
+export interface CancelWorkoutPayload {
+	workoutID: number;
+	workoutDate: Date | string;
+}
+
+export interface MarkAsPayload {
+	workoutID: number;
+	workoutDate: string;
+	startTime: string;
+	endTime: string;
+	isCompleted: boolean;
+}
+
 /**
  * Creates a workout AND workout plan for a given user.
  */
@@ -25,6 +41,20 @@ class UserWorkoutService {
 		this.#db = db;
 	}
 
+	async getWorkoutByID(
+		userID: string,
+		workoutID: number
+	): Promise<UserWorkoutDB | unknown> {
+		try {
+			const query = `SELECT * FROM workouts WHERE workout_id = $1`;
+			const result = await this.#db.query(query, [workoutID]);
+			const row = result?.rows?.[0];
+
+			return row;
+		} catch (error) {
+			return error;
+		}
+	}
 	async getWorkoutEventsByDate(
 		userID: string,
 		date: Date | string
@@ -64,7 +94,7 @@ class UserWorkoutService {
 		date: Date | string
 	): Promise<UserWorkoutByDateDB[] | unknown> {
 		try {
-			const query = `SELECT * FROM get_user_workouts_by_date(
+			const query = `SELECT * FROM get_user_workouts_with_status_by_date(
 				$1,
 				$2
 			)`;
@@ -93,6 +123,24 @@ class UserWorkoutService {
 			return error;
 		}
 	}
+	async getUserWorkoutsCustom(
+		userID: string,
+		workoutDate: Date | string
+	): Promise<WorkoutCustomDB[] | unknown> {
+		try {
+			const query = `SELECT * FROM get_user_workouts_with_status_by_date(
+				$1,
+				$2
+			)`;
+			const results = await this.#db.query(query, [userID, workoutDate]);
+			const rows = results?.rows as WorkoutCustomDB[];
+
+			return rows as WorkoutCustomDB[];
+		} catch (error) {
+			return error;
+		}
+	}
+	async getUserWorkoutByID(userID: string, workoutID: number) {}
 	async getUserWorkoutPlans(
 		userID: string,
 		isActive: boolean = true
@@ -162,6 +210,60 @@ class UserWorkoutService {
 	async editWorkout(userID: string, values: UserWorkoutPayload) {
 		try {
 			//
+		} catch (error) {
+			return error;
+		}
+	}
+	async cancelWorkout(
+		userID: string,
+		params: CancelWorkoutPayload
+	): Promise<CancelledWorkoutDB | unknown> {
+		const { workoutID, workoutDate } = params;
+
+		try {
+			const query = `SELECT * FROM cancel_workout_instance(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [
+				userID,
+				workoutID,
+				workoutDate,
+			]);
+			const row = results?.rows?.[0];
+
+			return row as CancelledWorkoutDB;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async markWorkoutAsDone(
+		userID: string,
+		values: MarkAsPayload
+	): Promise<WorkoutHistoryDB | unknown> {
+		const { workoutID, workoutDate, startTime, endTime, isCompleted } = values;
+		try {
+			const query = `SELECT * FROM mark_workout_as_done(
+				$1,
+				$2,
+				$3,
+				$4,
+				$5,
+				$6
+			)`;
+			const result = await this.#db.query(query, [
+				userID,
+				workoutID,
+				workoutDate,
+				startTime,
+				endTime,
+				isCompleted,
+			]);
+			const row = result?.rows?.[0];
+
+			return row;
 		} catch (error) {
 			return error;
 		}

@@ -1,21 +1,21 @@
 import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import type {
-	CreateNewWorkoutPayload,
-	NewEventPayload,
+	CancelledWorkoutDB,
 	RecurringWorkoutEventPayload,
-	RecurringWorkoutPayload,
-	UserWorkoutByDateDB,
 	UserWorkoutDB,
 	UserWorkoutEventDB,
+	WorkoutCustomDB,
+	WorkoutHistoryRecordDB,
 } from "../services/types";
+import { userWorkoutService, workoutsService } from "../services";
 import {
-	eventsService,
-	userWorkoutService,
-	workoutsService,
-} from "../services";
-import {
+	convertHistoryRecord,
+	convertUserWorkoutCustom,
+	convertUserWorkouts,
+	convertWorkoutHistory,
 	userWorkoutNormalizer,
+	workoutCustomNormalizer,
 	workoutEventNormalizer,
 	workoutNormalizer,
 } from "../utils/normalizing";
@@ -25,14 +25,14 @@ const app: Hono = new Hono();
 app.get("/getWorkoutsByDate", async (ctx: Context) => {
 	const { userID, targetDate, startDate } = ctx.req.query();
 
-	const records = (await userWorkoutService.getUserWorkoutsByDate(
+	const records = (await userWorkoutService.getUserWorkoutsCustom(
 		userID,
 		targetDate || startDate
-	)) as UserWorkoutByDateDB[];
+	)) as WorkoutCustomDB[];
 
 	console.log("records", records);
 
-	const workouts = userWorkoutNormalizer.toClient(records);
+	const workouts = workoutCustomNormalizer.toClient(records);
 
 	// process workouts for client format
 
@@ -61,7 +61,6 @@ app.get("/getWorkoutEventsByDate", async (ctx: Context) => {
 
 	return ctx.json(response);
 });
-
 // Supports creating a new workout AND A NEW WORKOUT PLAN
 app.post("/createNewWorkout", async (ctx: Context) => {
 	const body = await ctx.req.json<RecurringWorkoutEventPayload>();
@@ -92,7 +91,6 @@ app.post("/createNewWorkout", async (ctx: Context) => {
 
 	return ctx.json(response);
 });
-
 // Supports creating a new workout from an EXISTING workout plan
 app.post("/createWorkout", async (ctx: Context) => {
 	const response = getResponseOk({
@@ -100,7 +98,6 @@ app.post("/createWorkout", async (ctx: Context) => {
 	});
 	return ctx.json(response);
 });
-
 app.get("/getWorkouts", async (ctx: Context) => {
 	const { userID, startDate, endDate } = ctx.req.query();
 
@@ -121,6 +118,65 @@ app.get("/getWorkouts", async (ctx: Context) => {
 
 	const response = getResponseOk({
 		workouts: workouts,
+	});
+
+	return ctx.json(response);
+});
+app.get("/cancelWorkout", async (ctx: Context) => {
+	const { userID, workoutID, workoutDate } = ctx.req.query();
+
+	const cancelRecord = (await userWorkoutService.cancelWorkout(userID, {
+		workoutID: Number(workoutID),
+		workoutDate: workoutDate,
+	})) as CancelledWorkoutDB;
+
+	const response = getResponseOk({
+		cancelledWorkout: cancelRecord,
+	});
+
+	return ctx.json(response);
+});
+app.post("/markWorkoutAsDone", async (ctx: Context) => {
+	const { userID } = ctx.req.query();
+	const body = await ctx.req.json();
+
+	const { startTime, endTime, workoutDate } = body;
+	const workoutID: number = Number(body.workoutID);
+	const isDone: boolean = Boolean(body.isCompleted);
+
+	console.log("startTime", startTime);
+	console.log("endTime", endTime);
+	console.log("workoutDate", workoutDate);
+	console.log("isDone", isDone);
+
+	const historyEntry = (await userWorkoutService.markWorkoutAsDone(userID, {
+		workoutID,
+		workoutDate: workoutDate,
+		startTime: startTime,
+		endTime: endTime,
+		isCompleted: isDone,
+	})) as WorkoutHistoryRecordDB;
+
+	const history = convertHistoryRecord(historyEntry);
+
+	console.log("historyEntry", historyEntry);
+	console.log("history(client):", history);
+	// const relatedWorkout = (await userWorkoutService.getUserWorkoutsByDate(
+	// 	userID,
+	// 	workoutDate
+	// )) as UserWorkoutByDateDB;
+	// const workoutRecord: WorkoutCustomClient = convertUserWorkoutCustom({
+	// 	...relatedWorkout,
+	// 	workout_status: isDone ? "COMPLETE" : "NOT-COMPLETE",
+	// });
+
+	// Apply 'done/not-done' status for client-formatted workout
+	// Grab workout record with workoutStatus
+
+	const response = getResponseOk({
+		message: "Success",
+		historyEntry: history,
+		// updatedWorkout: workoutRecord,
 	});
 
 	return ctx.json(response);

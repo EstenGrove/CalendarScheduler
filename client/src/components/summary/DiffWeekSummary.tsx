@@ -24,8 +24,8 @@ const dayMinsRange = {
 
 const getHeightFromValue = (valueInMins: number = 0) => {
 	const percentage = valueInMins / dayMinsRange.max;
-
-	return percentage * 600;
+	const value = percentage * 600;
+	return value > 100 ? 100 : value;
 };
 
 type WeekDayProps = {
@@ -72,7 +72,10 @@ const WeekDayBar = ({ diffValue, value, color }: BarProps) => {
 		};
 		return (
 			<div className={styles.NoWeekDayBar}>
-				<div className={styles.NoWeekDayBar_value} style={noDataCSS}></div>
+				<div
+					className={styles.NoWeekDayBar_value}
+					style={value === 0 ? noDataCSS : css}
+				></div>
 			</div>
 		);
 	}

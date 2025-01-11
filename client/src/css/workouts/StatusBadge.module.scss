@@ -34,6 +34,9 @@
 	@include statusBadge(var(--accent-green));
 }
 .PastDue {
+	@include statusBadge(var(--accent-purple));
+}
+.Cancelled {
 	@include statusBadge(var(--accent-red3));
 }
 .InProgress {

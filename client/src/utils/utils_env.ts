@@ -60,11 +60,14 @@ const API_ENDPOINTS = {
 		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
 		getWorkouts: "/workouts/getWorkouts",
 		getWorkoutsByDate: "/workouts/getWorkoutsByDate",
-		markWorkoutsAsDone: "/workouts/markWorkoutsAsDone",
+		markWorkoutAsDone: "/workouts/markWorkoutAsDone",
+		markWorkoutAsDoneMany: "/workouts/markWorkoutAsDoneMany",
+		cancelWorkout: "/workouts/cancelWorkout",
 	},
 	workoutHistory: {
 		createLog: "/history/createLog",
 		getLogs: "/history/getWorkoutLogs",
+		getHistory: "/history/getWorkoutHistory",
 	},
 	workoutTypes: {
 		getAll: "/workoutTypes/getWorkoutTypes",

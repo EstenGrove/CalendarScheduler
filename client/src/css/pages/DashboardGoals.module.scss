@@ -1,0 +1,44 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+// Desktop: 8rem + 6rem
+// Mobile: 8rem + 6rem + 6rem;
+
+$topHeight: calc(8rem + 6rem);
+$topHeightMobile: calc(8rem + 6rem + 6rem);
+
+.DashboardGoals {
+	width: 100%;
+
+	&_nav {
+		@include flex_row(flex-start, center);
+		width: 100%;
+		height: 6rem;
+		padding: 1rem 3.5rem;
+		border-bottom: $borderLight;
+	}
+
+	&_main {
+		width: 100%;
+		height: calc(100dvh - $topHeight);
+		padding: 1rem 2rem;
+		overflow-y: scroll;
+		@include scrollbar();
+		// border: 1px solid red;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.DashboardGoals {
+		width: 100%;
+
+		&_main {
+			width: 100%;
+			height: calc(100dvh - $topHeightMobile);
+			overflow-y: scroll;
+			@include scrollbar();
+			// border: 1px solid red;
+		}
+	}
+}

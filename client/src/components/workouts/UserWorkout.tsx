@@ -1,16 +1,44 @@
-import { Ref, RefObject, TouchEvent, useRef, useState } from "react";
-import { type UserWorkout } from "../../features/workouts/types";
+import { RefObject, TouchEvent, useRef, useState } from "react";
+import { WorkoutStatus, type UserWorkout } from "../../features/workouts/types";
 import sprite from "../../assets/icons/calendar.svg";
 import styles from "../../css/workouts/UserWorkout.module.scss";
 import { getActivityTypeFromWorkoutTypeID } from "../../utils/utils_workoutPlans";
-import StatusBadge from "./StatusBadge";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { isSwipeLeft, isSwipeRight } from "../../utils/utils_gestures";
+import StatusBadge from "./StatusBadge";
 
 type Props = {
 	workout: UserWorkout;
-	selectWorkout: (workout: UserWorkout) => void;
+	viewWorkout: (workout: UserWorkout) => void;
+	editWorkout: (workout: UserWorkout) => void;
+	deleteWorkout: (workout: UserWorkout) => void;
+	cancelWorkout: (workout: UserWorkout) => void;
 	markAsCompleted: (workout: UserWorkout) => void;
+};
+type MenuProps = {
+	closeMenu: () => void;
+	selectMenuOption: (option: "EDIT" | "VIEW" | "DELETE" | "CANCEL") => void;
+};
+type ActivityProps = {
+	workout: UserWorkout;
+};
+type WeightProps = {
+	weight: number;
+};
+type MinsProps = {
+	mins: number;
+};
+type SwipeProps = {
+	elRef: RefObject<HTMLDivElement>;
+	status: WorkoutStatus;
+	onAction: (action: "COMPLETE" | "CANCEL") => void;
+};
+
+const fake = {
+	1: "var(--accent-green)",
+	2: "var(--accent-purple)",
+	7: "var(--accent-yellow)",
+	8: "var(--accent-red)",
 };
 
 const iconTypes = {
@@ -22,26 +50,28 @@ const iconTypes = {
 	timed: "timer",
 };
 
+const getCssFromColor = (color: string) => {
+	return {
+		borderLeftColor: color,
+		fill: color,
+	};
+};
+const getCardPosition = (cardRef: RefObject<HTMLDivElement>) => {
+	if (cardRef.current) {
+		const position = cardRef.current.getBoundingClientRect();
+		return position;
+	} else {
+		return null;
+	}
+};
 const getIconType = (val: string) => {
 	const key = val || "weight";
 	return iconTypes[key as keyof object];
 };
-
-const fake = {
-	1: "var(--accent-green)",
-	2: "var(--accent-purple)",
-	7: "var(--accent-yellow)",
-	8: "var(--accent-red)",
-};
-
 const getTypeFromID = (id: number) => {
 	const type = getActivityTypeFromWorkoutTypeID(id);
 
 	return type;
-};
-
-type ActivityProps = {
-	workout: UserWorkout;
 };
 
 const ActivityType = ({ workout }: ActivityProps) => {
@@ -58,17 +88,6 @@ const ActivityType = ({ workout }: ActivityProps) => {
 		</div>
 	);
 };
-
-const getCssFromColor = (color: string) => {
-	return {
-		borderLeftColor: color,
-		fill: color,
-	};
-};
-
-type WeightProps = {
-	weight: number;
-};
 const WeightBadge = ({ weight }: WeightProps) => {
 	return (
 		<div className={styles.WeightBadge}>
@@ -78,9 +97,6 @@ const WeightBadge = ({ weight }: WeightProps) => {
 			<span>{weight}lbs.</span>
 		</div>
 	);
-};
-type MinsProps = {
-	mins: number;
 };
 const MinutesBadge = ({ mins }: MinsProps) => {
 	return (
@@ -92,54 +108,89 @@ const MinutesBadge = ({ mins }: MinsProps) => {
 		</div>
 	);
 };
+const SwipeActions = ({ elRef, status, onAction }: SwipeProps) => {
+	const isDone: boolean = status === "COMPLETE";
+	const isCancelled: boolean = status === "CANCELLED";
+	return (
+		<div ref={elRef} className={styles.SwipeActions}>
+			<div
+				onClick={() => onAction("COMPLETE")}
+				className={styles.SwipeActions_markDone}
+				style={{ opacity: isDone ? ".4" : "1.0" }}
+			>
+				<svg className={styles.SwipeActions_markDone_icon}>
+					<use xlinkHref={`${sprite}#icon-check_circle`}></use>
+				</svg>
+			</div>
+			<div
+				onClick={() => onAction("CANCEL")}
+				className={styles.SwipeActions_edit}
+				style={{ opacity: isCancelled ? ".4" : "1.0" }}
+			>
+				<svg className={styles.SwipeActions_edit_icon}>
+					<use xlinkHref={`${sprite}#icon-event_busy`}></use>
+				</svg>
+			</div>
+		</div>
+	);
+};
 
 let startX = 0;
 let moveX = 0;
 let endX = 0;
 
-type SwipeProps = {
-	elRef: RefObject<HTMLDivElement>;
-};
-
-const SwipeActions = ({ elRef }: SwipeProps) => {
+const MenuOptions = ({ closeMenu, selectMenuOption }: MenuProps) => {
+	const menuRef = useRef<HTMLDivElement>(null);
+	useOutsideClick(menuRef, closeMenu);
 	return (
-		<div ref={elRef} className={styles.SwipeActions}>
-			<div className={styles.SwipeActions_markDone}>
-				<div className={styles.SwipeActions_markDone_label}>MARK DONE</div>
-			</div>
-			<div className={styles.SwipeActions_edit}>
-				<div className={styles.SwipeActions_edit_label}>EDIT</div>
-			</div>
+		<div ref={menuRef} className={styles.MenuOptions}>
+			<ul className={styles.MenuOptions_list}>
+				<li
+					onClick={() => selectMenuOption("VIEW")}
+					className={styles.MenuOptions_list_item}
+				>
+					View
+				</li>
+				<li
+					onClick={() => selectMenuOption("EDIT")}
+					className={styles.MenuOptions_list_item}
+				>
+					Edit
+				</li>
+				<li
+					onClick={() => selectMenuOption("DELETE")}
+					className={styles.MenuOptions_list_item}
+				>
+					Delete
+				</li>
+			</ul>
 		</div>
 	);
 };
 
-const getCardPosition = (cardRef: RefObject<HTMLDivElement>) => {
-	if (cardRef.current) {
-		const position = cardRef.current.getBoundingClientRect();
-		return position;
-	} else {
-		return null;
-	}
-};
-
-const UserWorkout = ({ workout }: Props) => {
+const UserWorkout = ({
+	workout,
+	viewWorkout,
+	editWorkout,
+	deleteWorkout,
+	cancelWorkout,
+	markAsCompleted,
+}: Props) => {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const swipeRef = useRef<HTMLDivElement>(null);
-	const workoutID: number = workout.workoutID;
-	const name = workout?.name;
+	const {
+		workoutID,
+		name,
+		startTime: start = null,
+		endTime: end = null,
+		workoutStatus,
+	} = workout;
 	const border = { borderLeftColor: fake[workoutID as keyof object] };
-	const start = workout.startTime;
-	const end = workout.endTime;
+
+	const [showMenu, setShowMenu] = useState(false);
 	useOutsideClick(cardRef, () => {
 		resetSwipe();
 	});
-
-	const dueTime = (
-		<div className={styles.UserWorkout_info_main_desc}>
-			{start || "10:15 AM"} to {end || "10:35 AM"}
-		</div>
-	);
 
 	const resetSwipe = () => {
 		if (cardRef.current) {
@@ -149,10 +200,7 @@ const UserWorkout = ({ workout }: Props) => {
 
 	const onTouchStart = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
-		console.log("start(touch)", screenX);
 		startX = screenX;
-		// moveX = 0;
-		// endX = 0;
 	};
 	const onTouchMove = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
@@ -160,7 +208,6 @@ const UserWorkout = ({ workout }: Props) => {
 		const deltaX = moveX - startX;
 
 		if (isSwipeRight(startX, screenX)) {
-			// console.log("RIGHT");
 			if (cardRef.current) {
 				const cardLeft = getCardPosition(cardRef)?.left;
 				if (Number(cardLeft) > 158) return;
@@ -174,7 +221,6 @@ const UserWorkout = ({ workout }: Props) => {
 			console.log("[LEFT]");
 			if (cardRef.current) {
 				const cardLeft = Number(getCardPosition(cardRef)?.left);
-				// if (cardLeft <= 20) return;
 				if (deltaX && cardLeft < 158) {
 					cardRef.current.style.transform = `translateX(0px)`;
 					cardRef.current.style.left = `0px`;
@@ -191,15 +237,12 @@ const UserWorkout = ({ workout }: Props) => {
 			if (cardRef.current) {
 				const cardLeft = getCardPosition(cardRef)?.left;
 				if (Number(cardLeft) <= 75) return;
-				const newDelta = deltaX - startX;
 
 				cardRef.current.style.transition = "none";
-				// cardRef.current.style.transform = `translateX(${newDelta}px)`;
 				cardRef.current.style.transform = `translateX(${deltaX}px)`;
 			}
 		}
 	};
-
 	const onTouchEnd = (e: TouchEvent) => {
 		const { screenX } = e.changedTouches[0];
 
@@ -215,22 +258,70 @@ const UserWorkout = ({ workout }: Props) => {
 				cardRef.current.style.transition = ".3s ease-out";
 			}
 		}
-		// startX = 0;
-		// moveX = 0;
-		// endX = 0;
+	};
+
+	const selectMenuOption = (option: "EDIT" | "VIEW" | "DELETE" | "CANCEL") => {
+		// do stuff
+		switch (option) {
+			case "EDIT": {
+				editWorkout(workout);
+				break;
+			}
+			case "VIEW": {
+				viewWorkout(workout);
+				break;
+			}
+			case "DELETE": {
+				deleteWorkout(workout);
+				break;
+			}
+			case "CANCEL": {
+				cancelWorkout(workout);
+				break;
+			}
+
+			default:
+				break;
+		}
+	};
+
+	const selectSwipeAction = (action: "COMPLETE" | "CANCEL") => {
+		switch (action) {
+			case "COMPLETE": {
+				markAsCompleted(workout);
+				break;
+			}
+			case "CANCEL": {
+				cancelWorkout(workout);
+				break;
+			}
+
+			default:
+				break;
+		}
+	};
+
+	const openMenu = () => {
+		setShowMenu(true);
+	};
+	const closeMenu = () => {
+		setShowMenu(false);
 	};
 
 	return (
 		<div
 			ref={cardRef}
-			// className={styles.UserWorkout}
 			className={styles.UserWorkoutWrapper}
 			style={border}
 			onTouchStart={onTouchStart}
 			onTouchMove={onTouchMove}
 			onTouchEnd={onTouchEnd}
 		>
-			<SwipeActions elRef={swipeRef} />
+			<SwipeActions
+				elRef={swipeRef}
+				status={workoutStatus}
+				onAction={selectSwipeAction}
+			/>
 			<div className={styles.UserWorkout}>
 				<div className={styles.UserWorkout_type}>
 					<ActivityType workout={workout} />
@@ -238,13 +329,26 @@ const UserWorkout = ({ workout }: Props) => {
 				<div className={styles.UserWorkout_info}>
 					<div className={styles.UserWorkout_info_main}>
 						<div className={styles.UserWorkout_info_main_title}>{name}</div>
-						<div className={styles.UserWorkout_info_main_desc}>{dueTime}</div>
+						<div className={styles.UserWorkout_info_main_desc}>
+							{start ? `${start} to ` : "All-Day"}
+							{end ? end : ""}
+						</div>
 					</div>
 					<div className={styles.UserWorkout_info_options}>
-						<div className={styles.UserWorkout_info_options_wrapper}>
+						<div
+							onClick={openMenu}
+							className={styles.UserWorkout_info_options_wrapper}
+						>
 							<svg className={styles.UserWorkout_info_options_wrapper_icon}>
 								<use xlinkHref={`${sprite}#icon-keyboard_control`}></use>
 							</svg>
+
+							{showMenu && (
+								<MenuOptions
+									closeMenu={closeMenu}
+									selectMenuOption={selectMenuOption}
+								/>
+							)}
 						</div>
 					</div>
 				</div>
@@ -252,7 +356,7 @@ const UserWorkout = ({ workout }: Props) => {
 					<WeightBadge weight={workout.weight} />
 					<MinutesBadge mins={workout.mins} />
 					<div className={styles.UserWorkout_bottom_status}>
-						<StatusBadge statusKey="PAST-DUE" />
+						<StatusBadge status={workoutStatus} />
 					</div>
 				</div>
 			</div>

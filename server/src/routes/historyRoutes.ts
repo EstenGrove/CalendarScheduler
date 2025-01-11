@@ -1,8 +1,8 @@
 import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import { historyService } from "../services";
-import type { WorkoutLogDB } from "../services/types";
-import { historyNormalizer } from "../utils/normalizing";
+import type { WorkoutHistoryDB, WorkoutLogDB } from "../services/types";
+import { convertWorkoutHistory, historyNormalizer } from "../utils/normalizing";
 
 const app = new Hono();
 
@@ -55,6 +55,31 @@ app.get("/getWorkoutLogs", async (ctx: Context) => {
 	const response = getResponseOk({
 		history: [],
 		logs: workoutLogs,
+	});
+
+	return ctx.json(response);
+});
+
+app.get("/getWorkoutHistory", async (ctx: Context) => {
+	const { userID, startDate, endDate } = ctx.req.query();
+
+	const rawHistory = (await historyService.getWorkoutHistory(userID, {
+		startDate,
+		endDate,
+	})) as WorkoutHistoryDB[];
+
+	if (rawHistory instanceof Error) {
+		const errResp = getResponseError(rawHistory);
+
+		return ctx.json(errResp);
+	}
+
+	const history = rawHistory || [];
+
+	const allHistory = history.map((entry) => convertWorkoutHistory(entry));
+
+	const response = getResponseOk({
+		history: allHistory,
 	});
 
 	return ctx.json(response);

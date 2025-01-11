@@ -64,7 +64,7 @@ const Sidebar = ({ currentUser }: Props) => {
 				<Item to="calendar" icon="event_note" label="Calendar" />
 				<Item to="summary/week" icon="equalizer" label="Summary" />
 				<Item to="workouts/week" icon="fitness_center" label="Workouts" />
-				<Item to="completed" icon="done_all" label="Completed" />
+				<Item to="goals/current" icon="library_add_check" label="Goals" />
 				<Item to="health" icon="favorite_outline" label="Health Profile" />
 			</ul>
 			<ul className={styles.Sidebar_bottom}>

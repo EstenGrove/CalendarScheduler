@@ -4,6 +4,9 @@
 
 $shadow: rgba(0, 0, 0, 0.25);
 
+// 8, 7, 4, 5
+// mobile: 5, 7, 8, 4, 5
+
 .DashboardWorkoutHistory {
 	width: 100%;
 	height: 100%;
@@ -55,21 +58,13 @@ $shadow: rgba(0, 0, 0, 0.25);
 		width: 100%;
 		max-width: 80rem;
 		display: block;
-		height: 80dvh;
-		margin: 2rem auto;
+		height: calc(100dvh - 30rem);
+		margin: 4rem auto 2rem auto;
 		overflow-y: scroll;
 		@include scrollbar();
 		@include flex_col(center, center);
 		gap: 1rem;
 		padding: 0 2rem;
-		padding-top: 4rem;
-
-		&_cards {
-			width: 100%;
-			height: 100%;
-			@include flex_row(center, flex-start, wrap);
-			gap: 1rem;
-		}
 	}
 }
 
@@ -143,8 +138,8 @@ $shadow: rgba(0, 0, 0, 0.25);
 			width: 100%;
 			padding: 0 2rem;
 			padding-top: 1rem;
-			// height: calc(100dvh - 22rem);
-			height: calc(100dvh - 34rem);
+			margin-top: 2rem;
+			height: calc(100dvh - 33rem);
 		}
 	}
 }

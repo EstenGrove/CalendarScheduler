@@ -12,12 +12,12 @@ import {
 	fetchWorkoutPlans,
 	fetchWorkouts,
 	fetchWorkoutsByDate,
+	markWorkoutAsDone,
 	UserWorkoutsResp,
 } from "./operations";
 import { CreateWorkoutResponse } from "../../utils/utils_workouts";
 
 export interface SelectedWorkout {
-	// workout: Workout;
 	workout: UserWorkout;
 	history: WorkoutHistoryEntry[];
 	summary: WorkoutSummary;
@@ -25,7 +25,6 @@ export interface SelectedWorkout {
 export interface WorkoutsSlice {
 	status: TStatus;
 	workouts: {
-		// list: Workout[];
 		list: UserWorkout[];
 		status: TStatus;
 	};
@@ -77,7 +76,6 @@ const workoutsSlice = createSlice({
 					state.workoutPlans.plans = [plan, ...state.workoutPlans.plans];
 				}
 			);
-
 		// Fetch workouts
 		builder
 			.addCase(fetchWorkoutsByDate.pending, (state: WorkoutsSlice) => {
@@ -101,7 +99,6 @@ const workoutsSlice = createSlice({
 					state.workouts.list = action.payload.workouts;
 				}
 			);
-
 		// Fetch workout plans
 		builder
 			.addCase(fetchWorkoutPlans.pending, (state: WorkoutsSlice) => {
@@ -115,6 +112,24 @@ const workoutsSlice = createSlice({
 				) => {
 					state.workoutPlans.status = "FULFILLED";
 					state.workoutPlans.plans = action.payload.workoutPlans;
+				}
+			);
+		// Toggle the status of a single workout for a given date
+		builder
+			.addCase(markWorkoutAsDone.pending, (state: WorkoutsSlice) => {
+				state.workouts.status = "PENDING";
+			})
+			.addCase(
+				markWorkoutAsDone.fulfilled,
+				(state, action: PayloadAction<UserWorkout>) => {
+					const updatedWorkout = action.payload;
+					const updatedList = [
+						...state.workouts.list.filter(
+							(w) => w.workoutID !== updatedWorkout.workoutID
+						),
+					];
+					state.workouts.status = "FULFILLED";
+					state.workouts.list = updatedList;
 				}
 			);
 	},

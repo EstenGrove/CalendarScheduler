@@ -55,7 +55,7 @@ const icons = {
 	logWorkout: "fact_check",
 	workout: "fitness_center",
 	workoutPlan: "run_circle",
-	task: "directions_run",
+	startWorkout: "directions_run",
 	createEvent: "add_task",
 };
 
@@ -129,9 +129,9 @@ const ActionsBar = ({ onAction }: Props) => {
 					/>
 					<ActionButton
 						title="Start a workout"
-						icon="task"
+						icon="startWorkout"
 						color="var(--bg-foreground)"
-						onAction={() => selectAction("CreateTask")}
+						onAction={() => selectAction("StartWorkout")}
 					/>
 					<ActionButton
 						title="Log a workout"

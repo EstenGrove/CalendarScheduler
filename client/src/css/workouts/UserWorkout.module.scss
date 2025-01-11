@@ -97,7 +97,7 @@ $userAccent: var(--accent-blue);
 	top: 0.1rem;
 	left: -15rem;
 	width: 15rem;
-	height: 9.5rem;
+	height: 9.9rem;
 	flex-grow: 2;
 	@include flex_row(flex-start, center);
 	z-index: -1;
@@ -113,16 +113,26 @@ $userAccent: var(--accent-blue);
 			transform: rotate(-90deg);
 			color: #fff;
 		}
+		&_icon {
+			width: 3.2rem;
+			height: 3.2rem;
+			fill: #fff;
+		}
 	}
 	&_edit {
 		width: 50%;
 		height: 100%;
-		background-color: var(--yellowTint100);
+		background-color: var(--accent-red3);
 		@include rowCenter();
 
 		&_label {
 			transform: rotate(-90deg);
 			color: #fff;
+		}
+		&_icon {
+			width: 3.2rem;
+			height: 3.2rem;
+			fill: #fff;
 		}
 	}
 }
@@ -151,7 +161,6 @@ $userAccent: var(--accent-blue);
 .MinutesBadge {
 	@include badge();
 }
-
 .ActivityType {
 	width: 3.5rem;
 	height: 3.5rem;
@@ -164,5 +173,42 @@ $userAccent: var(--accent-blue);
 		width: 2.5rem;
 		height: 2.5rem;
 		fill: $userAccent;
+	}
+}
+.MenuOptions {
+	position: absolute;
+	top: 2.5rem;
+	right: 0;
+	width: 15rem;
+	height: 12rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	background-color: $background;
+	z-index: 9999;
+	padding: 1rem 1rem;
+	box-shadow: -2px 7px 29px -10px rgba(0, 0, 0, 0.75);
+
+	&_list {
+		list-style: none;
+		@include flex_col(flex-start, flex-start);
+		gap: 1rem 0;
+
+		&_item {
+			width: 100%;
+			padding: 0.3rem 0;
+			font-size: 1.3rem;
+			color: var(--blueGrey400);
+			&:hover {
+				cursor: pointer;
+			}
+
+			&:last-of-type {
+				padding: 0.5rem 0;
+				margin-top: auto;
+				margin-top: 1rem;
+				color: var(--accent-red);
+				border-top: $borderLight;
+			}
+		}
 	}
 }

@@ -1,0 +1,55 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.MinutesSelector {
+	width: 100%;
+	margin-bottom: 1.5rem;
+
+	&_quickOptions {
+		width: 100%;
+		@include flex_row(flex-start, center, wrap);
+		gap: 1rem 1rem;
+	}
+	&_otherOptions {
+		width: 100%;
+		margin-top: 1rem;
+	}
+}
+
+@mixin minsOption($color: $accentPurple) {
+	font-size: 1.6rem;
+	width: 7rem;
+	height: 3.5rem;
+	@include rowCenter();
+	border: $borderLight;
+	outline: none;
+	color: $color;
+	background-color: var(--blueGrey900);
+	border-radius: 1rem;
+
+	& > span {
+		font-size: 1.4rem;
+		align-self: center;
+	}
+	&:hover {
+		cursor: pointer;
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+}
+
+.QuickOption {
+	@include minsOption();
+}
+.OtherOption {
+	@include minsOption($text2);
+}
+
+.isSelected {
+	background-color: $accentPurple;
+	color: #fff;
+}

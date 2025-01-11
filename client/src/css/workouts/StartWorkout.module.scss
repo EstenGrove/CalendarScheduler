@@ -1,0 +1,132 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.StartWorkout {
+	position: fixed;
+	display: block;
+	top: 50%;
+	left: 50%;
+	width: 70rem;
+	height: 55rem;
+	transform: translate(-50%, -50%);
+	border-radius: 1rem;
+	border: $borderLight;
+	background-color: $foreground;
+	z-index: 5;
+
+	&_or {
+		width: 100%;
+		@include rowCenter();
+		font-size: 1.7rem;
+		margin: 1rem 0;
+	}
+
+	&_new {
+		width: 100%;
+		@include rowCenter();
+	}
+	&_existing {
+		width: 100%;
+		@include rowCenter();
+	}
+}
+
+.StartActivity {
+	width: 100%;
+	padding: 2rem;
+	border-radius: 1rem;
+	@include colCenter();
+	border: $borderLight;
+
+	&_top {
+		width: 100%;
+		text-align: center;
+		margin-bottom: 0.5rem;
+
+		& h4 {
+			font-size: 1.8rem;
+			color: $text1;
+		}
+	}
+	&_list {
+		width: 100%;
+		padding: 1rem 0;
+		@include flex_row(center, center);
+		gap: 0 2rem;
+	}
+}
+
+.Activity {
+	width: 4rem;
+	@include colCenter();
+	gap: 0.5rem 0;
+	font-size: 1.3rem;
+	&:hover {
+		cursor: pointer;
+	}
+
+	&_btn {
+		width: 3.5rem;
+		height: 3.5rem;
+		min-width: 3.5rem;
+		min-height: 3.5rem;
+		max-width: 3.5rem;
+		max-height: 3.5rem;
+		border-radius: 50%;
+		border: none;
+		outline: none;
+		&_icon {
+			width: 2.5rem;
+			height: 2.5rem;
+			fill: #fff;
+		}
+	}
+}
+
+.StartPlan {
+	width: 100%;
+	padding: 2rem;
+	border-radius: 1rem;
+	@include colCenter();
+	border: $borderLight;
+
+	&_top {
+		width: 100%;
+		text-align: center;
+		margin-bottom: 1.5rem;
+
+		& h4 {
+			font-size: 1.8rem;
+			color: $text1;
+		}
+	}
+
+	&_plans {
+		width: 100%;
+		@include flex_row(center, center, wrap);
+		gap: 1rem 2rem;
+		height: 13rem;
+		overflow-y: auto;
+	}
+}
+.ExistingPlan {
+	padding: 0.7rem 1.4rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	font-size: 1.3rem;
+	width: 50%;
+}
+
+@media only screen and (max-width: 800px) {
+	.StartWorkout {
+		position: fixed;
+		display: block;
+		top: unset;
+		bottom: 0%;
+		left: 50%;
+		width: 100dvw;
+		height: 55dvh;
+		transform: translate(-50%, 0%);
+	}
+}

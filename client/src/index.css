@@ -13,10 +13,11 @@
 	/* --accent-green: #00e2bd; */
 	--accent-bright-red: rgb(255, 0, 102);
 	--accent-blue: #007cff;
-	/* --accent-red: #b90034; */
-	--accent-red: #ff000d;
+	--accent-red: #ff333d;
+	--accent-red4: #ff000d;
 	--accent-red2: rgba(255, 0, 27, 0.4);
 	--accent-red3: #ff333d;
+	--accent-dark-red: #b90034;
 	--accent-yellow: #f9f871;
 	--accent-grey: var(--blueGrey900);
 

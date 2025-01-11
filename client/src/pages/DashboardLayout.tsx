@@ -61,8 +61,6 @@ const DashboardLayout = () => {
 		setShowSummaryFilters(false);
 	};
 
-	console.log("last7Days", last7Days);
-
 	return (
 		<div className={styles.DashboardLayout}>
 			<PageHeader title="Dashboard" />

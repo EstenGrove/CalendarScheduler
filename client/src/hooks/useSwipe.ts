@@ -1,12 +1,4 @@
-import {
-	useEffect,
-	useMemo,
-	useCallback,
-	useState,
-	useRef,
-	TouchEvent,
-	RefObject,
-} from "react";
+import { TouchEvent, RefObject } from "react";
 
 const startX = 0;
 const moveX = 0;

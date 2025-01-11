@@ -1,8 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getWorkoutLogs, saveWorkoutLog } from "../../utils/utils_workoutLogs";
+import {
+	getWorkoutHistory,
+	getWorkoutLogs,
+	saveWorkoutLog,
+} from "../../utils/utils_workoutLogs";
 import { CreateLogValues } from "../../components/workout-logs/types";
 import { AwaitedResponse } from "../types";
-import { WorkoutLogEntry } from "./types";
+import { HistoryEntry, WorkoutLogEntry } from "./types";
 
 export interface NewLogValues extends CreateLogValues {
 	workoutTypeID: number;
@@ -35,8 +39,8 @@ const saveLogEntry = createAsyncThunk(
 	}
 );
 
-const getWorkoutHistory = createAsyncThunk(
-	"history/getWorkoutHistory",
+const getWorkoutLogRecords = createAsyncThunk(
+	"history/getWorkoutLogRecords",
 	async (params: WorkoutLogParams) => {
 		const { userID, range } = params;
 		const response = (await getWorkoutLogs(userID, range)) as AwaitedResponse<{
@@ -50,4 +54,21 @@ const getWorkoutHistory = createAsyncThunk(
 	}
 );
 
-export { saveLogEntry, getWorkoutHistory };
+const getWorkoutHistoryRecords = createAsyncThunk(
+	"history/getWorkoutHistoryRecords",
+	async (params: WorkoutLogParams) => {
+		const { userID, range } = params;
+		const response = (await getWorkoutHistory(
+			userID,
+			range
+		)) as AwaitedResponse<{
+			history: HistoryEntry[];
+		}>;
+
+		const data = response.Data;
+
+		return data.history as HistoryEntry[];
+	}
+);
+
+export { saveLogEntry, getWorkoutLogRecords, getWorkoutHistoryRecords };

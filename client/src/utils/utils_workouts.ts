@@ -1,3 +1,4 @@
+import { subMinutes } from "date-fns";
 import {
 	NewWorkoutAndPlan,
 	NewWorkoutEvent,
@@ -8,9 +9,17 @@ import {
 import { CalendarEvent, CalendarEventSchedule } from "../features/events/types";
 import { CustomDateRange } from "../features/summary/types";
 import { AsyncResponse } from "../features/types";
-import { MarkAsDoneParams } from "../features/workouts/operations";
+import {
+	MarkAsDoneBatchParams,
+	MarkWorkoutDoneParams,
+} from "../features/workouts/operations";
 import { UserWorkout, Workout, WorkoutPlan } from "../features/workouts/types";
-import { formatTime, parseTime } from "./utils_dates";
+import {
+	applyTimeStrToDate,
+	formatDate,
+	formatTime,
+	parseTime,
+} from "./utils_dates";
 import { currentEnv, workoutApis } from "./utils_env";
 
 // REQUEST UTILS
@@ -23,6 +32,13 @@ export interface CreateWorkoutResponse {
 }
 
 export type CreateNewWorkoutResp = AsyncResponse<CreateWorkoutResponse>;
+
+export interface CancelWorkoutParams {
+	userID: string;
+	workoutID: number;
+	workoutDate: string;
+	cancelReason?: string;
+}
 
 // REQUESTS
 
@@ -82,8 +98,37 @@ const getWorkoutsByDate = async (
 		return error;
 	}
 };
-const markWorkoutsAsDone = async (userID: string, params: MarkAsDoneParams) => {
-	const url = currentEnv.base + workoutApis.markWorkoutsAsDone;
+// Marks a single workout status as complete/not-complete
+const markWorkoutAsComplete = async (
+	userID: string,
+	params: Omit<MarkWorkoutDoneParams, "userID">
+): AsyncResponse<{ updatedWorkout: UserWorkout }> => {
+	let url = currentEnv.base + workoutApis.markWorkoutAsDone;
+	url += "?" + new URLSearchParams({ userID });
+
+	try {
+		const request = await fetch(url, {
+			method: "POST",
+			body: JSON.stringify({
+				workoutID: params.workoutID,
+				workoutDate: params.workoutDate,
+				isCompleted: params.isCompleted,
+				startTime: params.startTime,
+				endTime: params.endTime,
+			}),
+		});
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+// Saves workout status for multiple workouts at once
+const markWorkoutsAsComplete = async (
+	userID: string,
+	params: MarkAsDoneBatchParams
+) => {
+	const url = currentEnv.base + workoutApis.markWorkoutAsDoneMany;
 
 	try {
 		const request = await fetch(url, {
@@ -91,11 +136,37 @@ const markWorkoutsAsDone = async (userID: string, params: MarkAsDoneParams) => {
 			body: JSON.stringify({
 				userID,
 				workoutIDs: params.workoutIDs,
-				targetDate: params.targetDate,
+				targetDate: params.workoutDate,
 			}),
 		});
 		const response = await request.json();
 		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+// Cancels a single workout instance for a given date
+const cancelWorkoutForDate = async (
+	userID: string,
+	cancelValues: CancelWorkoutParams
+): AsyncResponse<{ cancelledWorkout: UserWorkout }> => {
+	let url = currentEnv.base + workoutApis.cancelWorkout;
+	url += "?" + new URLSearchParams({ userID });
+
+	try {
+		const request = await fetch(url, {
+			method: "POST",
+			body: JSON.stringify({
+				userID: userID,
+				workoutID: cancelValues.workoutID,
+				cancelDate: cancelValues.workoutDate,
+				cancelReason: cancelValues?.cancelReason || "Not available",
+			}),
+		});
+		const response = await request.json();
+
+		return response as AsyncResponse<{ cancelledWorkout: UserWorkout }>;
 	} catch (error) {
 		return error;
 	}
@@ -242,15 +313,65 @@ const prepareNewWorkoutWithPlan = (
 	return { event: eventValues, workout: workoutValues };
 };
 
+// WORKOUT STATUS/MARK-AS-DONE UTILS
+
+const prepareValuesForMarkAsDone = (
+	selectedDate: string,
+	workout: UserWorkout
+): Omit<MarkWorkoutDoneParams, "userID"> => {
+	const { workoutID, mins, workoutStatus } = workout;
+	const currentDateTime = new Date();
+	const timeStr = formatTime(currentDateTime, "long");
+	const endTime = applyTimeStrToDate(timeStr, selectedDate);
+	const startTime = subMinutes(endTime, mins);
+
+	return {
+		workoutID: workoutID,
+		workoutDate: formatDate(selectedDate, "db"),
+		startTime: startTime.toISOString(),
+		endTime: endTime.toISOString(),
+		isCompleted: workoutStatus === "COMPLETE" ? true : false,
+	};
+};
+interface WorkoutMins {
+	hrs: number;
+	mins: number;
+}
+const convertMinsToHoursAndMins = (mins: number): WorkoutMins => {
+	if (mins <= 60) return { hrs: 0, mins: mins };
+	const hrs = Math.floor(mins / 60);
+	const remains = mins % 60;
+
+	return {
+		hrs: hrs,
+		mins: remains,
+	};
+};
+
+const formatWorkoutMins = (originMins: number) => {
+	if (originMins <= 60) {
+		return originMins + "m";
+	} else {
+		const { hrs, mins } = convertMinsToHoursAndMins(originMins);
+		return `${hrs}h ${mins}m`;
+	}
+};
+
 // WORKOUT TRACKER
 
 export {
 	prepareRecurring,
 	prepareNewWorkout,
 	prepareNewWorkoutWithPlan,
+	prepareValuesForMarkAsDone,
 	// requests
 	createNewWorkout,
 	getWorkouts,
 	getWorkoutsByDate,
-	markWorkoutsAsDone,
+	markWorkoutAsComplete,
+	markWorkoutsAsComplete,
+	cancelWorkoutForDate,
+	// utils
+	formatWorkoutMins,
+	convertMinsToHoursAndMins,
 };

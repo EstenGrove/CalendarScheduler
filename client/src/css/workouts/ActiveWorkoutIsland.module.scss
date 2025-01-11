@@ -1,0 +1,74 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.ActiveWorkoutIsland {
+	@include fill_container;
+	@include flex_row(flex-start, center);
+
+	&_main {
+		width: 80%;
+		height: 100%;
+		@include flex_row(flex-start, center);
+	}
+	&_mainAction {
+		width: 20%;
+		height: 100%;
+		@include flex_row(flex-end, center);
+		margin-left: auto;
+	}
+}
+
+.Display {
+	width: max-content;
+	height: 100%;
+	padding-left: 1rem;
+	padding-top: 0.3rem;
+	@include flex_col(flex-start, flex-start);
+
+	&_type {
+		font-size: 1.5rem;
+		color: $text1;
+	}
+	&_time {
+		font-size: 1.2rem;
+		color: $text3;
+	}
+}
+
+@mixin islandBtn() {
+	width: 3.5rem;
+	height: 3.5rem;
+	min-width: 3.5rem;
+	min-height: 3.5rem;
+	max-width: 3.5rem;
+	max-height: 3.5rem;
+	border-radius: 50%;
+	border: $borderLight;
+	outline: none;
+	background-color: transparent;
+	@include rowCenter();
+	background-color: var(--accent);
+
+	&_icon {
+		@include rowCenter();
+		width: 2.5rem;
+		height: 2.5rem;
+	}
+}
+
+.IslandButton {
+	@include islandBtn();
+}
+.ActivityIcon {
+	@include islandBtn();
+	background-color: var(--blueGrey900);
+}
+.MainAction {
+	@include islandBtn();
+	background-color: var(--accent-red);
+
+	&_icon {
+		fill: #fff;
+	}
+}

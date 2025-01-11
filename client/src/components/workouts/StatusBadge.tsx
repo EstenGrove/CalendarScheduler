@@ -2,7 +2,7 @@ import styles from "../../css/workouts/StatusBadge.module.scss";
 import { StatusKey } from "../../utils/utils_status";
 
 type Props = {
-	statusKey: StatusKey;
+	status: StatusKey;
 };
 
 const Completed = () => {
@@ -37,14 +37,23 @@ const PastDue = () => {
 		</div>
 	);
 };
+const Cancelled = () => {
+	return (
+		<div className={styles.Cancelled}>
+			<div className={styles.Cancelled_dot}></div>
+			<div className={styles.Cancelled_label}>Cancelled</div>
+		</div>
+	);
+};
 
-const StatusBadge = ({ statusKey }: Props) => {
+const StatusBadge = ({ status }: Props) => {
 	return (
 		<>
-			{statusKey === "COMPLETE" && <Completed />}
-			{statusKey === "NOT-COMPLETE" && <NotComplete />}
-			{statusKey === "IN-PROGRESS" && <InProgress />}
-			{statusKey === "PAST-DUE" && <PastDue />}
+			{status === "COMPLETE" && <Completed />}
+			{status === "NOT-COMPLETE" && <NotComplete />}
+			{status === "IN-PROGRESS" && <InProgress />}
+			{status === "PAST-DUE" && <PastDue />}
+			{status === "CANCELLED" && <Cancelled />}
 		</>
 	);
 };
