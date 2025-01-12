@@ -8,6 +8,7 @@ import {
 } from "./types";
 import { RootState } from "../../store/store";
 import {
+	createQuickWorkout,
 	createWorkoutWithPlan,
 	fetchWorkoutPlans,
 	fetchWorkouts,
@@ -15,7 +16,10 @@ import {
 	markWorkoutAsDone,
 	UserWorkoutsResp,
 } from "./operations";
-import { CreateWorkoutResponse } from "../../utils/utils_workouts";
+import {
+	CreateWorkoutResponse,
+	QuickWorkoutResponse,
+} from "../../utils/utils_workouts";
 
 export interface SelectedWorkout {
 	workout: UserWorkout;
@@ -27,10 +31,12 @@ export interface WorkoutsSlice {
 	workouts: {
 		list: UserWorkout[];
 		status: TStatus;
+		error: string | null;
 	};
 	workoutPlans: {
 		plans: WorkoutPlan[];
 		status: TStatus;
+		error: string | null;
 	};
 	selectedWorkout: SelectedWorkout | null;
 }
@@ -40,10 +46,12 @@ const initialState: WorkoutsSlice = {
 	workouts: {
 		list: [],
 		status: "IDLE",
+		error: null,
 	},
 	workoutPlans: {
 		plans: [],
 		status: "IDLE",
+		error: null,
 	},
 	selectedWorkout: null,
 };
@@ -124,6 +132,7 @@ const workoutsSlice = createSlice({
 				(state, action: PayloadAction<UserWorkout>) => {
 					const updatedWorkout = action.payload;
 					const updatedList = [
+						updatedWorkout,
 						...state.workouts.list.filter(
 							(w) => w.workoutID !== updatedWorkout.workoutID
 						),
@@ -132,6 +141,27 @@ const workoutsSlice = createSlice({
 					state.workouts.list = updatedList;
 				}
 			);
+
+		// Create a quick workout (w/ abbreviated workout info)
+		builder
+			.addCase(createQuickWorkout.pending, (state: WorkoutsSlice) => {
+				state.workouts.status = "PENDING";
+			})
+			.addCase(
+				createQuickWorkout.fulfilled,
+				(state: WorkoutsSlice, action: PayloadAction<QuickWorkoutResponse>) => {
+					const { workout } = action.payload;
+					const newList = [workout, ...state.workouts.list];
+
+					state.workouts.status = "FULFILLED";
+					state.workouts.list = newList;
+				}
+			)
+			.addCase(createQuickWorkout.rejected, (state: WorkoutsSlice) => {
+				state.workouts.status = "REJECTED";
+				state.workouts.error =
+					"An error occurred during API: /workouts/createQuickWorkout";
+			});
 	},
 });
 

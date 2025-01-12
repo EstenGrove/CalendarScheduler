@@ -160,6 +160,18 @@ export interface CalendarScheduleClient {
 	isActive: boolean;
 }
 
+// WORKOUT TYPES
+export type ActivityType =
+	| "Lift"
+	| "Walk"
+	| "Run"
+	| "Stretch"
+	| "Cardio"
+	| "Swim"
+	| "Stairs"
+	| "Timed"
+	| "More";
+
 export interface WorkoutPlanDB {
 	plan_id: number;
 	workout_type_id: number;
@@ -343,6 +355,29 @@ export type RecurringWorkoutEventPayload = RecurringWorkoutAndPlanPayload & {
 	userID: string;
 };
 
+export interface QuickWorkoutValues {
+	name: string;
+	desc: string;
+	time: string;
+	tagColor: string;
+	activityType: ActivityType | string;
+	mins: number;
+	// optional & not available in <CreateQuickWorkout/> modal
+	weight?: number;
+	reps?: number;
+	sets?: number;
+	steps?: number;
+	miles?: number;
+	// datetime stuff
+	date: string;
+	startTime: string;
+	endTime: string;
+}
+export interface QuickWorkoutPayload {
+	userID: string;
+	workout: QuickWorkoutValues;
+}
+
 // 'get_workouts_by_date()'
 export interface UserWorkoutEventDB {
 	event_id: number;
@@ -493,9 +528,11 @@ export interface UserWorkoutByDateClient {
 
 export interface WorkoutCustomDB extends UserWorkoutByDateDB {
 	workout_status: WorkoutStatus;
+	activity_type: string;
 }
 export interface WorkoutCustomClient extends UserWorkoutByDateClient {
 	workoutStatus: WorkoutStatus;
+	activityType: string;
 }
 
 export interface CancelledWorkoutDB {

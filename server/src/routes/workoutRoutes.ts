@@ -2,6 +2,7 @@ import { type Context, Hono } from "hono";
 import { getResponseError, getResponseOk } from "../utils/data";
 import type {
 	CancelledWorkoutDB,
+	QuickWorkoutPayload,
 	RecurringWorkoutEventPayload,
 	UserWorkoutDB,
 	UserWorkoutEventDB,
@@ -57,6 +58,17 @@ app.get("/getWorkoutEventsByDate", async (ctx: Context) => {
 
 	const response = getResponseOk({
 		workoutEvents: workoutEvents,
+	});
+
+	return ctx.json(response);
+});
+
+app.post("/createQuickWorkout", async (ctx: Context) => {
+	const body = await ctx.req.json<QuickWorkoutPayload>();
+	const { userID, workout } = body;
+
+	const response = getResponseOk({
+		message: "",
 	});
 
 	return ctx.json(response);

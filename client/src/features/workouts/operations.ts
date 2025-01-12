@@ -3,10 +3,13 @@ import {
 	cancelWorkoutForDate,
 	CancelWorkoutParams,
 	createNewWorkout,
+	createQuickNewWorkout,
 	CreateWorkoutResponse,
 	getWorkouts,
 	getWorkoutsByDate,
 	markWorkoutAsComplete,
+	QuickWorkoutPayload,
+	QuickWorkoutResponse,
 } from "../../utils/utils_workouts";
 import {
 	NewWorkoutAndPlan,
@@ -20,6 +23,10 @@ export interface NewWorkoutPlanParams {
 	userID: string;
 	event: NewWorkoutEvent;
 	workout: NewWorkoutAndPlan;
+}
+export interface CreateQuickWorkoutParams {
+	userID: string;
+	workout: QuickWorkoutPayload;
 }
 
 export interface UserRangeParams {
@@ -171,8 +178,22 @@ const cancelWorkoutByDate = createAsyncThunk(
 		return data.cancelledWorkout as UserWorkout;
 	}
 );
+const createQuickWorkout = createAsyncThunk(
+	"workouts/createQuickWorkout",
+	async (params: CreateQuickWorkoutParams) => {
+		const { userID, workout } = params;
+		const response = (await createQuickNewWorkout(
+			userID,
+			workout
+		)) as AwaitedResponse<QuickWorkoutResponse>;
+		const data = response.Data;
+
+		return data as QuickWorkoutResponse;
+	}
+);
 
 export {
+	createQuickWorkout,
 	createWorkoutWithPlan,
 	fetchWorkoutPlans,
 	fetchWorkouts,

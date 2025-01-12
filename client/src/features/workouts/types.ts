@@ -1,3 +1,4 @@
+import { ActivityType } from "../../utils/utils_activity";
 import { StatusKey } from "../../utils/utils_status";
 import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
 
@@ -39,7 +40,7 @@ export interface UserWorkout {
 	eventID: number;
 	workoutType: WorkoutTypeName;
 	workoutTypeID: number;
-	activityType?: string; // WALK, RUN, LIFT, TIMED etc
+	activityType: ActivityType; // WALK, RUN, LIFT, TIMED etc
 	name: string;
 	desc: string;
 	mins: number; // 25 => 25 mins

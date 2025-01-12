@@ -1,6 +1,7 @@
 import { RefObject, TouchEvent, useRef, useState } from "react";
 import { WorkoutStatus, type UserWorkout } from "../../features/workouts/types";
 import sprite from "../../assets/icons/calendar.svg";
+import sprite2 from "../../assets/icons/workouts.svg";
 import styles from "../../css/workouts/UserWorkout.module.scss";
 import { getActivityTypeFromWorkoutTypeID } from "../../utils/utils_workoutPlans";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
@@ -22,6 +23,9 @@ type MenuProps = {
 type ActivityProps = {
 	workout: UserWorkout;
 };
+type WorkoutBadgeProps = {
+	workout: UserWorkout;
+};
 type WeightProps = {
 	weight: number;
 };
@@ -34,12 +38,13 @@ type SwipeProps = {
 	onAction: (action: "COMPLETE" | "CANCEL") => void;
 };
 
-const fake = {
+const COLORS = {
 	1: "var(--accent-green)",
 	2: "var(--accent-purple)",
 	7: "var(--accent-yellow)",
 	8: "var(--accent-red)",
 };
+console.log("colors", COLORS);
 
 const iconTypes = {
 	walk: "directions_walk",
@@ -88,6 +93,28 @@ const ActivityType = ({ workout }: ActivityProps) => {
 		</div>
 	);
 };
+const WorkoutBadge = ({ workout }: WorkoutBadgeProps) => {
+	const type = workout.activityType;
+	const { weight, reps, sets, steps, miles } = workout;
+	console.log("type", type);
+
+	return (
+		<div className={styles.WorkoutBadge}>
+			{type === "Lift" && <WeightBadge weight={weight} />}
+			{type === "Cardio" && (
+				<div className={styles.WorkoutBadge}>
+					<svg className={styles.WorkoutBadge_icon}>
+						<use xlinkHref={`${sprite2}#icon-activity`}></use>
+					</svg>
+					<span>{weight}lbs.</span>
+				</div>
+			)}
+			{/*  */}
+			{/*  */}
+		</div>
+	);
+};
+
 const WeightBadge = ({ weight }: WeightProps) => {
 	return (
 		<div className={styles.WeightBadge}>
@@ -184,8 +211,11 @@ const UserWorkout = ({
 		startTime: start = null,
 		endTime: end = null,
 		workoutStatus,
+		tagColor = "var(--blueGrey700)",
 	} = workout;
-	const border = { borderLeftColor: fake[workoutID as keyof object] };
+	const border = {
+		borderLeftColor: tagColor as string,
+	};
 
 	const [showMenu, setShowMenu] = useState(false);
 	useOutsideClick(cardRef, () => {
@@ -312,7 +342,6 @@ const UserWorkout = ({
 		<div
 			ref={cardRef}
 			className={styles.UserWorkoutWrapper}
-			style={border}
 			onTouchStart={onTouchStart}
 			onTouchMove={onTouchMove}
 			onTouchEnd={onTouchEnd}
@@ -322,7 +351,7 @@ const UserWorkout = ({
 				status={workoutStatus}
 				onAction={selectSwipeAction}
 			/>
-			<div className={styles.UserWorkout}>
+			<div className={styles.UserWorkout} style={border}>
 				<div className={styles.UserWorkout_type}>
 					<ActivityType workout={workout} />
 				</div>
@@ -353,7 +382,8 @@ const UserWorkout = ({
 					</div>
 				</div>
 				<div className={styles.UserWorkout_bottom}>
-					<WeightBadge weight={workout.weight} />
+					<WorkoutBadge workout={workout} />
+					{/* <WeightBadge weight={workout.weight} /> */}
 					<MinutesBadge mins={workout.mins} />
 					<div className={styles.UserWorkout_bottom_status}>
 						<StatusBadge status={workoutStatus} />

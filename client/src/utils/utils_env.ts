@@ -58,6 +58,7 @@ const API_ENDPOINTS = {
 	workouts: {
 		createWorkout: "/workouts/createWorkout",
 		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
+		createQuickWorkout: "/workouts/createQuickWorkout",
 		getWorkouts: "/workouts/getWorkouts",
 		getWorkoutsByDate: "/workouts/getWorkoutsByDate",
 		markWorkoutAsDone: "/workouts/markWorkoutAsDone",

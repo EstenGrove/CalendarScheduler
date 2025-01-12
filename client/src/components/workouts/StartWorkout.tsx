@@ -144,6 +144,12 @@ const StartWorkout = ({ currentUser, closeModal }: Props) => {
 		setPlan(plan);
 	};
 
+	const startWorkoutActivity = () => {
+		console.log("userID", currentUser.userID);
+		console.log("activity", activity);
+		console.log("plan", plan);
+	};
+
 	return (
 		<div ref={elRef} className={styles.StartWorkout}>
 			<div className={styles.StartWorkout_new}>

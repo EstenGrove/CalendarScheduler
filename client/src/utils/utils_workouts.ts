@@ -21,6 +21,7 @@ import {
 	parseTime,
 } from "./utils_dates";
 import { currentEnv, workoutApis } from "./utils_env";
+import { QuickWorkoutValues } from "./types";
 
 // REQUEST UTILS
 
@@ -33,6 +34,13 @@ export interface CreateWorkoutResponse {
 
 export type CreateNewWorkoutResp = AsyncResponse<CreateWorkoutResponse>;
 
+export interface QuickWorkoutResponse {
+	workout: UserWorkout;
+	event: CalendarEvent;
+}
+
+export type CreateQuickWorkoutResp = AsyncResponse<QuickWorkoutResponse>;
+
 export interface CancelWorkoutParams {
 	userID: string;
 	workoutID: number;
@@ -40,8 +48,19 @@ export interface CancelWorkoutParams {
 	cancelReason?: string;
 }
 
+export interface QuickWorkoutPayload extends QuickWorkoutValues {
+	date: string;
+	startTime: string;
+	endTime: string;
+}
+export interface QuickNewWorkoutValues {
+	userID: string;
+	workout: QuickWorkoutPayload;
+}
+
 // REQUESTS
 
+// Creates a new workout w/ workout plan
 const createNewWorkout = async (
 	userID: string,
 	values: NewWorkoutWithPlan
@@ -60,6 +79,27 @@ const createNewWorkout = async (
 		});
 		const response = await request.json();
 		return response as CreateWorkoutResponse;
+	} catch (error) {
+		return error;
+	}
+};
+const createQuickNewWorkout = async (
+	userID: string,
+	values: QuickWorkoutPayload
+): CreateQuickWorkoutResp => {
+	const url = currentEnv.base + workoutApis.createQuickWorkout;
+
+	try {
+		const request = await fetch(url, {
+			method: "POST",
+			body: JSON.stringify({
+				userID: userID,
+				workout: values,
+			}),
+		});
+		const response = await request.json();
+		console.log("response(quikWorkout):", response);
+		return response;
 	} catch (error) {
 		return error;
 	}
@@ -145,7 +185,6 @@ const markWorkoutsAsComplete = async (
 		return error;
 	}
 };
-
 // Cancels a single workout instance for a given date
 const cancelWorkoutForDate = async (
 	userID: string,
@@ -366,6 +405,7 @@ export {
 	prepareValuesForMarkAsDone,
 	// requests
 	createNewWorkout,
+	createQuickNewWorkout,
 	getWorkouts,
 	getWorkoutsByDate,
 	markWorkoutAsComplete,

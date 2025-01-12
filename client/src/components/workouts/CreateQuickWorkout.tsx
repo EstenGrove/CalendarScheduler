@@ -153,9 +153,16 @@ type ActivityProps = {
 	icon: string;
 	color: string;
 	label: string;
+	isSelected: boolean;
 	onClick: () => void;
 };
-const Activity = ({ icon, color, label, onClick }: ActivityProps) => {
+const Activity = ({
+	icon,
+	color,
+	label,
+	onClick,
+	isSelected = false,
+}: ActivityProps) => {
 	return (
 		<div className={styles.Activity}>
 			<button
@@ -167,7 +174,13 @@ const Activity = ({ icon, color, label, onClick }: ActivityProps) => {
 					<use xlinkHref={`${sprite}#icon-${icon}`}></use>
 				</svg>
 			</button>
-			<div>{label}</div>
+			<div
+				style={{
+					color: isSelected ? color : "inherit",
+				}}
+			>
+				{label}
+			</div>
 		</div>
 	);
 };
@@ -242,36 +255,42 @@ const CreateQuickWorkout = ({ values, handleChange, selectTag }: Props) => {
 							label="Lift"
 							icon="fitness_center"
 							color="var(--accent-blue)"
+							isSelected={values.activityType === "Lift"}
 							onClick={() => handleChange("activityType", "Lift")}
 						/>
 						<Activity
 							label="Walk"
 							icon="directions_walk"
 							color="var(--accent-green)"
+							isSelected={values.activityType === "Walk"}
 							onClick={() => handleChange("activityType", "Walk")}
 						/>
 						<Activity
 							label="Run"
 							icon="directions_run"
 							color="var(--blueGrey800)"
+							isSelected={values.activityType === "Run"}
 							onClick={() => handleChange("activityType", "Run")}
 						/>
 						<Activity
 							label="Stretch"
 							icon="accessibility"
 							color="var(--accent-red)"
+							isSelected={values.activityType === "Stretch"}
 							onClick={() => handleChange("activityType", "Stretch")}
 						/>
 						<Activity
 							label="Cardio"
 							icon="grass"
 							color="var(--accent-purple)"
+							isSelected={values.activityType === "Cardio"}
 							onClick={() => handleChange("activityType", "Cardio")}
 						/>
 						<Activity
 							label="More"
 							icon="dots-three-horizontal"
 							color="var(--blueGrey900)"
+							isSelected={values.activityType === "More"}
 							onClick={() => handleChange("activityType", "More")}
 						/>
 					</div>
