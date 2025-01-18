@@ -45,7 +45,10 @@ export interface UserWorkout {
 	desc: string;
 	mins: number; // 25 => 25 mins
 	weight: number;
+	sets: number;
+	reps: number;
 	steps: number;
+	miles: number;
 	startTime: string; // '09:30 AM'
 	endTime: string; // '10:30 AM'
 	tagColor: string | null;

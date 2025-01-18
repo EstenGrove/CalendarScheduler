@@ -5,7 +5,7 @@ import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
 import { useBackgroundBlur } from "../../hooks/useBackgroundBlur";
 
-type Props = { title: string; children?: ReactNode; closeModal: () => void };
+type Props = { title?: string; children?: ReactNode; closeModal: () => void };
 
 const Modal = ({ title, children, closeModal }: Props) => {
 	const modalRef = useRef<HTMLDivElement>(null);

@@ -9,6 +9,8 @@ $userAccent: var(--accent-blue);
 	width: 100%;
 	max-width: 100%;
 	height: 15rem;
+	min-height: 15rem;
+	max-height: 15rem;
 	border-radius: 1rem;
 	border-radius: 0 1rem 1rem 0;
 	border: $borderLight;

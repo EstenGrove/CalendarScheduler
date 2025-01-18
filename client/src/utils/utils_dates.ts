@@ -112,6 +112,9 @@ export interface DateFormats {
 		twoLetter: string; // 'Mo', 'Tu' etc
 		letter: string; // 'M', 'T', 'W', 'T' etc
 	};
+	custom: {
+		dateDesc: string;
+	};
 }
 
 const FORMAT_TOKENS: DateFormats = {
@@ -147,12 +150,16 @@ const FORMAT_TOKENS: DateFormats = {
 		twoLetter: "EEEEEE",
 		letter: "EEEEE",
 	},
+	custom: {
+		dateDesc: "EEE, LLL do",
+	},
 };
 const {
 	date: DATE_TOKENS,
 	time: TIME_TOKENS,
 	datetime: DATETIME_TOKENS,
 	weekday: WEEKDAY_TOKENS,
+	custom: CUSTOM_TOKENS,
 } = FORMAT_TOKENS;
 
 const formatDate = (
@@ -183,6 +190,18 @@ const formatDateTime = (
 ) => {
 	if (!date) return "";
 	const token = DATETIME_TOKENS[formatToken];
+	const formatted = format(date, token);
+
+	return formatted;
+};
+
+// Handles custom formats
+const formatCustom = (
+	date: Date | string,
+	formatToken: keyof DateFormats["custom"] = "dateDesc"
+) => {
+	if (!date) return "";
+	const token = CUSTOM_TOKENS[formatToken];
 	const formatted = format(date, token);
 
 	return formatted;
@@ -287,6 +306,7 @@ export {
 	formatDate,
 	formatTime,
 	formatDateTime,
+	formatCustom,
 	parseDateTime,
 	parseTime,
 	parseDate,

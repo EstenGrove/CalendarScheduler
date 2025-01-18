@@ -161,6 +161,11 @@ $userAccent: var(--accent-blue);
 .MinutesBadge {
 	@include badge();
 }
+.IconBadge {
+	@include badge();
+	padding: 0.2rem 0.5rem;
+	gap: 0 0.2rem;
+}
 .ActivityType {
 	width: 3.5rem;
 	height: 3.5rem;

@@ -6,6 +6,7 @@ import type {
 	RecurringWorkoutEventPayload,
 	UserWorkoutDB,
 	UserWorkoutEventDB,
+	WorkoutCustomClient,
 	WorkoutCustomDB,
 	WorkoutHistoryRecordDB,
 } from "../services/types";
@@ -156,11 +157,6 @@ app.post("/markWorkoutAsDone", async (ctx: Context) => {
 	const workoutID: number = Number(body.workoutID);
 	const isDone: boolean = Boolean(body.isCompleted);
 
-	console.log("startTime", startTime);
-	console.log("endTime", endTime);
-	console.log("workoutDate", workoutDate);
-	console.log("isDone", isDone);
-
 	const historyEntry = (await userWorkoutService.markWorkoutAsDone(userID, {
 		workoutID,
 		workoutDate: workoutDate,
@@ -171,24 +167,26 @@ app.post("/markWorkoutAsDone", async (ctx: Context) => {
 
 	const history = convertHistoryRecord(historyEntry);
 
-	console.log("historyEntry", historyEntry);
-	console.log("history(client):", history);
-	// const relatedWorkout = (await userWorkoutService.getUserWorkoutsByDate(
-	// 	userID,
-	// 	workoutDate
-	// )) as UserWorkoutByDateDB;
-	// const workoutRecord: WorkoutCustomClient = convertUserWorkoutCustom({
-	// 	...relatedWorkout,
-	// 	workout_status: isDone ? "COMPLETE" : "NOT-COMPLETE",
-	// });
+	const relatedWorkout = (await userWorkoutService.getUserWorkoutByID(
+		userID,
+		workoutID,
+		workoutDate
+	)) as WorkoutCustomDB;
+	const workoutRecord: WorkoutCustomClient = convertUserWorkoutCustom({
+		...relatedWorkout,
+		workout_status: isDone ? "COMPLETE" : "NOT-COMPLETE",
+	});
 
 	// Apply 'done/not-done' status for client-formatted workout
 	// Grab workout record with workoutStatus
 
+	console.log("relatedWorkout", relatedWorkout);
+	console.log("workoutRecord", workoutRecord);
+
 	const response = getResponseOk({
 		message: "Success",
 		historyEntry: history,
-		// updatedWorkout: workoutRecord,
+		updatedWorkout: workoutRecord,
 	});
 
 	return ctx.json(response);

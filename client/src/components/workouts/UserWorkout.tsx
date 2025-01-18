@@ -1,12 +1,13 @@
-import { RefObject, TouchEvent, useRef, useState } from "react";
+import { CSSProperties, RefObject, TouchEvent, useRef, useState } from "react";
 import { WorkoutStatus, type UserWorkout } from "../../features/workouts/types";
-import sprite from "../../assets/icons/calendar.svg";
-import sprite2 from "../../assets/icons/workouts.svg";
+import sprite from "../../assets/icons/calendar2.svg";
+import sprite2 from "../../assets/icons/workouts2.svg";
 import styles from "../../css/workouts/UserWorkout.module.scss";
 import { getActivityTypeFromWorkoutTypeID } from "../../utils/utils_workoutPlans";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { isSwipeLeft, isSwipeRight } from "../../utils/utils_gestures";
 import StatusBadge from "./StatusBadge";
+import type { ActivityType as WorkoutActivityType } from "../../utils/utils_activity";
 
 type Props = {
 	workout: UserWorkout;
@@ -37,24 +38,85 @@ type SwipeProps = {
 	status: WorkoutStatus;
 	onAction: (action: "COMPLETE" | "CANCEL") => void;
 };
-
-const COLORS = {
-	1: "var(--accent-green)",
-	2: "var(--accent-purple)",
-	7: "var(--accent-yellow)",
-	8: "var(--accent-red)",
+interface ActivityInfo {
+	iconSet: string;
+	label: string;
+	icon: string;
+	badge: string;
+}
+type ActivityIcons = {
+	[type in WorkoutActivityType]: ActivityInfo;
 };
-console.log("colors", COLORS);
-
-const iconTypes = {
-	walk: "directions_walk",
-	run: "directions_run",
-	distance: "follow_the_signs",
-	weight: "fitness_center",
-	sport: "sports_tennis",
-	timed: "timer",
+type IconBadgeProps = {
+	type: keyof typeof badgeByActivity;
+	value: string | number;
 };
 
+const badgeByActivity: ActivityIcons = {
+	Lift: {
+		iconSet: sprite,
+		label: "lbs.",
+		icon: "fitness_center", // sprite1
+		badge: "fitness_center",
+	},
+	Cardio: {
+		iconSet: sprite2,
+		label: " reps",
+		icon: "skipping-rope", // sprite2
+		badge: "effort",
+	},
+	Walk: {
+		iconSet: sprite,
+		label: " steps",
+		icon: "directions_walk",
+		badge: "directions_walk",
+	},
+	Run: {
+		iconSet: sprite,
+		label: "mi",
+		icon: "directions_run",
+		badge: "directions_run",
+	},
+	Stretch: {
+		iconSet: sprite2,
+		label: "",
+		icon: "stretching", // sprite2
+		badge: "stretching", // sprite2
+	},
+	Strength: {
+		iconSet: sprite2,
+		label: " reps",
+		// icon: "sit-ups", // sprite2
+		icon: "pushups-2", // sprite2
+		badge: "flex-biceps", // sprite2
+		// iconSet: sprite,
+		// icon: "settings_backup_restore", // sprite2
+	},
+	Stairs: {
+		iconSet: sprite,
+		label: " steps",
+		icon: "effort",
+		badge: "effort",
+	},
+	Swim: {
+		iconSet: sprite,
+		label: " laps",
+		icon: "effort",
+		badge: "effort",
+	},
+	Timed: {
+		iconSet: sprite,
+		label: "m",
+		icon: "timer",
+		badge: "timer",
+	},
+	More: {
+		iconSet: sprite,
+		label: "",
+		icon: "effort",
+		badge: "effort",
+	},
+};
 const getCssFromColor = (color: string) => {
 	return {
 		borderLeftColor: color,
@@ -69,52 +131,52 @@ const getCardPosition = (cardRef: RefObject<HTMLDivElement>) => {
 		return null;
 	}
 };
-const getIconType = (val: string) => {
-	const key = val || "weight";
-	return iconTypes[key as keyof object];
-};
-const getTypeFromID = (id: number) => {
-	const type = getActivityTypeFromWorkoutTypeID(id);
-
-	return type;
-};
 
 const ActivityType = ({ workout }: ActivityProps) => {
-	const color = "var(--accent-purple)";
-	const cssColor = getCssFromColor(color);
-	const id = workout.workoutTypeID;
-	const type = getTypeFromID(id);
-	const icon = getIconType(type);
+	const color = workout.tagColor || "var(--accent-purple)";
+	const cssColor: CSSProperties = getCssFromColor(color);
+	const type: WorkoutActivityType = workout.activityType;
+	const info: ActivityInfo = badgeByActivity[type];
 	return (
 		<div className={styles.ActivityType}>
 			<svg className={styles.ActivityType_icon} style={cssColor}>
-				<use xlinkHref={`${sprite}#icon-${icon}`}></use>
+				<use xlinkHref={`${info.iconSet}#icon-${info.badge}`}></use>
 			</svg>
 		</div>
 	);
 };
+const IconBadge = ({ type, value }: IconBadgeProps) => {
+	const info = badgeByActivity[type];
+
+	return (
+		<div className={styles.IconBadge}>
+			<svg className={styles.IconBadge_icon}>
+				<use xlinkHref={`${info.iconSet}#icon-${info.icon}`}></use>
+			</svg>
+			<span>
+				{value}
+				{info.label}
+			</span>
+		</div>
+	);
+};
 const WorkoutBadge = ({ workout }: WorkoutBadgeProps) => {
-	const type = workout.activityType;
-	const { weight, reps, sets, steps, miles } = workout;
+	const type = workout.activityType as keyof typeof badgeByActivity;
+	const { weight, reps = 0, sets, steps, miles } = workout;
 	console.log("type", type);
 
 	return (
 		<div className={styles.WorkoutBadge}>
 			{type === "Lift" && <WeightBadge weight={weight} />}
-			{type === "Cardio" && (
-				<div className={styles.WorkoutBadge}>
-					<svg className={styles.WorkoutBadge_icon}>
-						<use xlinkHref={`${sprite2}#icon-activity`}></use>
-					</svg>
-					<span>{weight}lbs.</span>
-				</div>
+			{type === "Cardio" && <IconBadge value={reps} type={type} />}
+			{(type === "Walk" || type === "Run") && (
+				<IconBadge type={type} value={type === "Walk" ? steps : miles} />
 			)}
-			{/*  */}
-			{/*  */}
+			{type === "Strength" && <IconBadge type="Strength" value={reps} />}
+			{type === "Stretch" && <IconBadge type="Stretch" value={sets} />}
 		</div>
 	);
 };
-
 const WeightBadge = ({ weight }: WeightProps) => {
 	return (
 		<div className={styles.WeightBadge}>
@@ -206,7 +268,6 @@ const UserWorkout = ({
 	const cardRef = useRef<HTMLDivElement>(null);
 	const swipeRef = useRef<HTMLDivElement>(null);
 	const {
-		workoutID,
 		name,
 		startTime: start = null,
 		endTime: end = null,

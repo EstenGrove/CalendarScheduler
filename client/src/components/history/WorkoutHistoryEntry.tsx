@@ -14,6 +14,12 @@ import {
 
 type Props = {
 	entry: HistoryEntry;
+	onEdit: () => void;
+	onView: () => void;
+	onDelete: () => void;
+};
+type ItemHeadProps = {
+	entry: HistoryEntry;
 };
 type ItemProps = {
 	icon: keyof typeof iconOpts;
@@ -347,7 +353,7 @@ const RecordedItems = ({ entry }: RecordedItemsProps) => {
 
 	return (
 		<>
-			{activityType === "Lift" && (
+			{(activityType === "Lift" || activityType === "Strength") && (
 				<WeightItems
 					recordedReps={recordedReps}
 					recordedSets={recordedSets}
@@ -409,7 +415,7 @@ const getHowLongAgo = (startTime: string, date: string) => {
 	}
 };
 
-const ItemHeader = ({ entry }: Props) => {
+const ItemHeader = ({ entry }: ItemHeadProps) => {
 	const ago = getHowLongAgo(entry.startTime, entry.date);
 	const date = formatDate(entry.date, "long");
 	return (
@@ -453,18 +459,21 @@ const MenuOptions = ({ closeMenu, viewLog, editLog, deleteLog }: MenuProps) => {
 	);
 };
 
-const WorkoutHistoryEntry = ({ entry }: Props) => {
+const WorkoutHistoryEntry = ({ entry, onView, onEdit, onDelete }: Props) => {
 	const type = getActivityTypeKey(entry);
 	const [showMoreOptions, setShowMoreOptions] = useState(false);
 
 	const viewHistoryEntry = () => {
 		// do stuff
+		onView();
 	};
 	const editHistoryEntry = () => {
 		// do stuff
+		onEdit();
 	};
 	const deleteHistoryEntry = () => {
 		// do stuff
+		onDelete();
 	};
 
 	const openMenu = () => {

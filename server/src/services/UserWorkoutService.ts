@@ -140,7 +140,30 @@ class UserWorkoutService {
 			return error;
 		}
 	}
-	async getUserWorkoutByID(userID: string, workoutID: number) {}
+	// Returns a single workout_with_status record by id
+	async getUserWorkoutByID(
+		userID: string,
+		workoutID: number,
+		targetDate: string
+	) {
+		try {
+			const query = `SELECT * FROM get_user_workout_with_status_by_id(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [
+				userID,
+				workoutID,
+				targetDate,
+			]);
+			const row = results?.rows?.[0];
+
+			return row;
+		} catch (error) {
+			return error;
+		}
+	}
 	async getUserWorkoutPlans(
 		userID: string,
 		isActive: boolean = true
@@ -268,6 +291,7 @@ class UserWorkoutService {
 			return error;
 		}
 	}
+
 	async deleteWorkout(userID: string, workoutID: number) {
 		//
 	}
