@@ -64,21 +64,15 @@ const ThisWeekView = ({ currentUser, workouts, selectedDate }: Props) => {
 		setSelectedWorkout(workout);
 	};
 	const cancelWorkoutItem = (workout: UserWorkout) => {
-		console.log("workout", workout);
-		const enableCancel = false;
-
-		if (enableCancel) {
-			dispatch(
-				cancelWorkoutByDate({
-					userID: currentUser.userID,
-					workoutID: workout.workoutID,
-					workoutDate: formatDate(selectedDate, "long"),
-					cancelReason: "Not available",
-				})
-			);
-		}
-
-		alert("Fake Cancellation!");
+		setSelectedWorkout(workout);
+		dispatch(
+			cancelWorkoutByDate({
+				userID: currentUser.userID,
+				workoutID: workout.workoutID,
+				workoutDate: formatDate(selectedDate, "long"),
+				cancelReason: "Not available",
+			})
+		);
 	};
 
 	return (

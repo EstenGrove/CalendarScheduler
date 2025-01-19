@@ -621,7 +621,7 @@ const convertUserWorkoutCustom = (
 		desc: workout.workout_desc,
 		workoutType: workout.workout_type_name,
 		activityType: workout.activity_type,
-		workoutStatus: "NOT-COMPLETE",
+		workoutStatus: workout.workout_status,
 		startTime: workout.start_time,
 		endTime: workout.end_time,
 		tagColor: workout.tag_color,

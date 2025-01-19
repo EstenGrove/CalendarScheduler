@@ -8,6 +8,7 @@ import {
 } from "./types";
 import { RootState } from "../../store/store";
 import {
+	cancelWorkoutByDate,
 	createQuickWorkout,
 	createWorkoutWithPlan,
 	fetchWorkoutPlans,
@@ -130,6 +131,7 @@ const workoutsSlice = createSlice({
 			.addCase(
 				markWorkoutAsDone.fulfilled,
 				(state, action: PayloadAction<UserWorkout>) => {
+					console.log("action.payload", action.payload);
 					const updatedWorkout = action.payload;
 					const updatedList = [
 						updatedWorkout,
@@ -162,6 +164,25 @@ const workoutsSlice = createSlice({
 				state.workouts.error =
 					"An error occurred during API: /workouts/createQuickWorkout";
 			});
+
+		// Cancel a workout for a given date
+		builder
+			.addCase(cancelWorkoutByDate.pending, (state: WorkoutsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				cancelWorkoutByDate.fulfilled,
+				(state: WorkoutsSlice, action: PayloadAction<UserWorkout>) => {
+					const updatedWorkout = action.payload;
+					const newList = [
+						...state.workouts.list.filter(
+							(x) => x.workoutID !== updatedWorkout.workoutID
+						),
+					];
+					state.status = "FULFILLED";
+					state.workouts.list = [...newList, updatedWorkout];
+				}
+			);
 	},
 });
 

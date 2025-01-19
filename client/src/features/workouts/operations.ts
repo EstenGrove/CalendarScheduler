@@ -154,8 +154,11 @@ const markWorkoutAsDone = createAsyncThunk(
 		})) as AwaitedResponse<{ updatedWorkout: UserWorkout }>;
 
 		const data = response.Data;
+		const updated = data.updatedWorkout as UserWorkout;
 
-		return data.updatedWorkout as UserWorkout;
+		console.log("Status:", updated.workoutStatus);
+
+		return updated as UserWorkout;
 	}
 );
 const cancelWorkoutByDate = createAsyncThunk(
@@ -174,6 +177,7 @@ const cancelWorkoutByDate = createAsyncThunk(
 			cancelReason: cancelReason,
 		})) as AwaitedResponse<{ cancelledWorkout: UserWorkout }>;
 		const data = response.Data;
+		console.log("response", response);
 
 		return data.cancelledWorkout as UserWorkout;
 	}

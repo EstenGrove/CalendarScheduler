@@ -137,14 +137,24 @@ app.get("/getWorkouts", async (ctx: Context) => {
 });
 app.get("/cancelWorkout", async (ctx: Context) => {
 	const { userID, workoutID, workoutDate } = ctx.req.query();
+	const id = Number(workoutID);
 
 	const cancelRecord = (await userWorkoutService.cancelWorkout(userID, {
-		workoutID: Number(workoutID),
+		workoutID: id,
 		workoutDate: workoutDate,
 	})) as CancelledWorkoutDB;
 
+	const relatedWorkout = (await userWorkoutService.getUserWorkoutByID(
+		userID,
+		id,
+		workoutDate
+	)) as WorkoutCustomDB;
+	const workoutRecord: WorkoutCustomClient =
+		convertUserWorkoutCustom(relatedWorkout);
+
 	const response = getResponseOk({
-		cancelledWorkout: cancelRecord,
+		cancelledRecord: cancelRecord,
+		cancelledWorkout: workoutRecord,
 	});
 
 	return ctx.json(response);
@@ -172,16 +182,11 @@ app.post("/markWorkoutAsDone", async (ctx: Context) => {
 		workoutID,
 		workoutDate
 	)) as WorkoutCustomDB;
-	const workoutRecord: WorkoutCustomClient = convertUserWorkoutCustom({
-		...relatedWorkout,
-		workout_status: isDone ? "COMPLETE" : "NOT-COMPLETE",
-	});
+	const workoutRecord: WorkoutCustomClient =
+		convertUserWorkoutCustom(relatedWorkout);
 
 	// Apply 'done/not-done' status for client-formatted workout
 	// Grab workout record with workoutStatus
-
-	console.log("relatedWorkout", relatedWorkout);
-	console.log("workoutRecord", workoutRecord);
 
 	const response = getResponseOk({
 		message: "Success",
