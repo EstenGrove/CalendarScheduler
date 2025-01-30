@@ -1,49 +1,55 @@
 import { useSelector } from "react-redux";
 import styles from "../../css/workouts/WorkoutsList.module.scss";
-import { type UserWorkout } from "../../features/workouts/types";
 import {
 	selectIsLoadingWorkouts,
 	selectWorkoutsStatus,
 } from "../../features/workouts/workoutsSlice";
 import { TStatus } from "../../features/types";
+import { type UserWorkout } from "../../features/workouts/types";
 import NoData from "../ui/NoData";
 import Loader from "../ui/Loader";
 import UserWorkoutItem from "./UserWorkout";
 
 type Props = {
 	workouts: UserWorkout[];
-	selectWorkout: (workout: UserWorkout) => void;
+	viewWorkout: (workout: UserWorkout) => void;
+	editWorkout: (workout: UserWorkout) => void;
+	deleteWorkout: (workout: UserWorkout) => void;
+	cancelWorkout: (workout: UserWorkout) => void;
+	markAsCompleted: (workout: UserWorkout) => void;
 };
 
 const hasWorkouts = (workouts: UserWorkout[]) => {
 	return workouts && workouts.length > 0;
 };
 
-const WorkoutsList = ({ workouts, selectWorkout }: Props) => {
+const WorkoutsList = ({
+	workouts,
+	viewWorkout,
+	editWorkout,
+	deleteWorkout,
+	cancelWorkout,
+	markAsCompleted,
+}: Props) => {
 	const isLoading: boolean = useSelector(selectIsLoadingWorkouts);
 	const status: TStatus = useSelector(selectWorkoutsStatus);
 	const isEmpty: boolean = status !== "PENDING" && !hasWorkouts(workouts);
 
-	const markAsCompleted = (workout: UserWorkout) => {
-		// do stuff
-		console.log("workout", workout);
-	};
-
 	return (
 		<div className={styles.WorkoutsList}>
 			<div className={styles.WorkoutsList_inner}>
-				{isEmpty && <NoData>No workouts found.</NoData>}
-				{isLoading && (
-					<div>
-						<Loader>Loading workouts for day...</Loader>
-					</div>
-				)}
+				{isEmpty && <NoData>No scheduled workouts for this day.</NoData>}
+				{isLoading && <Loader>Loading workouts for day...</Loader>}
+
 				{hasWorkouts(workouts) &&
 					workouts.map((workout, idx) => (
 						<UserWorkoutItem
 							key={workout.workoutID + "-" + idx}
 							workout={workout}
-							selectWorkout={() => selectWorkout(workout)}
+							viewWorkout={() => viewWorkout(workout)}
+							editWorkout={() => editWorkout(workout)}
+							deleteWorkout={() => deleteWorkout(workout)}
+							cancelWorkout={() => cancelWorkout(workout)}
 							markAsCompleted={() => markAsCompleted(workout)}
 						/>
 					))}

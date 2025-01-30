@@ -166,6 +166,21 @@ class WorkoutHistoryService {
 			return error;
 		}
 	}
+	async getWorkoutHistory(userID: string, range: LogRange) {
+		const { startDate, endDate } = range;
+
+		try {
+			const query = `SELECT * FROM get_user_workout_scheduled_history(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [userID, startDate, endDate]);
+			const rows = results?.rows;
+			console.log("rows", rows);
+			return rows;
+		} catch (error) {}
+	}
 }
 
 export { WorkoutHistoryService };

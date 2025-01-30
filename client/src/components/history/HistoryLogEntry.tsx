@@ -16,6 +16,8 @@ import {
 	isWalkingType,
 	isWeightedType,
 } from "../../utils/utils_workoutLogs";
+import { formatWorkoutMins } from "../../utils/utils_workouts";
+import { formatThousand } from "../../utils/utils_misc";
 
 // THIS IS USED FOR BOTH AD-HOC LOG ENTRIES AND WORKOUT PLAN ENTRIES
 
@@ -52,6 +54,7 @@ const getTimeMsg = (startTime: string, endTime: string) => {
 };
 const getEntryInfoUI = (logEntry: WorkoutLogEntry) => {
 	const { workoutType, steps, miles, reps, sets } = logEntry;
+	const formattedSteps = formatThousand(steps);
 
 	switch (true) {
 		case isDistanceType(workoutType):
@@ -62,7 +65,7 @@ const getEntryInfoUI = (logEntry: WorkoutLogEntry) => {
 						<svg className={styles.LogEntryInfo_icon}>
 							<use xlinkHref={`${sprite}#icon-directions_run`}></use>
 						</svg>
-						<span>{steps} steps</span>
+						<span>{formattedSteps} steps</span>
 					</div>
 					<div className={styles.LogEntryInfo_item}>
 						<svg className={styles.LogEntryInfo_icon}>
@@ -130,6 +133,20 @@ const TimeEntry = ({ logEntry }: Props) => {
 	);
 };
 
+const WorkoutMins = ({ mins }: { mins: number }) => {
+	// 1hr 18m or 47m etc
+	const workoutMins: string = formatWorkoutMins(mins);
+
+	return (
+		<div className={styles.HistoryLogEntry_bottom_mins}>
+			<svg className={styles.HistoryLogEntry_bottom_mins_icon}>
+				<use xlinkHref={`${sprite}#icon-stopwatch`}></use>
+			</svg>
+			<span>{workoutMins}</span>
+		</div>
+	);
+};
+
 const HistoryLogEntry = ({ logEntry }: Props) => {
 	const { date, workoutType, mins, startTime } = logEntry;
 	const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -186,12 +203,7 @@ const HistoryLogEntry = ({ logEntry }: Props) => {
 				{/*  */}
 			</div>
 			<div className={styles.HistoryLogEntry_bottom}>
-				<div className={styles.HistoryLogEntry_bottom_mins}>
-					<svg className={styles.HistoryLogEntry_bottom_mins_icon}>
-						<use xlinkHref={`${sprite}#icon-stopwatch`}></use>
-					</svg>
-					<span>{mins}m</span>
-				</div>
+				<WorkoutMins mins={mins} />
 				<LogEntryInfo logEntry={logEntry} />
 				<TimeEntry logEntry={logEntry} />
 			</div>

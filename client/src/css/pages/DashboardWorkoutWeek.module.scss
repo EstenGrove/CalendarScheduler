@@ -7,24 +7,58 @@
 
 	&_title {
 		width: 100%;
-
 		font-size: 1.6rem;
 	}
 
 	&_summary {
 		display: block;
 		margin: 0 auto;
-		width: 80%;
-		height: 2rem;
-		padding: 2rem;
+		width: 100%;
+		height: 5rem;
+		padding: 1rem 2rem;
 		border-radius: 1rem;
+		@include flex_row(flex-end, center);
 	}
 
 	&_list {
 		width: 100%;
 		max-width: 100%;
 		height: 70dvh;
-		// border: 1px solid red;
-		padding: 2rem;
+		padding: 0 2rem;
+		margin-top: 1rem;
+	}
+}
+
+.AddNewFooter {
+	width: 100%;
+	height: 100%;
+	@include flex_row(flex-end, center);
+	gap: 0 1rem;
+}
+
+.cancelBtn {
+	padding: 0.6rem 1.3rem;
+	border-radius: 0.5rem;
+	font-size: 1.6rem;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	color: #fff;
+	&:hover {
+		cursor: pointer;
+		border-color: $accent;
+	}
+}
+.saveBtn {
+	padding: 0.6rem 1.3rem;
+	border-radius: 0.5rem;
+	font-size: 1.6rem;
+	background-color: $accent;
+	border: none;
+	outline: none;
+	color: #fff;
+	&:hover {
+		cursor: pointer;
+		border-color: $accent;
 	}
 }

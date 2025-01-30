@@ -181,7 +181,7 @@ const calendarEventsSlice = createSlice({
 				(state, action: PayloadAction<EventDetails>) => {
 					const newEvent = {
 						...state.selectedEvent.event,
-						...action.payload.event,
+						...action.payload?.event,
 					};
 					state.status = "FULFILLED";
 
@@ -193,7 +193,17 @@ const calendarEventsSlice = createSlice({
 						workouts: action.payload.workouts,
 					};
 				}
-			);
+			)
+			.addCase(fetchEventDetails.rejected, (state: CalendarEventsSlice) => {
+				state.status = "REJECTED";
+				state.selectedEvent = {
+					...state.selectedEvent,
+					event: null,
+					schedule: null,
+					upcoming: [],
+					workouts: [],
+				};
+			});
 
 		// Delete Event
 		builder

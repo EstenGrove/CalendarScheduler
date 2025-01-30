@@ -1,15 +1,18 @@
 import { ReactNode, useState, useEffect } from "react";
 import sprite from "../assets/icons/calendar.svg";
 import styles from "../css/views/SummaryWeekView.module.scss";
-import { isSunday, subDays } from "date-fns";
-import { RangeSummary, SummaryWeekData } from "../features/summary/types";
-import {
-	getDiffWeekRangesFromBase,
-	getSummaryByWeek,
-} from "../utils/utils_summary";
-import { formatDate, getWeekStartAndEnd } from "../utils/utils_dates";
+import { isSunday } from "date-fns";
+import { RangeSummary } from "../features/summary/types";
+import { DiffDay, getDiffWeekRangesFromBase } from "../utils/utils_summary";
+import { getWeekStartAndEnd } from "../utils/utils_dates";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../features/user/userSlice";
+import { useAppDispatch } from "../store/store";
+import { fetchSummaryByWeek } from "../features/summary/operations";
+import {
+	selectSummaryByWeek,
+	SummarySlice,
+} from "../features/summary/summarySlice";
 // components
 import {
 	FiltersButton,
@@ -19,13 +22,7 @@ import {
 import Modal from "../components/shared/Modal";
 import DiffSummary from "../components/summary/DiffSummary";
 import DiffWeekSummary from "../components/summary/DiffWeekSummary";
-import WeekStreak from "../components/summary/WeekStreak";
-import { useAppDispatch } from "../store/store";
-import { fetchSummaryByWeek } from "../features/summary/operations";
-import {
-	selectSummaryByWeek,
-	SummarySlice,
-} from "../features/summary/summarySlice";
+// import WeekStreak from "../components/summary/WeekStreak";
 import Loader from "../components/ui/Loader";
 
 type TotalsProps = {
@@ -75,13 +72,11 @@ const SummaryTotals = ({ currentWeek, prevWeek }: TotalsProps) => {
 };
 
 type CardLGProps = {
-	title: string;
 	children?: ReactNode;
 };
-const CardLG = ({ title, children }: CardLGProps) => {
+const CardLG = ({ children }: CardLGProps) => {
 	return (
 		<div className={styles.CardLG}>
-			{/* <div className={styles.CardLG_title}>{title}</div> */}
 			<div className={styles.CardLG_inner}>{children}</div>
 		</div>
 	);
@@ -138,8 +133,8 @@ interface Filters {
 }
 
 interface WeeklyMinsData {
-	thisWeek: number[];
-	lastWeek: number[];
+	thisWeek: DiffDay[];
+	lastWeek: DiffDay[];
 }
 const getWeeklyMins = (
 	diffSummary: SummarySlice["diffByWeek"]
@@ -147,8 +142,14 @@ const getWeeklyMins = (
 	const { currentWeek, prevWeek } = diffSummary;
 	const curMins = currentWeek?.dailyMins || [];
 	const prevMins = prevWeek?.dailyMins || [];
-	const currentWeekMins = curMins.map((day) => day.totalMins);
-	const prevWeekMins = prevMins.map((day) => day.totalMins);
+	const currentWeekMins = curMins.map((day) => ({
+		date: day.date,
+		value: day.totalMins,
+	}));
+	const prevWeekMins = prevMins.map((day) => ({
+		date: day.date,
+		value: day.totalMins,
+	}));
 
 	return {
 		thisWeek: currentWeekMins,
@@ -163,11 +164,11 @@ const SummaryWeekView = () => {
 	const weeklyMins = getWeeklyMins(diffSummary);
 	const curTotals = diffSummary.currentWeek?.rangeTotals as RangeSummary;
 	const prevTotals = diffSummary.prevWeek?.rangeTotals as RangeSummary;
-	const [showFilters, setShowFilters] = useState(false);
 	const range = getWeekStartAndEnd(new Date());
+	// filters
+	const [showFilters, setShowFilters] = useState(false);
 	const [filters, setFilters] = useState<Filters>(range);
-
-	console.log("diffSummary", diffSummary);
+	console.log("filters", filters);
 
 	const getFilteredWeekly = () => {
 		// fetch data
@@ -188,12 +189,12 @@ const SummaryWeekView = () => {
 		const getData = async () => {
 			const { userID } = currentUser;
 			const base = new Date();
-			const { currentWeek } = getDiffWeekRangesFromBase(base);
+			const { prevWeek, currentWeek } = getDiffWeekRangesFromBase(base);
 			dispatch(
 				fetchSummaryByWeek({
 					userID,
-					startDate: currentWeek.startDate,
-					endDate: currentWeek.endDate,
+					prevWeek,
+					currentWeek,
 				})
 			);
 		};
@@ -217,19 +218,18 @@ const SummaryWeekView = () => {
 				<>
 					<SummaryViewFilters>
 						<QuickFilterButton onClick={getFilteredWeekly}>
-							This Week
+							Last 7 days
 						</QuickFilterButton>
 						<FiltersButton onClick={openFilters}>Filters</FiltersButton>
 					</SummaryViewFilters>
 					{/* LEFT */}
 					<MainCard
 						title="Weekly Mins."
-						details={"Showing last week & this week"}
+						details={"Showing last 7 days & week prior"}
 					>
-						{/* <DiffWeekSummary data={weeklyMins} /> */}
-						<DiffWeekSummary />
+						<DiffWeekSummary data={weeklyMins} />
 					</MainCard>
-					<CardLG title="Week">
+					<CardLG>
 						<SummaryTotals currentWeek={curTotals} prevWeek={prevTotals} />
 						{/* <WeekStreak /> */}
 					</CardLG>

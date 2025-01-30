@@ -1,5 +1,8 @@
 import type { Pool } from "pg";
-import type { RecurringWorkoutAndPlanPayload } from "./types";
+import type {
+	QuickWorkoutValues,
+	RecurringWorkoutAndPlanPayload,
+} from "./types";
 
 export interface NewWorkoutValues {
 	planID: number;
@@ -67,6 +70,14 @@ class WorkoutsServices {
 			const row = results?.rows?.[0];
 
 			return row;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async createQuickWorkout(userID: string, values: QuickWorkoutValues) {
+		try {
+			const query = ``;
 		} catch (error) {
 			return error;
 		}

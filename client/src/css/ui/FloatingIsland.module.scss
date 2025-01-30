@@ -1,0 +1,47 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+// $bg: $foreground;
+$bg: rgba(0, 0, 0, 1);
+
+.FloatingIsland {
+	position: fixed;
+	display: block;
+	width: 25rem;
+	height: 4.5rem;
+	border-radius: 5rem;
+	bottom: 1dvh;
+	left: 50%;
+	transform: translate(-50%, -1dvh);
+	background-color: rgba(0, 0, 0, 1);
+	background-color: $bg;
+	box-shadow: 2px 1px 76px 13px rgba(0, 0, 0, 0.75);
+	border: $borderLight;
+	transition: width 0.5s ease-in-out;
+
+	&_inner {
+		@include fill_container;
+		padding: 0.1rem 0.5rem;
+	}
+}
+
+.FloatingIslandCollapsed {
+	position: fixed;
+	display: block;
+	width: 25rem;
+	height: 4.5rem;
+	border-radius: 5rem;
+	bottom: 1dvh;
+	left: 50%;
+	transform: translate(-50%, -1dvh);
+	background-color: $bg;
+	border: $borderLight;
+	box-shadow: 2px 1px 76px 13px rgba(0, 0, 0, 0.75);
+	transition: width 0.5s ease-in-out;
+
+	&_inner {
+		@include fill_container;
+		padding: 0.1rem 0.2rem;
+	}
+}

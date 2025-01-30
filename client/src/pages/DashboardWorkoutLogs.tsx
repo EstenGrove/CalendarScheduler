@@ -9,7 +9,7 @@ import { WorkoutLogEntry } from "../features/workoutHistory/types";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../store/store";
 import {
-	getWorkoutHistory,
+	getWorkoutLogRecords,
 	LogRange,
 } from "../features/workoutHistory/operations";
 import { CurrentUser } from "../features/user/types";
@@ -381,7 +381,7 @@ const DashboardWorkoutLogs = () => {
 		const newRange = getDateRangeByType(rangeType);
 		// fire off request for data
 		const result = await dispatch(
-			getWorkoutHistory({ userID, range: newRange })
+			getWorkoutLogRecords({ userID, range: newRange })
 		).unwrap();
 		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
 		setFilteredLogs(sorted);
@@ -392,7 +392,7 @@ const DashboardWorkoutLogs = () => {
 		const newRange = getDateRangeByFilters(newSettings);
 		// fire off request for data
 		const result = await dispatch(
-			getWorkoutHistory({ userID, range: newRange })
+			getWorkoutLogRecords({ userID, range: newRange })
 		).unwrap();
 		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
 		setFilteredLogs(sorted);
@@ -416,7 +416,7 @@ const DashboardWorkoutLogs = () => {
 		const { userID } = currentUser;
 		const range = getLogRange();
 		const result = await dispatch(
-			getWorkoutHistory({ userID, range })
+			getWorkoutLogRecords({ userID, range })
 		).unwrap();
 		const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
 		setFilteredLogs(sorted);
@@ -443,13 +443,14 @@ const DashboardWorkoutLogs = () => {
 		setShowFiltersModal(false);
 	};
 
+	// fetch workout logs for range
 	useEffect(() => {
 		let isMounted = true;
 		if (!isMounted) return;
 
 		const getLogs = async (userID: string, range: LogRange) => {
 			const result = await dispatch(
-				getWorkoutHistory({ userID, range })
+				getWorkoutLogRecords({ userID, range })
 			).unwrap();
 			const sorted = sortWorkoutLogsBy(result.logs, "workoutDate:DESC");
 			setFilteredLogs(sorted);

@@ -7,6 +7,7 @@ import { WorkoutLogParams } from "../features/workoutHistory/operations";
 import { applyTimeStrToDate } from "./utils_dates";
 import { addMinutes } from "date-fns";
 import { sortObjByDateAsc, sortObjByDateDesc } from "./utils_misc";
+import { WorkoutHistoryEntry } from "../features/workouts/types";
 
 export type LogStep =
 	| "Type"
@@ -73,7 +74,58 @@ const getWorkoutTypeIDFromName = (type: string): number => {
 	return typeID;
 };
 
-// SAVING WORKOUT LOGS
+// SAVING WORKOUT LOGS & HISTORY
+
+const getWorkoutHistory = async (
+	userID: string,
+	range: WorkoutLogParams["range"]
+): AsyncResponse<{ history: WorkoutHistoryEntry[] }> => {
+	const { start, end } = range;
+	let url = currentEnv.base + historyApis.getHistory;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate: start, endDate: end });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+const getWorkoutLogs = async (
+	userID: string,
+	range: WorkoutLogParams["range"]
+): AsyncResponse<{ history: object[]; logs: WorkoutLogEntry[] }> => {
+	const { start, end } = range;
+	let url = currentEnv.base + historyApis.getLogs;
+	url += "?" + new URLSearchParams({ userID });
+	url += "&" + new URLSearchParams({ startDate: start, endDate: end });
+
+	try {
+		const request = await fetch(url);
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
+
+const saveWorkoutLog = async (userID: string, workoutLog: CreateLogValues) => {
+	const url = currentEnv.base + historyApis.createLog;
+
+	try {
+		const request = await fetch(url, {
+			method: "POST",
+			body: JSON.stringify({ userID, workoutLog }),
+		});
+		const response = await request.json();
+		return response;
+	} catch (error) {
+		return error;
+	}
+};
 
 export interface TimeRange {
 	startTime: Date;
@@ -139,39 +191,6 @@ const prepareWorkoutLog = (values: CreateLogValues): CreateLogValues => {
 	}
 };
 
-const getWorkoutLogs = async (
-	userID: string,
-	range: WorkoutLogParams["range"]
-): AsyncResponse<{ history: object[]; logs: WorkoutLogEntry[] }> => {
-	const { start, end } = range;
-	let url = currentEnv.base + historyApis.getLogs;
-	url += "?" + new URLSearchParams({ userID });
-	url += "&" + new URLSearchParams({ startDate: start, endDate: end });
-
-	try {
-		const request = await fetch(url);
-		const response = await request.json();
-		return response;
-	} catch (error) {
-		return error;
-	}
-};
-
-const saveWorkoutLog = async (userID: string, workoutLog: CreateLogValues) => {
-	const url = currentEnv.base + historyApis.createLog;
-
-	try {
-		const request = await fetch(url, {
-			method: "POST",
-			body: JSON.stringify({ userID, workoutLog }),
-		});
-		const response = await request.json();
-		return response;
-	} catch (error) {
-		return error;
-	}
-};
-
 // SORTING UTILS
 export type LogSortBy =
 	| "workoutDate:ASC"
@@ -204,6 +223,7 @@ export {
 	isDistanceType,
 	isOtherType,
 	// request utils
+	getWorkoutHistory,
 	getWorkoutLogs,
 	saveWorkoutLog,
 	// utils

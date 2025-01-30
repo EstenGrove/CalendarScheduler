@@ -13,6 +13,7 @@ import SummaryDayView from "./views/SummaryDayView";
 import SummaryMonthView from "./views/SummaryMonthView";
 import SummaryYearView from "./views/SummaryYearView";
 import SummaryRangeView from "./views/SummaryRangeView";
+import PageNotFound from "./pages/PageNotFound";
 
 const routePaths = {
 	dashboard: "./pages/Dashboard",
@@ -20,12 +21,18 @@ const routePaths = {
 	calendarLayout: "./pages/DashboardCalendarLayout",
 	calendarEvent: "./pages/DashboardCalendarEvent",
 	workouts: "./pages/DashboardWorkouts",
-	history: "./pages/DashboardWorkoutHistory",
 	health: "./pages/DashboardHealthProfile",
 	tracker: "./pages/DashboardWorkoutTracker",
 	settings: "./pages/DashboardSettings.tsx",
 	summary: "./pages/DashboardSummary.tsx",
+	history: "./pages/DashboardWorkoutHistory",
 	logs: "./pages/DashboardWorkoutLogs.tsx",
+	goals: "./pages/DashboardGoals.tsx",
+	userGoals: "./views/UserGoalsView.tsx",
+	userGoalsProgress: "./views/UserGoalsProgressView.tsx",
+	userSettings: "./views/UserSettings.tsx",
+	workoutTypeSettings: "./views/WorkoutTypeSettings.tsx",
+	workoutSettings: "./views/WorkoutSettings.tsx",
 };
 
 const LazyDashboard = lazy(() => import(routePaths.dashboard));
@@ -37,10 +44,20 @@ const LazyDashboardCalendarEvent = lazy(() => import(routePaths.calendarEvent));
 const LazyDashboardCalendarLayout = lazy(
 	() => import(routePaths.calendarLayout)
 );
+const LazyDashboardGoals = lazy(() => import(routePaths.goals));
+const LazyDashboardUserGoals = lazy(() => import(routePaths.userGoals));
+const LazyDashboardGoalsProgress = lazy(
+	() => import(routePaths.userGoalsProgress)
+);
 const LazyDashboardHealthProfile = lazy(() => import(routePaths.health));
 const LazyDashboardWorkoutTracker = lazy(() => import(routePaths.tracker));
 const LazyDashboardSettings = lazy(() => import(routePaths.settings));
 const LazyDashboardSummary = lazy(() => import(routePaths.summary));
+const LazyUserSettings = lazy(() => import(routePaths.userSettings));
+const LazyWorkoutTypeSettings = lazy(
+	() => import(routePaths.workoutTypeSettings)
+);
+const LazyWorkoutSettings = lazy(() => import(routePaths.workoutSettings));
 
 const Fallback = () => {
 	return (
@@ -121,6 +138,31 @@ function App() {
 									}
 								/>
 								<Route
+									path="goals"
+									element={
+										<Suspense fallback={<Fallback />}>
+											<LazyDashboardGoals />
+										</Suspense>
+									}
+								>
+									<Route
+										path="current"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyDashboardUserGoals />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="progress"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyDashboardGoalsProgress />
+											</Suspense>
+										}
+									/>
+								</Route>
+								<Route
 									path="tracker"
 									element={
 										<Suspense fallback={<Fallback />}>
@@ -135,7 +177,32 @@ function App() {
 											<LazyDashboardSettings />
 										</Suspense>
 									}
-								/>
+								>
+									<Route
+										path="user"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyUserSettings />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="types"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyWorkoutTypeSettings />
+											</Suspense>
+										}
+									/>
+									<Route
+										path="workouts"
+										element={
+											<Suspense fallback={<Fallback />}>
+												<LazyWorkoutSettings />
+											</Suspense>
+										}
+									/>
+								</Route>
 								<Route
 									path="summary"
 									element={
@@ -151,6 +218,7 @@ function App() {
 									<Route path="range" element={<SummaryRangeView />} />
 								</Route>
 							</Route>
+							<Route path="*" element={<PageNotFound />} />
 						</Routes>
 					</div>
 				</div>

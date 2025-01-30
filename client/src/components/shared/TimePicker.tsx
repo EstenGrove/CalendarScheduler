@@ -134,20 +134,20 @@ const getInitialState = (initialTime: string): TimeVals => {
 
 type TimeProps = {
 	name: string;
-	initialTime: string;
+	value: string;
 	onChange: (name: string, value: string) => void;
 };
 
 // @ts-expect-error: this is fine
 interface Props extends TimeProps, ComponentPropsWithoutRef<"div"> {}
 
-const TimePicker = ({ name, initialTime, onChange, ...rest }: Props) => {
+const TimePicker = ({ name, value, onChange, ...rest }: Props) => {
 	const hoursRef = useRef<HTMLInputElement>(null);
 	const minsRef = useRef<HTMLInputElement>(null);
 	const todRef = useRef<HTMLSelectElement>(null);
 
 	const [time, setTime] = useState<TimeVals>({
-		...getInitialState(initialTime),
+		...getInitialState(value),
 	});
 
 	const selectHours = (_: string, value: string) => {

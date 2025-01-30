@@ -3,6 +3,7 @@ import styles from "../../css/summary/DiffSummary.module.scss";
 import sprite from "../../assets/icons/calendar.svg";
 import { formatDate } from "../../utils/utils_dates";
 import { isFuture, isValid } from "date-fns";
+import { formatLargeNumber } from "../../utils/utils_misc";
 
 type Props = {
 	title: string;
@@ -117,16 +118,17 @@ const getChangesDiff = (prevValue: number, curValue: number): DiffData => {
 	if (curValue < prevValue) {
 		const decrease = ((prevValue - curValue) / prevValue) * 100;
 		const diff = parseFloat(decrease.toFixed(2));
+
 		return {
 			type: "DECREASED",
-			diff: diff,
+			diff: diff === Infinity ? 100 : diff,
 		};
 	} else {
 		const increase = ((curValue - prevValue) / prevValue) * 100;
 		const diff = parseFloat(increase.toFixed(2));
 		return {
 			type: "INCREASED",
-			diff: diff,
+			diff: diff === Infinity ? 100 : diff,
 		};
 	}
 };
@@ -136,32 +138,6 @@ type DiffDisplayProps = {
 	curValue: number;
 	label: string | number;
 	date: string | Date | null;
-};
-
-const hasIncreased = (prevVal: number, curVal: number) => {
-	const { type, diff } = getChangesDiff(prevVal, curVal);
-	const increased = type === "INCREASED" && (curVal > prevVal || diff > 0);
-
-	return increased;
-};
-const hasDecreased = (prevVal: number, curVal: number) => {
-	const { type, diff } = getChangesDiff(prevVal, curVal);
-	const decreased = type === "DECREASED" && diff === 100 && prevVal > curVal;
-
-	return decreased;
-};
-const hasNoChanges = (prevVal: number, curVal: number) => {
-	// const { type, diff } = getChangesDiff(prevVal, curVal);
-	const hasNoChanges = prevVal === curVal;
-
-	return hasNoChanges;
-};
-const hasNoData = (prevVal: number, curVal: number, date: Date | string) => {
-	// const { type, diff } = getChangesDiff(prevVal, curVal);
-	const inFuture = isFuture(date);
-	const noData = prevVal === curVal;
-
-	return noData;
 };
 
 const processDate = (date: Date | string | null | undefined): string => {
@@ -182,13 +158,14 @@ const DiffDisplay = ({
 }: DiffDisplayProps) => {
 	const { type, diff } = getChangesDiff(prevValue, curValue);
 	const newDate = processDate(date);
+	const normedValue = formatLargeNumber(curValue);
 
-	if (label === "mins.") {
-	}
 	return (
 		<div className={styles.DiffDisplay}>
 			<div className={styles.DiffDisplay_current}>
-				<div className={styles.DiffDisplay_current_value}>{curValue || 0}</div>
+				<div className={styles.DiffDisplay_current_value}>
+					{normedValue || 0}
+				</div>
 				<div className={styles.DiffDisplay_current_label}>{label}</div>
 			</div>
 			<div className={styles.DiffDisplay_changed}>

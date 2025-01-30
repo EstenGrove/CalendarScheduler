@@ -4,6 +4,9 @@
 
 $shadow: rgba(0, 0, 0, 0.25);
 
+// 8, 7, 4, 5
+// mobile: 5, 7, 8, 4, 5
+
 .DashboardWorkoutHistory {
 	width: 100%;
 	height: 100%;
@@ -50,17 +53,18 @@ $shadow: rgba(0, 0, 0, 0.25);
 			}
 		}
 	}
+
 	&_list {
 		width: 100%;
-		min-height: auto;
-		height: calc(100dvh - 25rem);
-		// height: 100%;
-		// height: 100dvh;
-
-		&_loading {
-			width: 100%;
-			@include rowCenter;
-		}
+		max-width: 80rem;
+		display: block;
+		height: calc(100dvh - 30rem);
+		margin: 4rem auto 2rem auto;
+		overflow-y: scroll;
+		@include scrollbar();
+		@include flex_col(center, center);
+		gap: 1rem;
+		padding: 0 2rem;
 	}
 }
 
@@ -123,5 +127,19 @@ $shadow: rgba(0, 0, 0, 0.25);
 
 	&::placeholder {
 		color: $text2;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.DashboardWorkoutHistory {
+		width: 100%;
+
+		&_list {
+			width: 100%;
+			padding: 0 2rem;
+			padding-top: 1rem;
+			margin-top: 2rem;
+			height: calc(100dvh - 33rem);
+		}
 	}
 }

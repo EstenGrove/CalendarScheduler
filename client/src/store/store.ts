@@ -7,6 +7,7 @@ import workoutsReducer from "../features/workouts/workoutsSlice";
 import historyReducer from "../features/workoutHistory/historySlice";
 import summaryReducer from "../features/summary/summarySlice";
 import healthReducer from "../features/health/healthSlice";
+import workoutTypesReducer from "../features/workoutTypes/workoutTypesSlice";
 
 const store = configureStore({
 	reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
 		summary: summaryReducer,
 		health: healthReducer,
 		currentUser: currentUserReducer,
+		workoutTypes: workoutTypesReducer,
 	},
 });
 

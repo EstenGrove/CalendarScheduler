@@ -1,0 +1,78 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+.WorkoutEntryDetails {
+	@include fill_container;
+	padding: 0 1rem;
+	padding-left: 0.5rem;
+}
+
+.ActivityType {
+	width: 6rem;
+	height: 6rem;
+	border-radius: 50%;
+	background-color: var(--blueGrey900);
+	@include rowCenter();
+
+	&_icon {
+		width: 70%;
+		height: 70%;
+		fill: var(--accent-blue);
+	}
+}
+
+.DetailsHeader {
+	width: 100%;
+
+	&_title {
+		width: 100%;
+		font-size: 1.7rem;
+		margin-bottom: 2rem;
+		text-align: center;
+		color: $accentBlue;
+	}
+
+	&_wrapper {
+		width: auto;
+		@include flex_row(flex-start, center);
+		gap: 0 1rem;
+	}
+
+	&_main {
+		display: block;
+
+		&_name {
+			font-size: 2.2rem;
+			color: $text1;
+		}
+		&_time {
+			font-size: 1.4rem;
+			color: $text2;
+		}
+	}
+}
+
+.DetailsGrid {
+	width: 100%;
+	height: auto;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	margin-top: 3rem;
+	border-radius: 1rem;
+
+	&_entry {
+		padding: 1rem 1rem 1.5rem 1rem;
+		border: $borderLight;
+
+		&_label {
+			font-size: 1.5rem;
+			color: $text3;
+		}
+		&_value {
+			font-size: 2.2rem;
+			color: $accentBlue;
+		}
+	}
+}

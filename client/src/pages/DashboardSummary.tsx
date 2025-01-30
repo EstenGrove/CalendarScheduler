@@ -29,7 +29,7 @@ const DashboardSummary = () => {
 				</PageNav>
 			</div>
 			<div className={styles.DashboardSummary_main}>
-				<Outlet title={title} />
+				<Outlet />
 			</div>
 		</div>
 	);

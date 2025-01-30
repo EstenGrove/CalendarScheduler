@@ -22,6 +22,7 @@ app.route("/history", allRoutes.history);
 app.route("/workouts", allRoutes.workouts);
 app.route("/summary", allRoutes.summary);
 app.route("/plans", allRoutes.plans);
+app.route("/metrics", allRoutes.metrics);
 
 console.log(`✅ Server is running on port: ${port}`);
 

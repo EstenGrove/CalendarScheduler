@@ -2,11 +2,12 @@ import { useState } from "react";
 import Modal from "../shared/Modal";
 import CreateEvent from "./CreateEvent";
 import { CreateEventVals, WeekDayToken } from "../../utils/utils_options";
-import { formatDate } from "../../utils/utils_dates";
+import { formatDate, formatTime } from "../../utils/utils_dates";
 import { useAppDispatch } from "../../store/store";
 import { createNewEvent } from "../../features/events/operations";
 import { CurrentUser } from "../../features/user/types";
 import { prepareRecurringEvent } from "../../utils/utils_events";
+import { addMinutes } from "date-fns";
 
 type Props = {
 	currentUser: CurrentUser;
@@ -25,6 +26,8 @@ const initialValues: CreateEventVals = {
 	byMonthDay: new Date().getDate(),
 	byMonth: 0,
 	// optional
+	startTime: formatTime(new Date(), "long"),
+	endTime: formatTime(addMinutes(new Date(), 30), "long"),
 	location: "",
 	url: "",
 	notes: "",
@@ -122,10 +125,8 @@ const CreateEventModal = ({ currentUser, closeModal }: Props) => {
 			},
 			userID: currentUser.userID,
 		};
-		console.log("Values:", eventValues);
 
-		// const result = await dispatch(createNewEvent(eventValues)).unwrap();
-		const result = { newEvent: null };
+		const result = await dispatch(createNewEvent(eventValues)).unwrap();
 
 		if (result && result.newEvent) {
 			closeModal();

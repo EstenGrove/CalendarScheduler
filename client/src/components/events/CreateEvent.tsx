@@ -1,4 +1,5 @@
 import styles from "../../css/events/CreateEvent.module.scss";
+import { useState } from "react";
 import { CreateEventVals, WeekDayToken } from "../../utils/utils_options";
 import DateInput from "../shared/DateInput";
 import TextArea from "../shared/TextArea";
@@ -7,7 +8,7 @@ import Checkbox from "../shared/Checkbox";
 import RecurringOptions from "./RecurringOptions";
 import Button from "../shared/Button";
 import EventDetailsOptions from "./EventDetailsOptions";
-import { useState } from "react";
+import TimePicker from "../shared/TimePicker";
 
 type Props = {
 	values: CreateEventVals;
@@ -42,6 +43,8 @@ const CreateEvent = ({
 	cancelNewEvent,
 }: Props) => {
 	const [showMore, setShowMore] = useState<boolean>(false);
+
+	console.log("values", values);
 
 	const toggleShowMore = () => {
 		setShowMore(!showMore);
@@ -93,7 +96,9 @@ const CreateEvent = ({
 
 			<div className={styles.CreateEvent_row}>
 				<div className={styles.CreateEvent_start}>
-					<label htmlFor="startDate">Start Date</label>
+					<label htmlFor="startDate">
+						{values.isRecurring ? "Start" : "Event"} Date
+					</label>
 					<DateInput
 						name="startDate"
 						id="startDate"
@@ -102,12 +107,38 @@ const CreateEvent = ({
 					/>
 				</div>
 				<div className={styles.CreateEvent_start}>
-					<label htmlFor="endDate">End Date</label>
-					<DateInput
-						name="endDate"
-						id="endDate"
-						value={values.endDate}
+					{values.isRecurring && (
+						<>
+							<label htmlFor="endDate">End Date</label>
+							<DateInput
+								name="endDate"
+								id="endDate"
+								value={values.endDate}
+								onChange={handleChange}
+							/>
+						</>
+					)}
+				</div>
+			</div>
+			<div className={styles.CreateEvent_row}>
+				<div className={styles.CreateEvent_start}>
+					<label htmlFor="startTime">Start Time</label>
+					<TimePicker
+						name="startTime"
+						id="startTime"
+						value={values.startTime}
 						onChange={handleChange}
+						style={{ minWidth: "100%" }}
+					/>
+				</div>
+				<div className={styles.CreateEvent_start}>
+					<label htmlFor="endTime">End Time</label>
+					<TimePicker
+						name="endTime"
+						id="endTime"
+						value={values.endTime}
+						onChange={handleChange}
+						style={{ minWidth: "100%" }}
 					/>
 				</div>
 			</div>

@@ -8,16 +8,21 @@ import {
 } from "./types";
 import { RootState } from "../../store/store";
 import {
+	cancelWorkoutByDate,
+	createQuickWorkout,
 	createWorkoutWithPlan,
 	fetchWorkoutPlans,
 	fetchWorkouts,
 	fetchWorkoutsByDate,
+	markWorkoutAsDone,
 	UserWorkoutsResp,
 } from "./operations";
-import { CreateWorkoutResponse } from "../../utils/utils_workouts";
+import {
+	CreateWorkoutResponse,
+	QuickWorkoutResponse,
+} from "../../utils/utils_workouts";
 
 export interface SelectedWorkout {
-	// workout: Workout;
 	workout: UserWorkout;
 	history: WorkoutHistoryEntry[];
 	summary: WorkoutSummary;
@@ -25,13 +30,14 @@ export interface SelectedWorkout {
 export interface WorkoutsSlice {
 	status: TStatus;
 	workouts: {
-		// list: Workout[];
 		list: UserWorkout[];
 		status: TStatus;
+		error: string | null;
 	};
 	workoutPlans: {
 		plans: WorkoutPlan[];
 		status: TStatus;
+		error: string | null;
 	};
 	selectedWorkout: SelectedWorkout | null;
 }
@@ -41,10 +47,12 @@ const initialState: WorkoutsSlice = {
 	workouts: {
 		list: [],
 		status: "IDLE",
+		error: null,
 	},
 	workoutPlans: {
 		plans: [],
 		status: "IDLE",
+		error: null,
 	},
 	selectedWorkout: null,
 };
@@ -77,7 +85,6 @@ const workoutsSlice = createSlice({
 					state.workoutPlans.plans = [plan, ...state.workoutPlans.plans];
 				}
 			);
-
 		// Fetch workouts
 		builder
 			.addCase(fetchWorkoutsByDate.pending, (state: WorkoutsSlice) => {
@@ -101,7 +108,6 @@ const workoutsSlice = createSlice({
 					state.workouts.list = action.payload.workouts;
 				}
 			);
-
 		// Fetch workout plans
 		builder
 			.addCase(fetchWorkoutPlans.pending, (state: WorkoutsSlice) => {
@@ -115,6 +121,66 @@ const workoutsSlice = createSlice({
 				) => {
 					state.workoutPlans.status = "FULFILLED";
 					state.workoutPlans.plans = action.payload.workoutPlans;
+				}
+			);
+		// Toggle the status of a single workout for a given date
+		builder
+			.addCase(markWorkoutAsDone.pending, (state: WorkoutsSlice) => {
+				state.workouts.status = "PENDING";
+			})
+			.addCase(
+				markWorkoutAsDone.fulfilled,
+				(state, action: PayloadAction<UserWorkout>) => {
+					console.log("action.payload", action.payload);
+					const updatedWorkout = action.payload;
+					const updatedList = [
+						updatedWorkout,
+						...state.workouts.list.filter(
+							(w) => w.workoutID !== updatedWorkout.workoutID
+						),
+					];
+					state.workouts.status = "FULFILLED";
+					state.workouts.list = updatedList;
+				}
+			);
+
+		// Create a quick workout (w/ abbreviated workout info)
+		builder
+			.addCase(createQuickWorkout.pending, (state: WorkoutsSlice) => {
+				state.workouts.status = "PENDING";
+			})
+			.addCase(
+				createQuickWorkout.fulfilled,
+				(state: WorkoutsSlice, action: PayloadAction<QuickWorkoutResponse>) => {
+					const { workout } = action.payload;
+					const newList = [workout, ...state.workouts.list];
+
+					state.workouts.status = "FULFILLED";
+					state.workouts.list = newList;
+				}
+			)
+			.addCase(createQuickWorkout.rejected, (state: WorkoutsSlice) => {
+				state.workouts.status = "REJECTED";
+				state.workouts.error =
+					"An error occurred during API: /workouts/createQuickWorkout";
+			});
+
+		// Cancel a workout for a given date
+		builder
+			.addCase(cancelWorkoutByDate.pending, (state: WorkoutsSlice) => {
+				state.status = "PENDING";
+			})
+			.addCase(
+				cancelWorkoutByDate.fulfilled,
+				(state: WorkoutsSlice, action: PayloadAction<UserWorkout>) => {
+					const updatedWorkout = action.payload;
+					const newList = [
+						...state.workouts.list.filter(
+							(x) => x.workoutID !== updatedWorkout.workoutID
+						),
+					];
+					state.status = "FULFILLED";
+					state.workouts.list = [...newList, updatedWorkout];
 				}
 			);
 	},

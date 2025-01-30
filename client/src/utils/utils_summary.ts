@@ -1,4 +1,4 @@
-import { startOfWeek, subWeeks } from "date-fns";
+import { subDays } from "date-fns";
 import { WeeklyTotalsResp } from "../features/summary/operations";
 import {
 	CustomDateRange,
@@ -6,7 +6,17 @@ import {
 } from "../features/summary/types";
 import { AsyncResponse } from "../features/types";
 import { currentEnv, summaryApis } from "./utils_env";
-import { formatDate, getWeekStartAndEnd } from "./utils_dates";
+import { formatDate } from "./utils_dates";
+
+export interface DiffDay {
+	value: number;
+	date: Date | string;
+}
+
+export interface TwoWeekRanges {
+	currentWeek: CustomDateRange;
+	prevWeek: CustomDateRange;
+}
 
 const getDailyMinsSummary = async (
 	userID: string,
@@ -73,11 +83,22 @@ const getSummaryByDay = async (userID: string, dateRange: CustomDateRange) => {
 		return error;
 	}
 };
-const getSummaryByWeek = async (userID: string, dateRange: CustomDateRange) => {
-	const { startDate, endDate } = dateRange;
+const getSummaryByWeek = async (userID: string, ranges: TwoWeekRanges) => {
+	const { currentWeek, prevWeek } = ranges;
 	let url = currentEnv.base + summaryApis.getSummaryByWeek;
 	url += "?" + new URLSearchParams({ userID });
-	url += "&" + new URLSearchParams({ startDate, endDate });
+	url +=
+		"&" +
+		new URLSearchParams({
+			curWeekStart: currentWeek.startDate,
+			curWeekEnd: currentWeek.endDate,
+		});
+	url +=
+		"&" +
+		new URLSearchParams({
+			prevWeekStart: prevWeek.startDate,
+			prevWeekEnd: prevWeek.endDate,
+		});
 
 	try {
 		const request = await fetch(url);
@@ -133,12 +154,20 @@ const prepareBarChartData = (summary: DailyMinsSummaryList): number[] => {
 	return data;
 };
 
+const getDiffWeek = (base: Date | string) => {
+	const start = subDays(base, 6);
+	const end = base;
+
+	return {
+		startDate: start,
+		endDate: end,
+	};
+};
+
 // Calculatees week ranges from a base date
 const getDiffWeekRangesFromBase = (base: Date | string = new Date()) => {
-	const lastWeekBase = subWeeks(base, 1);
-
-	const thisWeek = getWeekStartAndEnd(base);
-	const lastWeek = getWeekStartAndEnd(lastWeekBase);
+	const thisWeek = getDiffWeek(base);
+	const lastWeek = getDiffWeek(thisWeek.startDate);
 
 	return {
 		currentWeek: {

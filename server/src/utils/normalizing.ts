@@ -27,6 +27,14 @@ import type {
 	UserWorkoutByDateClient,
 	StreakDayClient,
 	StreakDayDB,
+	CancelledWorkoutDB,
+	CancelledWorkoutClient,
+	WorkoutCustomDB,
+	WorkoutCustomClient,
+	WorkoutHistoryRecordDB,
+	WorkoutHistoryRecordClient,
+	WorkoutHistoryDB,
+	WorkoutHistoryClient,
 } from "../services/types";
 import type {
 	SummaryByWeekClient,
@@ -484,6 +492,7 @@ class UserWorkoutEntryNormalizer {
 			workoutType: record.workout_type_name,
 			name: record.workout_name,
 			desc: record.workout_desc,
+			sets: record.sets,
 			startTime: record.start_time,
 			endTime: record.end_time,
 			tagColor: record.tag_color,
@@ -501,6 +510,80 @@ class UserWorkoutEntryNormalizer {
 		if (!records || !records.length) return [];
 
 		return records.map(this.#toClient);
+	}
+}
+
+/**
+ * WorkoutCustom format:
+ * - Used for '/dashboard/workouts/week' (eg. "This Week")
+ * - Includes tag color & workout status
+ */
+class WorkoutCustomNormalizer {
+	#toClient(record: WorkoutCustomDB): WorkoutCustomClient {
+		const clientRecord: WorkoutCustomClient = {
+			workoutID: record.workout_id,
+			scheduleID: record.schedule_id,
+			eventID: record.event_id,
+			workoutType: record.workout_type_name,
+			activityType: record.activity_type,
+			name: record.workout_name,
+			desc: record.workout_desc,
+			startTime: record.start_time,
+			endTime: record.end_time,
+			tagColor: record.tag_color,
+			weight: record.weight,
+			reps: record.reps,
+			mins: record.mins,
+			sets: record.sets,
+			miles: record.miles,
+			steps: record.steps,
+			workoutStatus: record.workout_status,
+			createdDate: record.created_date,
+		};
+		return clientRecord;
+	}
+
+	toClient(records: WorkoutCustomDB[]): WorkoutCustomClient[] {
+		if (!records || !records.length) return [];
+
+		return records.map(this.#toClient);
+	}
+}
+
+class CancelledWorkoutNormalizer {
+	#toClient(record: CancelledWorkoutDB): CancelledWorkoutClient {
+		const client: CancelledWorkoutClient = {
+			cancelID: record.cancel_id,
+			workoutID: record.workout_id,
+			cancelDate: record.cancel_date,
+			cancelledBy: record.cancelled_by,
+			createdDate: record.created_date,
+			modifiedDate: record.modified_date,
+		};
+
+		return client;
+	}
+	#toDB(record: CancelledWorkoutClient): CancelledWorkoutDB {
+		const dbRecord: CancelledWorkoutDB = {
+			cancel_id: record.cancelID,
+			workout_id: record.workoutID,
+			cancel_date: record.cancelDate,
+			cancelled_by: record.cancelledBy,
+			created_date: record.createdDate,
+			modified_date: record.modifiedDate,
+		};
+		return dbRecord;
+	}
+
+	toClient(records: CancelledWorkoutDB[]): CancelledWorkoutClient[] {
+		const newRecords: CancelledWorkoutClient[] = records.map(this.#toClient);
+
+		return newRecords;
+	}
+	toDB(records: CancelledWorkoutClient[]): CancelledWorkoutDB[] {
+		const newRecords: CancelledWorkoutDB[] = records.map(this.#toDB);
+
+		return newRecords;
 	}
 }
 
@@ -525,6 +608,32 @@ const convertUserWorkouts = (workouts: UserWorkoutPlanDB[]) => {
 	}));
 
 	return newRecords;
+};
+
+const convertUserWorkoutCustom = (
+	workout: WorkoutCustomDB
+): WorkoutCustomClient => {
+	const client: WorkoutCustomClient = {
+		workoutID: workout.workout_id,
+		scheduleID: workout.schedule_id,
+		eventID: workout.event_id,
+		name: workout.workout_name,
+		desc: workout.workout_desc,
+		workoutType: workout.workout_type_name,
+		activityType: workout.activity_type,
+		workoutStatus: workout.workout_status,
+		startTime: workout.start_time,
+		endTime: workout.end_time,
+		tagColor: workout.tag_color,
+		weight: workout.weight,
+		reps: workout.reps,
+		sets: workout.sets,
+		mins: workout.mins,
+		steps: workout.steps,
+		miles: workout.miles,
+		createdDate: workout.created_date,
+	};
+	return client;
 };
 
 const convertWeeklyStreaks = (streaks: StreakDayDB[]): StreakDayClient[] => {
@@ -601,6 +710,66 @@ const convertSummaryByWeek = (data: SummaryByWeekDB): SummaryByWeekClient => {
 	};
 };
 
+// workout history directly from 'workout_history' table.
+const convertHistoryRecord = (
+	record: WorkoutHistoryRecordDB
+): WorkoutHistoryRecordClient => {
+	const client: WorkoutHistoryRecordClient = {
+		userID: record.user_id,
+		historyID: record.history_id,
+		workoutID: record.workout_id,
+		workoutDate: record.workout_date,
+		startTime: record.start_time,
+		endTime: record.end_time,
+		workoutMins: record.workout_mins,
+		reps: record.reps,
+		sets: record.sets,
+		steps: record.steps,
+		miles: record.miles,
+		notes: record.notes,
+		createdDate: record.created_date,
+		isActive: record.is_active,
+	};
+
+	return client;
+};
+
+// Custom workout history
+const convertWorkoutHistory = (
+	history: WorkoutHistoryDB
+): WorkoutHistoryClient => {
+	const client: WorkoutHistoryClient = {
+		historyID: history.history_id,
+		workoutID: history.workout_id,
+		workoutType: history.workout_type,
+		activityType: history.activity_type,
+		name: history.workout_name,
+		desc: history.workout_desc,
+		date: history.workout_date,
+		startTime: history.start_time,
+		endTime: history.end_time,
+		notes: history.notes,
+		// target
+		targetMins: history.target_mins,
+		targetReps: history.target_reps,
+		targetSets: history.target_sets,
+		targetMiles: history.target_miles,
+		targetSteps: history.target_steps,
+		targetWeight: history.target_weight,
+		// actual
+		recordedMins: history.recorded_mins,
+		recordedReps: history.recorded_reps,
+		recordedSets: history.recorded_sets,
+		recordedMiles: history.recorded_miles,
+		recordedSteps: history.recorded_steps,
+		recordedWeight: history.recorded_weight,
+		createdDate: history.created_date,
+		isActive: history.is_active,
+	};
+
+	return client;
+};
+
 const eventsNormalizer = new EventsNormalizer();
 const historyNormalizer = new HistoryNormalizer();
 const workoutNormalizer = new WorkoutNormalizer();
@@ -612,6 +781,8 @@ const minsSummaryNormalizer = new DailyMinsSummaryNormalizer();
 const eventInstancesNormalizer = new EventInstancesNormalizer();
 const workoutPlanNormalizer = new UserWorkoutPlanNormalizer();
 const userWorkoutNormalizer = new UserWorkoutEntryNormalizer();
+const cancelWorkoutNormalizer = new CancelledWorkoutNormalizer();
+const workoutCustomNormalizer = new WorkoutCustomNormalizer();
 
 export {
 	summaryNormalizer,
@@ -625,9 +796,14 @@ export {
 	workoutPlanNormalizer,
 	workoutNormalizer,
 	userWorkoutNormalizer,
+	cancelWorkoutNormalizer,
+	workoutCustomNormalizer,
 	// custom normalizers
 	convertUserWorkouts,
 	convertSummaryByWeek,
 	convertWeeklyStreaks,
 	convertRangeTotals,
+	convertUserWorkoutCustom,
+	convertWorkoutHistory,
+	convertHistoryRecord,
 };

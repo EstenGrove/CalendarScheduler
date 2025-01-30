@@ -41,6 +41,15 @@ const formatLargeNumber = (value: number) => {
 	return value?.toLocaleString() || 0;
 };
 
+const formatThousand = (value: number): string => {
+	if (Number(value) >= 1000) {
+		const newStr = Math.floor(value / 100) / 10.0;
+		return newStr + "k";
+	} else {
+		return String(value);
+	}
+};
+
 const sleep = (ms: number = 500) => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
@@ -80,6 +89,7 @@ export {
 	sleep,
 	groupBy,
 	groupByFn,
+	formatThousand,
 	formatLargeNumber,
 	addEllipsis,
 	sortObjByDateAsc,

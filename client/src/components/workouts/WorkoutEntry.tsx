@@ -209,6 +209,7 @@ const WorkoutEntry = ({ workout, markAsCompleted }: Props) => {
 					<Details mins={36} />
 					{!wasCompleted && (
 						<StartWorkout
+							workoutStatus="IDLE"
 							startWorkout={startWorkout}
 							stopWorkout={stopWorkout}
 						/>

@@ -5,38 +5,87 @@ import { useAppDispatch } from "../store/store";
 import { selectCurrentUser } from "../features/user/userSlice";
 import {
 	fetchWorkoutPlans,
-	fetchWorkouts,
 	fetchWorkoutsByDate,
 } from "../features/workouts/operations";
-import { formatDate } from "../utils/utils_dates";
+import { formatDate, formatTime } from "../utils/utils_dates";
 import { selectWorkouts } from "../features/workouts/workoutsSlice";
-import { Workout } from "../features/workouts/types";
+import Modal from "../components/shared/Modal";
+import Button from "../components/shared/Button";
+import ThisWeekView from "../views/ThisWeekView";
 import WeeklyHeader from "../components/workouts/WeeklyHeader";
-import WorkoutsList from "../components/workouts/WorkoutsList";
+import CreateQuickWorkout from "../components/workouts/CreateQuickWorkout";
+import ModalFooter from "../components/shared/ModalFooter";
+import { QuickWorkoutValues } from "../utils/types";
+
+type FooterProps = {
+	onCancel: () => void;
+	onSave: () => void;
+};
+
+const AddNewFooter = ({ onCancel, onSave }: FooterProps) => {
+	return (
+		<ModalFooter>
+			<div className={styles.AddNewFooter}>
+				<Button onClick={onCancel} className={styles.cancelBtn}>
+					Cancel
+				</Button>
+				<Button onClick={onSave} className={styles.saveBtn}>
+					Save
+				</Button>
+			</div>
+		</ModalFooter>
+	);
+};
+
+const initialState: QuickWorkoutValues = {
+	name: "Untitled",
+	desc: "",
+	time: formatTime(new Date(), "long"),
+	tagColor: "var(--accent-yellow)",
+	activityType: "",
+	weight: 20,
+	reps: 1,
+	sets: 1,
+	mins: 10,
+	steps: 0,
+	miles: 0,
+};
 
 const DashboardWorkoutWeek = () => {
 	const dispatch = useAppDispatch();
 	const currentUser = useSelector(selectCurrentUser);
 	const workouts = useSelector(selectWorkouts);
+	const [showAddNewModal, setShowAddNewModal] = useState<boolean>(false);
 	const [selectedDate, setSelectedDate] = useState<Date | string>(new Date());
-	const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(null);
-	console.log("workouts", workouts);
+	// new workout values
+	const [newWorkout, setNewWorkout] =
+		useState<QuickWorkoutValues>(initialState);
 
 	const selectDate = (date: Date | string) => {
 		setSelectedDate(date);
 		fetchWorkoutsForDay(date);
 	};
 
-	const selectWorkout = (selection: Workout) => {
-		if (selectedWorkout && selectedWorkout.workoutID) {
-			const selectedID = selectedWorkout.workoutID;
-			const newID = selection.workoutID;
-			const alreadySelected = selectedID === newID;
-
-			setSelectedWorkout(alreadySelected ? null : selection);
+	const selectTag = (tag: string) => {
+		console.log("tag", tag);
+		if (newWorkout.tagColor === tag) {
+			setNewWorkout({
+				...newWorkout,
+				tagColor: "",
+			});
 		} else {
-			setSelectedWorkout(selection);
+			setNewWorkout({
+				...newWorkout,
+				tagColor: tag,
+			});
 		}
+	};
+
+	const handleChange = (name: string, value: string | number) => {
+		setNewWorkout({
+			...newWorkout,
+			[name]: value,
+		});
 	};
 
 	const fetchWorkoutsForDay = (targetDate: Date | string) => {
@@ -51,6 +100,22 @@ const DashboardWorkoutWeek = () => {
 				endDate,
 			})
 		);
+	};
+
+	const saveNewQuickWorkout = () => {
+		//
+		//
+	};
+	const cancelAddNewWorkout = () => {
+		setNewWorkout(initialState);
+		closeAddNewWorkoutModal();
+	};
+
+	const openAddNewWorkoutModal = () => {
+		setShowAddNewModal(true);
+	};
+	const closeAddNewWorkoutModal = () => {
+		setShowAddNewModal(false);
 	};
 
 	useEffect(() => {
@@ -72,12 +137,6 @@ const DashboardWorkoutWeek = () => {
 						endDate,
 					})
 				),
-				// 	fetchWorkouts({
-				// 		userID,
-				// 		startDate,
-				// 		endDate,
-				// 	})
-				// ),
 				dispatch(
 					fetchWorkoutPlans({
 						userID,
@@ -104,12 +163,29 @@ const DashboardWorkoutWeek = () => {
 				selectedDate={selectedDate}
 			/>
 			<div className={styles.DashboardWorkoutWeek_summary}>
-				{/*  */}
-				{/*  */}
+				<Button onClick={openAddNewWorkoutModal}>+ Add New</Button>
 			</div>
 			<div className={styles.DashboardWorkoutWeek_list}>
-				<WorkoutsList workouts={workouts} selectWorkout={selectWorkout} />
+				<ThisWeekView
+					currentUser={currentUser}
+					workouts={workouts}
+					selectedDate={selectedDate}
+				/>
 			</div>
+
+			{showAddNewModal && (
+				<Modal title="" closeModal={closeAddNewWorkoutModal}>
+					<CreateQuickWorkout
+						values={newWorkout}
+						selectTag={selectTag}
+						handleChange={handleChange}
+					/>
+					<AddNewFooter
+						onCancel={cancelAddNewWorkout}
+						onSave={saveNewQuickWorkout}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 };

@@ -8,12 +8,13 @@ import {
 import type { MinsSummaryClient, MinsSummaryDB } from "../services/types";
 import { groupBy, type TRecord } from "../utils/processing";
 import type { RangeTotals } from "../services/SummaryService";
-import { HTTPException } from "hono/http-exception";
-import { getSummaryDay, getSummaryWeekData } from "../utils/summary";
-import type { SummaryByWeekDB } from "../utils/types";
-
-import { startOfWeek, subWeeks } from "date-fns";
-import { formatDate, getWeekStartAndEnd } from "../utils/dates";
+import {
+	getSummaryDay,
+	getSummaryWeek,
+	getSummaryWeekData,
+} from "../utils/summary";
+import type { SummaryByWeekDB, SummaryWeekDB } from "../utils/types";
+import { formatDate } from "../utils/dates";
 
 const app = new Hono();
 
@@ -27,17 +28,19 @@ app.get("/getSummaryByMonth", async (ctx: Context) => {
 });
 // /dashboard/summary/week
 app.get("/getSummaryByWeek", async (ctx: Context) => {
-	const { userID, startDate, endDate } = ctx.req.query();
+	const { userID, curWeekStart, curWeekEnd, prevWeekStart, prevWeekEnd } =
+		ctx.req.query();
 
-	const weekStart = startDate; // YYYY--MM-DD
-	const minusWeek = startOfWeek(subWeeks(weekStart, 1));
-	// prev week range (start/end)
-	const { startDate: prevStart, endDate: prevEnd } =
-		getWeekStartAndEnd(minusWeek);
-
+	// get data for both week ranges
 	const data = (await getSummaryWeekData(userID, {
-		startDate,
-		endDate,
+		currentWeek: {
+			startDate: curWeekStart,
+			endDate: curWeekEnd,
+		},
+		prevWeek: {
+			startDate: prevWeekStart,
+			endDate: prevWeekEnd,
+		},
 	})) as SummaryByWeekDB;
 
 	const weeklySummary = convertSummaryByWeek(data);
@@ -46,15 +49,15 @@ app.get("/getSummaryByWeek", async (ctx: Context) => {
 		currentWeek: {
 			...weeklySummary.currentWeek,
 			dateRange: {
-				startDate,
-				endDate,
+				startDate: curWeekStart,
+				endDate: curWeekEnd,
 			},
 		},
 		prevWeek: {
 			...weeklySummary.prevWeek,
 			dateRange: {
-				startDate: formatDate(prevStart, "db"),
-				endDate: formatDate(prevEnd, "db"),
+				startDate: prevWeekStart,
+				endDate: prevWeekEnd,
 			},
 		},
 	});

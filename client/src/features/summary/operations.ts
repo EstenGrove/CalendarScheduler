@@ -21,6 +21,12 @@ export type SummaryParams = {
 	endDate: string;
 };
 
+export interface SummaryWeekParams {
+	userID: string;
+	currentWeek: CustomDateRange;
+	prevWeek: CustomDateRange;
+}
+
 export interface DailySummaryResp {
 	summary: DailyMinsSummaryList;
 	summaryByDay: DailyMinsSummary;
@@ -78,11 +84,11 @@ const fetchRangeSummary = createAsyncThunk(
 );
 const fetchSummaryByWeek = createAsyncThunk(
 	"summary/fetchSummaryByWeek",
-	async (params: SummaryParams) => {
-		const { userID, startDate, endDate } = params;
+	async (params: SummaryWeekParams) => {
+		const { userID, currentWeek, prevWeek } = params;
 		const response = (await getSummaryByWeek(userID, {
-			startDate,
-			endDate,
+			currentWeek,
+			prevWeek,
 		})) as AwaitedResponse<SummaryWeekData>;
 
 		const data = response.Data;

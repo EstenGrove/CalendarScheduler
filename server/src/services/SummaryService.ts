@@ -29,13 +29,15 @@ class SummaryService {
 		this.#db = db;
 	}
 
+	// Retrieves ALL mins for each day, grouped by day & summed
+	// - Includes BOTH 'workout_logs' & 'workout_history' tables!
 	async getDailyMins(
 		userID: string,
 		dateRange: CustomRange
 	): Promise<MinsSummaryDB[] | unknown> {
 		const { startDate, endDate } = dateRange;
 		try {
-			const query = `SELECT * FROM get_daily_mins_for_range(
+			const query = `SELECT * FROM get_daily_mins_in_range_with_history(
         $1,
         $2,
         $3
@@ -49,13 +51,32 @@ class SummaryService {
 		}
 	}
 
-	async getTotalsInRange(
+	async getTotalsInRangeOLD(
 		userID: string,
 		dateRange: CustomRange
 	): Promise<RangeTotals | unknown> {
 		const { startDate, endDate } = dateRange;
 		try {
 			const query = `SELECT * FROM get_totals_in_range(
+				$1,
+				$2,
+				$3
+			)`;
+			const results = await this.#db.query(query, [userID, startDate, endDate]);
+			const rows = results?.rows;
+
+			return rows as RangeTotals[];
+		} catch (error) {
+			return error;
+		}
+	}
+	async getTotalsInRange(
+		userID: string,
+		dateRange: CustomRange
+	): Promise<RangeTotals | unknown> {
+		const { startDate, endDate } = dateRange;
+		try {
+			const query = `SELECT * FROM get_summary_range_totals(
 				$1,
 				$2,
 				$3

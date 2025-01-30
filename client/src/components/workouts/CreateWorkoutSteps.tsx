@@ -335,7 +335,7 @@ const WorkoutTypesStep = ({ workoutValues, handleSelect }: StepProps) => {
 			{workoutTypes &&
 				workoutTypes.map((type, idx) => (
 					<WorkoutType
-						key={type.workoutTypeID + idx}
+						key={type.workoutTypeID + "_" + idx}
 						workoutType={type.workoutType}
 						isSelected={workoutType === type.workoutType}
 						selectType={() => handleSelect("workoutType", type.workoutType)}
@@ -491,13 +491,13 @@ const ScheduleWorkoutStep = ({
 						<div className={styles.ScheduleWorkoutStep_time}>
 							<TimePicker
 								name="startTime"
-								initialTime={workoutValues.startTime as string}
+								value={workoutValues.startTime as string}
 								onChange={handleChange}
 								style={{ minWidth: "12rem", maxWidth: "100%" }}
 							/>
 							<TimePicker
 								name="endTime"
-								initialTime={workoutValues.endTime}
+								value={workoutValues.endTime}
 								onChange={handleChange}
 								style={{ minWidth: "12rem", maxWidth: "100%" }}
 							/>

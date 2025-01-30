@@ -58,13 +58,23 @@ const API_ENDPOINTS = {
 	workouts: {
 		createWorkout: "/workouts/createWorkout",
 		createNewWorkout: "/workouts/createNewWorkout", // w/ plan
+		createQuickWorkout: "/workouts/createQuickWorkout",
 		getWorkouts: "/workouts/getWorkouts",
 		getWorkoutsByDate: "/workouts/getWorkoutsByDate",
-		markWorkoutsAsDone: "/workouts/markWorkoutsAsDone",
+		markWorkoutAsDone: "/workouts/markWorkoutAsDone",
+		markWorkoutAsDoneMany: "/workouts/markWorkoutAsDoneMany",
+		cancelWorkout: "/workouts/cancelWorkout",
 	},
 	workoutHistory: {
 		createLog: "/history/createLog",
 		getLogs: "/history/getWorkoutLogs",
+		getHistory: "/history/getWorkoutHistory",
+	},
+	workoutTypes: {
+		getAll: "/workoutTypes/getWorkoutTypes",
+		update: "/workoutTypes/updateWorkoutType",
+		delete: "/workoutTypes/deleteWorkoutType",
+		create: "/workoutTypes/createWorkoutType",
 	},
 	summary: {
 		getDailyMins: "/summary/getDailyMinsSummary",
@@ -84,6 +94,7 @@ export const {
 	workouts: workoutApis,
 	workoutHistory: historyApis,
 	summary: summaryApis,
+	workoutTypes: workoutTypeApis,
 } = API_ENDPOINTS;
 
 export {

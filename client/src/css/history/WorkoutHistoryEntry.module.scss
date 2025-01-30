@@ -1,0 +1,335 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+@import "../../sass/custom";
+
+$userAccent: var(--accent-blue);
+
+.HistoryItem {
+	// width: 55rem;
+	width: 100%;
+	max-width: 100%;
+	height: 15rem;
+	min-height: 15rem;
+	max-height: 15rem;
+	border-radius: 1rem;
+	border-radius: 0 1rem 1rem 0;
+	border: $borderLight;
+	padding: 1rem;
+	padding-left: 2rem;
+	border-left: 5px solid var(--blueGrey900);
+	&:hover {
+		border-color: $accentBlue;
+		cursor: pointer;
+	}
+
+	&_top {
+		width: 100%;
+		height: 4rem;
+		@include flex_row(flex-start, flex-start);
+
+		&_main {
+			width: auto;
+			@include flex_row(flex-start, flex-start);
+			gap: 0 1rem;
+			margin-left: -1rem;
+			margin-right: auto;
+		}
+
+		&_header {
+			width: 90%;
+			height: 100%;
+
+			&_name {
+				font-size: 1.6rem;
+				font-weight: 700;
+			}
+			&_time {
+				font-size: 1.3rem;
+				color: $text2;
+			}
+		}
+		&_more {
+			position: relative;
+			width: 10%;
+			height: 100%;
+			@include flex_row(flex-end, flex-start);
+		}
+	}
+	&_recorded {
+		width: 100%;
+		height: calc(100% - 6rem);
+		padding-left: 2.5rem;
+	}
+	&_bottom {
+		width: 100%;
+		height: 3rem;
+		@include flex_row(space-between, flex-end);
+	}
+}
+
+.ItemHeader {
+	width: 90%;
+	height: 100%;
+
+	&_name {
+		font-size: 1.6rem;
+		font-weight: 700;
+	}
+	&_time {
+		font-size: 1.3rem;
+		color: $text2;
+	}
+}
+.ItemBadge {
+	width: 3rem;
+	height: 3rem;
+	min-width: 3rem;
+	min-height: 3rem;
+	max-width: 3rem;
+	max-height: 3rem;
+	border-radius: 50%;
+	@include colCenter();
+	background-color: var(--blueGrey900);
+
+	&_icon {
+		width: 1.8rem;
+		height: 1.8rem;
+		fill: $accentBlue;
+	}
+}
+.RecordedItems {
+	width: 100%;
+	height: 100%;
+	@include flex_row(flex-start, center);
+	gap: 0 3rem;
+
+	&_item {
+		width: max-content;
+		@include colCenter();
+
+		&_badge {
+			width: 2rem;
+			height: 2rem;
+			border-radius: 50%;
+			@include colCenter();
+			background-color: var(--blueGrey900);
+
+			&_icon {
+				width: 1.3rem;
+				height: 1.3rem;
+				fill: $accentBlue;
+			}
+		}
+	}
+}
+
+.Mins {
+	min-width: 5rem;
+	width: max-content;
+	@include flex_row(flex-start, center);
+	height: 100%;
+	font-size: 1.3rem;
+	color: var(--blue500);
+	gap: 0 0.3rem;
+
+	&_icon {
+		width: 1.5rem;
+		height: 1.5rem;
+		fill: var(--blue500);
+	}
+}
+
+.TimeEntry {
+	width: max-content;
+	margin-left: auto;
+	padding-bottom: 0.5rem;
+	@include flex_row(flex-end, center);
+	font-size: 1.2rem;
+	color: var(--blueGrey600);
+	gap: 0 0.3rem;
+}
+
+.Item {
+	width: max-content;
+	height: max-content;
+	@include colCenter();
+
+	&_recorded {
+		font-size: 1.6rem;
+		color: $text1;
+		@include rowCenter();
+
+		&_actual {
+			font-size: 2rem;
+			// color: $accentGreen;
+			color: $accentBlue;
+		}
+		&_target {
+			font-size: 1.3rem;
+			color: $text2;
+			align-self: flex-end;
+		}
+	}
+	&_label {
+		font-size: 1.2rem;
+		color: $text2;
+	}
+}
+
+.ItemAlt {
+	width: max-content;
+	height: max-content;
+	@include rowCenter();
+
+	&_recorded {
+		width: max-content;
+		font-size: 1.6rem;
+		color: $text1;
+		@include rowCenter();
+		margin-left: 0.2rem;
+		gap: 0 0.5rem;
+
+		&_actual {
+			font-size: 2rem;
+			margin-right: 0.3rem;
+		}
+		&_target {
+			font-size: 1.3rem;
+			color: $text2;
+		}
+	}
+	&_label {
+		align-self: flex-end;
+		font-size: 1.2rem;
+		color: $text2;
+	}
+}
+.MenuIcon {
+	width: max-content;
+	height: max-content;
+	cursor: pointer;
+
+	&_icon {
+		width: 2rem;
+		height: 2rem;
+		fill: var(--blueGrey600);
+	}
+}
+.MenuOptions {
+	position: absolute;
+	top: 2rem;
+	right: 0;
+	width: 15rem;
+	height: 12rem;
+	border-radius: 1rem;
+	border: $borderLight;
+	background-color: $background;
+	z-index: 9999;
+	padding: 1rem 1rem;
+
+	&_list {
+		list-style: none;
+		@include flex_col(flex-start, flex-start);
+		gap: 1rem 0;
+
+		&_item {
+			width: 100%;
+			padding: 0.3rem 0;
+			font-size: 1.3rem;
+			color: var(--blueGrey400);
+			&:hover {
+				cursor: pointer;
+			}
+
+			&:last-of-type {
+				padding: 0.5rem 0;
+				margin-top: auto;
+				margin-top: 1rem;
+				color: var(--accent-red);
+				border-top: $borderLight;
+			}
+		}
+	}
+}
+
+$activitySize: 2.5rem;
+$iconSize: calc($activitySize - 1rem);
+.ActivityType {
+	width: $activitySize;
+	height: $activitySize;
+	min-width: $activitySize;
+	min-height: $activitySize;
+	border-radius: 50%;
+	background-color: var(--blueGrey300);
+	background-color: var(--blueGrey900);
+	@include rowCenter();
+
+	&_icon {
+		width: $iconSize;
+		height: $iconSize;
+		fill: $userAccent;
+	}
+}
+
+.EntryHeader {
+	width: 100%;
+	height: 5rem;
+	@include flex_row(space-between, flex-start);
+
+	&_details {
+		width: 80%;
+		height: 100%;
+
+		&_name {
+			font-size: 1.6rem;
+			font-weight: 800;
+		}
+		&_desc {
+			font-size: 1.2rem;
+			color: $text2;
+		}
+	}
+}
+
+@mixin statusBadge($color) {
+	min-width: max-content;
+	width: max-content;
+	padding: 0.3rem 0.7rem;
+	border-radius: 5rem;
+	@include flex_row(center, center);
+	gap: 0 0.5rem;
+	border: 1px solid $color;
+
+	&_dot {
+		width: 1rem;
+		height: 1rem;
+		border-radius: 50%;
+		background-color: $color;
+	}
+	&_label {
+		color: $color;
+		font-size: 1.1rem;
+	}
+}
+
+.NotComplete {
+	@include statusBadge(var(--yellowTint100));
+}
+.Completed {
+	@include statusBadge(var(--accent-green));
+}
+.PastDue {
+	@include statusBadge(var(--accent-red3));
+}
+.InProgress {
+	@include statusBadge(var(--accent-blue));
+}
+
+@media only screen and (max-width: 800px) {
+	.RecordedItems {
+		width: 100%;
+		height: 100%;
+		@include flex_row(flex-start, center);
+		gap: 0 2rem;
+	}
+}

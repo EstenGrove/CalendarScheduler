@@ -16,7 +16,12 @@ import {
 	fetchMonthlySummary,
 } from "../features/events/operations";
 import { selectCurrentUser } from "../features/user/userSlice";
-import { formatDate } from "../utils/utils_dates";
+import { formatDate, parseDate } from "../utils/utils_dates";
+import {
+	getAllQueryParams,
+	TParams,
+	useQueryParams,
+} from "../hooks/useQueryParams";
 import PageHeader from "../components/layout/PageHeader";
 
 const hideCalendarOnMobile = (params: Readonly<Params<string>>) => {
@@ -26,34 +31,59 @@ const hideCalendarOnMobile = (params: Readonly<Params<string>>) => {
 	return isMobile && hasSelected;
 };
 
+const getInitialState = () => {
+	const params = getAllQueryParams();
+	const month = params?.month || new Date().getMonth();
+	const year = params?.year || new Date().getFullYear();
+
+	return {
+		month: Number(month),
+		year: Number(year),
+	};
+};
+
+const getInitialDate = () => {
+	const params = getAllQueryParams();
+	const date = params?.selectedDate || null;
+
+	if (!date) return null;
+	const parsed = parseDate(date);
+	return formatDate(parsed, "long");
+};
+
 const DashboardCalendar = () => {
 	const params = useParams();
+	const queryParams = useQueryParams();
 	const dispatch = useAppDispatch();
 	const currentUser = useSelector(selectCurrentUser);
 	const eventsSummary = useSelector(selectMonthlySummary);
 	const selectedDateEvents = useSelector(selectSelectedDateEvents);
 	// local state
-	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-	const [calendarState, setCalendarState] = useState<CalendarState>({
-		year: new Date().getFullYear(),
-		month: new Date().getMonth(),
-	});
+	const [selectedDate, setSelectedDate] = useState<Date | string | null>(
+		getInitialDate
+	);
+
+	const [calendarState, setCalendarState] =
+		useState<CalendarState>(getInitialState);
 
 	// select date from upper calendar nav (eg. <MobileCalendar/>)
 	const selectDate = (date: Date) => {
 		setSelectedDate(date);
 		getEventsForDate(date);
+
+		queryParams.setParams({ selectedDate: formatDate(date, "db") });
 	};
 
 	// select event from bottom list (eg. <EventsList/>)
 	const selectEvent = (eventItem: CalendarEvent) => {
-		console.log("eventItem", eventItem);
 		dispatch(setSelectedEvent(eventItem));
 	};
 
 	const changeMonth = (state: CalendarState) => {
 		setCalendarState(state);
 		getEventSummary(state);
+		console.log("state", state);
+		queryParams.setParams(state as unknown as TParams);
 	};
 
 	const getEventsForDate = (date: Date) => {
@@ -66,6 +96,7 @@ const DashboardCalendar = () => {
 	const getEventSummary = (state: CalendarState) => {
 		const { year, month } = state;
 		const { userID } = currentUser;
+
 		const { startDate, endDate } = getMonthStartAndEnd(month, year);
 		// fire off request for monthly summary
 		dispatch(fetchMonthlySummary({ userID, startDate, endDate }));
@@ -75,6 +106,7 @@ const DashboardCalendar = () => {
 		// fetch summary & change state
 		setCalendarState(state);
 		getEventSummary(state);
+		queryParams.setParams(state as unknown as TParams);
 	};
 
 	// fetch event summary for current month (onMount)
@@ -98,6 +130,7 @@ const DashboardCalendar = () => {
 					{/* HIDE THIS ON "/calendar/:id" ROUTE */}
 					{!hideCalendarOnMobile(params) && (
 						<CalendarSplit
+							calendarState={calendarState}
 							selectedDate={selectedDate}
 							eventItems={selectedDateEvents}
 							eventsSummary={eventsSummary}

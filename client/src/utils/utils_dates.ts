@@ -89,6 +89,7 @@ export interface DateFormats {
 		input: string;
 		shortMonth: string;
 		month: string;
+		tod: string;
 	};
 	time: {
 		noTod: string;
@@ -96,18 +97,23 @@ export interface DateFormats {
 		long: string;
 		mil: string;
 		db: string;
+		tod: string;
 	};
 	datetime: {
 		short: string;
 		long: string;
 		full: string;
 		db: string;
+		tod: string;
 	};
 	weekday: {
 		full: string; // 'Monday', 'Tuesday' etc
 		abbrev: string; // 'Mon', 'Tue', etc
 		twoLetter: string; // 'Mo', 'Tu' etc
 		letter: string; // 'M', 'T', 'W', 'T' etc
+	};
+	custom: {
+		dateDesc: string;
 	};
 }
 
@@ -121,6 +127,7 @@ const FORMAT_TOKENS: DateFormats = {
 		input: "yyyy-MM-dd",
 		shortMonth: "MMM do, yyyy",
 		month: "MMM",
+		tod: "a",
 	},
 	time: {
 		noTod: "hh:mm",
@@ -128,12 +135,14 @@ const FORMAT_TOKENS: DateFormats = {
 		long: "hh:mm a",
 		mil: "HH:mm a",
 		db: "HH:mm",
+		tod: "a",
 	},
 	datetime: {
 		short: "M/d/yy h:m a",
 		long: "MM/dd/yyyy hh:mm a",
 		full: "MMMM do, yyyy hh:mm a",
 		db: "yyyy-MM-dd HH:mm",
+		tod: "a",
 	},
 	weekday: {
 		full: "EEEE",
@@ -141,12 +150,16 @@ const FORMAT_TOKENS: DateFormats = {
 		twoLetter: "EEEEEE",
 		letter: "EEEEE",
 	},
+	custom: {
+		dateDesc: "EEE, LLL do",
+	},
 };
 const {
 	date: DATE_TOKENS,
 	time: TIME_TOKENS,
 	datetime: DATETIME_TOKENS,
 	weekday: WEEKDAY_TOKENS,
+	custom: CUSTOM_TOKENS,
 } = FORMAT_TOKENS;
 
 const formatDate = (
@@ -177,6 +190,18 @@ const formatDateTime = (
 ) => {
 	if (!date) return "";
 	const token = DATETIME_TOKENS[formatToken];
+	const formatted = format(date, token);
+
+	return formatted;
+};
+
+// Handles custom formats
+const formatCustom = (
+	date: Date | string,
+	formatToken: keyof DateFormats["custom"] = "dateDesc"
+) => {
+	if (!date) return "";
+	const token = CUSTOM_TOKENS[formatToken];
 	const formatted = format(date, token);
 
 	return formatted;
@@ -281,6 +306,7 @@ export {
 	formatDate,
 	formatTime,
 	formatDateTime,
+	formatCustom,
 	parseDateTime,
 	parseTime,
 	parseDate,

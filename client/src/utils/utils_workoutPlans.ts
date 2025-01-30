@@ -118,6 +118,15 @@ const workoutTypes: WorkoutType[] = [
 		units: "other",
 	},
 	{
+		workoutTypeID: 13,
+		workoutType: "Floor Press",
+		workoutTypeDesc:
+			"Lie on the floor, legs bent & perform upward presses, similar to a bench press without the bench.",
+		isActive: true,
+		createdDate: "2024-11-23 13:04:21.425857",
+		units: "lbs.",
+	},
+	{
 		workoutTypeID: 10,
 		workoutType: "Other",
 		workoutTypeDesc: "Miscellaneous workout type.",
@@ -131,6 +140,7 @@ export type WorkoutTypeName =
 	| "Planked Pull-ups"
 	| "Lateral Butterflys"
 	| "Overhead Press"
+	| "Dumbell Floor Press (no bench)"
 	| "Pushups"
 	| "Situps"
 	| "Curls"

@@ -1,3 +1,5 @@
+import { ActivityType } from "../../utils/utils_activity";
+import { StatusKey } from "../../utils/utils_status";
 import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
 
 // This is a custom interface that combines the workout_plan & workout records
@@ -30,23 +32,28 @@ export interface UserWorkoutEntry {
 	createdDate: string;
 	isActive: boolean;
 }
+
+export type WorkoutStatus = StatusKey;
 export interface UserWorkout {
 	workoutID: number;
-	planID: number;
+	scheduleID: number;
+	eventID: number;
+	workoutType: WorkoutTypeName;
 	workoutTypeID: number;
-	activityType?: string; // WALK, RUN, LIFT, TIMED etc
+	activityType: ActivityType; // WALK, RUN, LIFT, TIMED etc
 	name: string;
 	desc: string;
-	mins: number; // 25:00 => 25 mins
+	mins: number; // 25 => 25 mins
 	weight: number;
+	sets: number;
+	reps: number;
 	steps: number;
-	startTime: string;
-	endTime: string;
+	miles: number;
+	startTime: string; // '09:30 AM'
+	endTime: string; // '10:30 AM'
 	tagColor: string | null;
-	isCompleted: boolean;
-	isRecurring: boolean;
+	workoutStatus: StatusKey;
 	createdDate: string;
-	isActive: boolean;
 }
 
 export interface UserEventWorkout {

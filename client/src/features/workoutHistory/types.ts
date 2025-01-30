@@ -1,4 +1,14 @@
+import { ActivityType } from "../../utils/utils_activity";
 import { WorkoutTypeName } from "../../utils/utils_workoutPlans";
+
+export type WorkoutActivityType =
+	| "weight"
+	| "walk"
+	| "distance"
+	| "timed"
+	| "stretch"
+	| "cardio"
+	| "other";
 
 /**
  * Workout History is for workout plans, specifically
@@ -70,4 +80,32 @@ export interface WorkoutTypeLogSummary {
 export interface LogRangeSummary {
 	details: WorkoutLogSummary;
 	byType: WorkoutTypeLogSummary[];
+}
+
+// Scheduled workout history records
+export interface HistoryEntry {
+	planID: number; // DON'T NEED THIS
+	historyID: number;
+	workoutID: number;
+	workoutType: WorkoutTypeName;
+	activityType: ActivityType;
+	name: string;
+	desc: string;
+	date: string;
+	startTime: string;
+	endTime: string;
+	// target
+	targetMins: number;
+	targetReps: number;
+	targetSets: number;
+	targetMiles: number;
+	targetSteps: number;
+	targetWeight: number;
+	// actual
+	recordedMins: number;
+	recordedReps: number;
+	recordedSets: number;
+	recordedMiles: number;
+	recordedSteps: number;
+	recordedWeight: number;
 }
