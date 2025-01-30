@@ -8,8 +8,17 @@ import { selectWorkoutHistory } from "../features/workoutHistory/historySlice";
 // components
 import WorkoutHistoryEntry from "../components/history/WorkoutHistoryEntry";
 import WorkoutHistoryFilters from "../components/history/WorkoutHistoryFilters";
-import { endOfMonth, format, startOfMonth } from "date-fns";
-import { formatCustom, formatDate } from "../utils/utils_dates";
+import {
+	endOfDay,
+	endOfMonth,
+	endOfWeek,
+	endOfYear,
+	startOfDay,
+	startOfMonth,
+	startOfWeek,
+	startOfYear,
+} from "date-fns";
+import { formatDate } from "../utils/utils_dates";
 import { useAppDispatch } from "../store/store";
 import { getWorkoutHistoryRecords } from "../features/workoutHistory/operations";
 import { selectCurrentUser } from "../features/user/userSlice";
@@ -21,15 +30,62 @@ import ViewWorkout from "../components/workouts/ViewWorkout";
 // - Store filters in query params
 // - Quick access filters NEED to be included in 'FilterSettings'
 
+type DefaultRange = "DAY" | "WEEK" | "MONTH" | "QUARTER" | "YEAR";
+
+const getDefaultRangeByType = (type: DefaultRange) => {
+	switch (type) {
+		case "DAY": {
+			const day = new Date();
+			const start = startOfDay(day);
+			const end = endOfDay(day);
+
+			return {
+				start: formatDate(start, "db"),
+				end: formatDate(end, "db"),
+			};
+		}
+		case "WEEK": {
+			const day = new Date();
+			const start = startOfWeek(day);
+			const end = endOfWeek(day);
+
+			return {
+				start: formatDate(start, "db"),
+				end: formatDate(end, "db"),
+			};
+		}
+		case "MONTH": {
+			const day = new Date();
+			const start = startOfMonth(day);
+			const end = endOfMonth(day);
+
+			return {
+				start: formatDate(start, "db"),
+				end: formatDate(end, "db"),
+			};
+		}
+		case "YEAR": {
+			const day = new Date();
+			const start = startOfYear(day);
+			const end = endOfYear(day);
+
+			return {
+				start: formatDate(start, "db"),
+				end: formatDate(end, "db"),
+			};
+		}
+
+		default:
+			throw new Error("Invalid range type: " + type);
+	}
+};
+
 const getLogRange = () => {
-	const start = startOfMonth(new Date());
-	const end = endOfMonth(new Date());
-	const startDate = formatDate(start, "db");
-	const endDate = formatDate(end, "db");
+	const range = getDefaultRangeByType("WEEK");
 
 	return {
-		start: startDate,
-		end: endDate,
+		start: range.start,
+		end: range.end,
 	};
 };
 

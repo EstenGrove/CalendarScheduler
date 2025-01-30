@@ -3,11 +3,10 @@ import { WorkoutStatus, type UserWorkout } from "../../features/workouts/types";
 import sprite from "../../assets/icons/calendar2.svg";
 import sprite2 from "../../assets/icons/workouts2.svg";
 import styles from "../../css/workouts/UserWorkout.module.scss";
-import { getActivityTypeFromWorkoutTypeID } from "../../utils/utils_workoutPlans";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { isSwipeLeft, isSwipeRight } from "../../utils/utils_gestures";
-import StatusBadge from "./StatusBadge";
 import type { ActivityType as WorkoutActivityType } from "../../utils/utils_activity";
+import StatusBadge from "./StatusBadge";
 
 type Props = {
 	workout: UserWorkout;
@@ -163,7 +162,6 @@ const IconBadge = ({ type, value }: IconBadgeProps) => {
 const WorkoutBadge = ({ workout }: WorkoutBadgeProps) => {
 	const type = workout.activityType as keyof typeof badgeByActivity;
 	const { weight, reps = 0, sets, steps, miles } = workout;
-	console.log("type", type);
 
 	return (
 		<div className={styles.WorkoutBadge}>
@@ -309,7 +307,6 @@ const UserWorkout = ({
 		}
 
 		if (isSwipeLeft(startX, endX)) {
-			console.log("[LEFT]");
 			if (cardRef.current) {
 				const cardLeft = Number(getCardPosition(cardRef)?.left);
 				if (deltaX && cardLeft < 158) {
@@ -324,7 +321,6 @@ const UserWorkout = ({
 		}
 
 		if (screenX < startX) {
-			console.log("OFF");
 			if (cardRef.current) {
 				const cardLeft = getCardPosition(cardRef)?.left;
 				if (Number(cardLeft) <= 75) return;
